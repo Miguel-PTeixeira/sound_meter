@@ -53,7 +53,7 @@ Ficheiro de entrada
 : O ficheiro de entrada para operação em modo discreto.
 
 Ficheiro de saída
-: Ficheiro com os níveis calculados. O formato pode ser CSV ou JSON. Em modo contínuo os nomes dos ficheiros de saída, sucessivamente gerados, são formados pelo dia e hora do momento em que são criados. Por exemplo, ``20221231074155.csv`` será o nome do ficheiro criado a 31/12/2022 às 7:41:55.
+: Ficheiro com os níveis calculados. O formato pode ser CSV ou JSON. Em modo contínuo os nomes dos ficheiros de saída, sucessivamente gerados, são formados pelo dia e hora do momento em que são criados. Por exemplo, ``2022-12-31_07:41:55.csv`` será o nome do ficheiro criado a 31/12/2022 às 7:41:55.
 
 Em modo discreto se esta opção for omitida o ficheiro de saída terá o mesmo nome do ficheiro de entrada terminado com a a extensão do formato escolhido. Por exemplo:
 ```
