@@ -16,21 +16,25 @@ O programa pode processar em tempo real som captado por microfone ou processar s
 | --------- | --------- | -------------- | ----------|
 | Identificação | XXXX_NNNN | -n \<id\> | identification |
 | Placa de som  | default | -d \<name\> | input_device |
-| Ficheiro de entrada | | -i \<filename\> | |
-| Ficheiro de saída  | | -o \<filename\> | |
 | Diretoria para ficheiros de saída | data/ | | output_path |
-| Ficheiros de saída | sound_meter_ | | output_filename |
-| Formato de saída | CSV | -f CSV \| JSON | output_format |
-| Ritmo de amostragem | 44100 | -r \<value\> | sample_rate  |
+| Ficheiros de saída | | | output_filename |
+| Formato de saída de áudio| OGG | | output_format |
+| Formato de saída de dados| CSV | -f CSV \| JSON | output_format |
+| Taxa de amostragem | 44100 | -r \<value\> | sample_rate  |
 | Número de canais | 1 | -a \<nchannels\> | channels |
-| Duração do processamento | | -t \<seconds\> | |
-| Periodo de calibração |  | -c \<seconds\> | |
+| Tamanho do Bloco | 1024 | -b 512 \| 1024 \| 2048 | block_size |
+| Duração do segmento | 1000 | | segment_duration |
+| Período de registo de níveis | 60 | | levels_record_period|
+| Duração do processamento | inf | -t \<seconds\> | run_duration |
+| Duração do Ficheiro de áudio | 60 * 60 | | audio_file_duration |
+| Janela Deslizante do áudio | 60 * 60 * 4 | | audio_loop_recording |
+| Permitir Registo de áudio | 60 * 60 * 4 | | audio_record_ok |
+| Duração do Ficheiro de dados | 60 * 60 | | data_file_duration |
+| Janela Deslizante dos dados | 60 * 60 * 4 | | data_loop_recording |
+| Permitir Registo de dados | 60 * 60 * 4 | | data_record_ok |
+| Tempo de calibração | 0 | -c \<seconds\> | |
 | Calibração de referência | 94.0 dba | | calibration_reference |
 | Diferença de calibração |0 dba | | calibration_delta |
-| Duração do segmento | 1000 | | segment_duration |
-| Duração do bloco | 1024 | | block_size |
-| Período de registo | 60 | | record_period |
-| Período de ficheiro | 60 * 60 | | file_period |
 | MQTT | false | | mqtt_enable |
 | MQTT broker | tcp://demo.thingsboard.io:1883 | | mqtt_broker |
 | MQTT topic | v1/devices/me/telemetry | | mqtt_topic |
