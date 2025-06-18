@@ -74,6 +74,8 @@ bool input_device_open(struct config *config)
 		config->channels = wave_get_number_of_channels(device.wave);
 		config->sample_rate = wave_get_sample_rate(device.wave);
 		config->bits_per_sample = wave_get_bits_per_sample(device.wave);
+		config->audio_file_duration = wave_get_duration(device.wave);
+		config->data_file_duration = config->audio_file_duration;
 	}
 		/*end*/
 	return true;
@@ -118,6 +120,7 @@ size_t input_device_read(float *buffer, size_t nframes)
 	samples_int16_to_float(samples_int16, buffer, read_frames);
 	/*added*/
 	record_append_samples(buffer,read_frames);
+	third_octave_levels(buffer,read_frames);
 	/*end*/
 	free(samples_int16);
 	return read_frames;
@@ -138,53 +141,56 @@ void input_device_close()
 //------------------------------------------------------------------------------
 //	Output
 
-static char *output_filepath = NULL;
+static char *current_format = NULL;
 
-static FILE *output_fd = NULL;
+static char *data_output_filepath = NULL;
+
+static FILE *data_output_fd = NULL;
+
+static char *audio_output_filepath = NULL;
 
 static json_t *output_json;
 
-static int output_index;
+static int data_output_index;
+static long sample_count;
 
 static time_t calendar;
 static unsigned output_time; //	Tempo decorrido para o ficheiro atual
 
-static void output_new_filename(time_t time);
-static void output_file_open(char *filepath);
 
 void output_open(bool continous)
 {
 	calendar = time(NULL);
 	if (continous)
 		output_new_filename(0);
-	output_file_open(output_filepath);
+	if(config_struct->data_record_ok)
+		output_file_open(data_output_filepath);
 }
 
 void output_close()
 {
 	output_file_close();
-	free(output_filepath);
+	free(data_output_filepath);
 }
 
 void output_file_close()
 {
-	record_stop(); 		/*added*/
-	if (strcmp(config_struct->output_format, ".json") == 0) {
-		json_dumpf(output_json, output_fd, JSON_REAL_PRECISION(3));
+	if (strcmp(config_struct->data_output_format, ".json") == 0) {
+		json_dumpf(output_json, data_output_fd, JSON_REAL_PRECISION(3));
 		json_decref(output_json);
 	}
-	if (output_fd != NULL)
-		fclose(output_fd);
-	output_fd = NULL;
+	if (data_output_fd != NULL)
+		fclose(data_output_fd);
+	data_output_fd = NULL;
 }
 
-static char *output_init_filename()
+static char *output_init_filename(const char* format)
 {
 	size_t date_position = strlen(config_struct->output_path)
 		+ strlen(config_struct->output_filename);
 	size_t filepath_size = date_position
 		+ strlen(OUTPUT_FORMAT)
-		+ strlen(config_struct->output_format) + 1;
+		+ strlen(config_struct->data_output_format) + 1;
 	char *filepath = malloc(filepath_size);
 	if (filepath == NULL) {
 		fprintf(stderr, "Out of memory\n");
@@ -193,11 +199,11 @@ static char *output_init_filename()
 	strcpy(filepath, config_struct->output_path);
 	strcat(filepath, config_struct->output_filename);
 	strcat(filepath, OUTPUT_FORMAT);
-	strcat(filepath, config_struct->output_format);
+	strcat(filepath, format);
 	return filepath;
 }
 
-static void output_new_filename(time_t time)
+void output_new_filename(time_t time)
 {
 	calendar += time;
 	size_t date_size = strlen(OUTPUT_FORMAT);
@@ -205,8 +211,10 @@ static void output_new_filename(time_t time)
 	size_t date_position = strlen(config_struct->output_path)
 		+ strlen(config_struct->output_filename);
 	strftime(buffer, sizeof buffer, TIME_FORMAT, localtime(&calendar));
-	for (size_t i = 0; i < date_size; ++i)
-		(output_filepath + date_position)[i] = buffer[i];
+	for (size_t i = 0; i < date_size; ++i){
+		(data_output_filepath + date_position)[i] = buffer[i];
+		(audio_output_filepath + date_position)[i] = buffer[i];
+	}
 }
 
 static json_t *LAeq_json;
@@ -215,97 +223,102 @@ static json_t *LAFmin_json;
 static json_t *LAFmax_json;
 static json_t *LApeak_json;
 
-static void output_file_open(char *filepath)
+void output_file_open(char *filepath)
 {	
-	output_fd = fopen(filepath, "w");
-	if (output_fd == NULL) {
+	FILE * output_file = fopen(filepath, "w");
+	if (output_file == NULL) {
 		fprintf(stderr, "fopen(%s, \"w\") error: %s\n", filepath, strerror(errno));
 		exit(EXIT_FAILURE);
 	}
-	if (strcmp(config_struct->output_format, ".csv") == 0){
-		if(!record_start()){
-			fprintf(stderr,"ERROR : could not start recording (in_out.c : 79)");
-			return false;
+	
+	current_format = strchr(filepath,'.');
+	
+	if (strcmp(current_format, ".csv") == 0){
+		data_output_fd = output_file;
+		add_file(record_struct->created_data_files, filepath);
+		fprintf(data_output_fd, "LAeq, LAFmin, LAE, LAFmax, LApeak, Freq[Hz]:, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1k, 1.25k, 1.6k, 2k, 2.5k, 3.15k, 4k, 5k, 6.3k, 8k, 10k, 12.5k, 16k, 20k\n");
+	}
+	
+	else if (strcmp(current_format, ".json") == 0) {
+		data_output_fd = output_file;
+		add_file(record_struct->created_data_files, filepath);
+		/*
+		{
+			"ts":xxxxxxxxx,
+			"segment": xx,
+			"levels": {
+				"LAeq": [],
+				"LAE": [],
+				"LAFmin": [],
+				"LAFmax": [],
+				"LApeak": []
+			}
 		}
-		fprintf(output_fd, "LAeq, LAFmin, LAE, LAFmax, LApeak, Freq[Hz]:, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1k, 1.25k, 1.6k, 2k, 2.5k, 3.15k, 4k, 5k, 6.3k, 8k, 10k, 12.5k\n");
-
-	}
-	else if (strcmp(config_struct->output_format, ".json") == 0) {
-	/*
-	{
-		"ts":xxxxxxxxx,
-		"segment": xx,
-		"levels": {
-			"LAeq": [],
-			"LAE": [],
-			"LAFmin": [],
-			"LAFmax": [],
-			"LApeak": []
-		}
-	}
-	*/
-	output_json = json_object();
-	if (output_json == NULL) {
-		fprintf(stderr, "Output: error creating JSON object \"output_json\".\n");
-		return;
-	}
-	json_t *object_json = json_integer(calendar);
-	if (object_json != NULL) {
-		if (json_object_set_new(output_json, "ts", object_json) != 0) {
-			fprintf(stderr, "Output: error adding JSON field \"ts\" ("__FILE__": %d)\n", __LINE__);
+		*/
+		output_json = json_object();
+		if (output_json == NULL) {
+			fprintf(stderr, "Output: error creating JSON object \"output_json\".\n");
 			return;
 		}
-	}
-	object_json = json_integer(config_struct->segment_duration);
-	if (object_json != NULL) {
-		if (json_object_set_new(output_json, "segment", object_json) != 0) {
-			fprintf(stderr, "Output: error adding JSON field \"segment\" ("__FILE__": %d)\n", __LINE__);
-			return;
+		json_t *object_json = json_integer(calendar);
+		if (object_json != NULL) {
+			if (json_object_set_new(output_json, "ts", object_json) != 0) {
+				fprintf(stderr, "Output: error adding JSON field \"ts\" ("__FILE__": %d)\n", __LINE__);
+				return;
+			}
 		}
-	}
-	json_t *levels_json = json_object();
-	if (levels_json != NULL) {
-		if (json_object_set_new(output_json, "levels", levels_json) != 0) {
-			fprintf(stderr, "Output: error adding JSON field \"levels\" ("__FILE__": %d)\n", __LINE__);
-			return;
+		object_json = json_integer(config_struct->segment_duration);
+		if (object_json != NULL) {
+			if (json_object_set_new(output_json, "segment", object_json) != 0) {
+				fprintf(stderr, "Output: error adding JSON field \"segment\" ("__FILE__": %d)\n", __LINE__);
+				return;
+			}
 		}
-	}
-	LAeq_json = json_array();
-	if (LAeq_json != NULL) {
-		if (json_object_set_new(levels_json, "LAeq", LAeq_json) != 0) {
-			fprintf(stderr, "Output: error adding JSON field \"LAeq\" ("__FILE__": %d)\n", __LINE__);
-			return;
+		json_t *levels_json = json_object();
+		if (levels_json != NULL) {
+			if (json_object_set_new(output_json, "levels", levels_json) != 0) {
+				fprintf(stderr, "Output: error adding JSON field \"levels\" ("__FILE__": %d)\n", __LINE__);
+				return;
+			}
 		}
-	}
-	LAE_json = json_array();
-	if (LAE_json != NULL) {
-		if (json_object_set_new(levels_json, "LAE", LAE_json) != 0) {
-			fprintf(stderr, "Output: error adding JSON field \"LAE\" ("__FILE__": %d)\n", __LINE__);
-			return;
+		LAeq_json = json_array();
+		if (LAeq_json != NULL) {
+			if (json_object_set_new(levels_json, "LAeq", LAeq_json) != 0) {
+				fprintf(stderr, "Output: error adding JSON field \"LAeq\" ("__FILE__": %d)\n", __LINE__);
+				return;
+			}
 		}
-	}
-	LAFmin_json = json_array();
-	if (LAFmin_json != NULL) {
-		if (json_object_set_new(levels_json, "LAFmin", LAFmin_json) != 0) {
-			fprintf(stderr, "Output: error adding JSON field \"LAFmin\" ("__FILE__": %d)\n", __LINE__);
-			return;
+		LAE_json = json_array();
+		if (LAE_json != NULL) {
+			if (json_object_set_new(levels_json, "LAE", LAE_json) != 0) {
+				fprintf(stderr, "Output: error adding JSON field \"LAE\" ("__FILE__": %d)\n", __LINE__);
+				return;
+			}
 		}
-	}
-	LAFmax_json = json_array();
-	if (LAFmax_json != NULL) {
-		if (json_object_set_new(levels_json, "LAFmax", LAFmax_json) != 0) {
-			fprintf(stderr, "Output: error adding JSON field \"LAFmax\" ("__FILE__": %d)\n", __LINE__);
-			return;
+		LAFmin_json = json_array();
+		if (LAFmin_json != NULL) {
+			if (json_object_set_new(levels_json, "LAFmin", LAFmin_json) != 0) {
+				fprintf(stderr, "Output: error adding JSON field \"LAFmin\" ("__FILE__": %d)\n", __LINE__);
+				return;
+			}
 		}
-	}
-	LApeak_json = json_array();
-	if (LApeak_json != NULL) {
-		if (json_object_set_new(levels_json, "LApeak", LApeak_json) != 0) {
-			fprintf(stderr, "Output: error adding JSON field \"LApeak\" ("__FILE__": %d)\n", __LINE__);
-			return;
+		LAFmax_json = json_array();
+		if (LAFmax_json != NULL) {
+			if (json_object_set_new(levels_json, "LAFmax", LAFmax_json) != 0) {
+				fprintf(stderr, "Output: error adding JSON field \"LAFmax\" ("__FILE__": %d)\n", __LINE__);
+				return;
+			}
 		}
-	}
-	output_index = 0;
+		LApeak_json = json_array();
+		if (LApeak_json != NULL) {
+			if (json_object_set_new(levels_json, "LApeak", LApeak_json) != 0) {
+				fprintf(stderr, "Output: error adding JSON field \"LApeak\" ("__FILE__": %d)\n", __LINE__);
+				return;
+			}
+		}
+		data_output_index = 0;
+	}else if(strcmp(current_format, ".ogg") == 0){
+		record_struct->output = output_file;
 	}
 	else {
 		fprintf(stderr, "Output: no output format recognized\n");
@@ -327,54 +340,66 @@ static void output_file_open(char *filepath)
 
 void output_record(Levels *levels, bool continuous)
 {
-	if (strcmp(config_struct->output_format, ".csv") == 0)
-	{
-	for (unsigned i = 0; i < levels->segment_number; ++i) {
-		fprintf(output_fd,
-			"%5.1f, %5.1f, %5.1f, %5.1f, %5.1f, "
-			"%5.1f, %5.1f, %5.1f, %5.1f, %5.1f, "
-			"%5.1f, %5.1f, %5.1f, %5.1f, %5.1f, "
-			"%5.1f, %5.1f, %5.1f, %5.1f, %5.1f, "
-			"%5.1f, %5.1f, %5.1f, %5.1f, %5.1f, "
-			"%5.1f, %5.1f, %5.1f, %5.1f, %5.1f, "
-			"%5.1f, %5.1f, %5.1f, %5.1f\n",
-			levels->LAeq[i], levels->LAFmin[i], levels->LAE[i], levels->LAFmax[i], levels->LApeak[i],
-			get_level(0), get_level(1), get_level(2), get_level(3), get_level(4),
-			get_level(5), get_level(6), get_level(7), get_level(8), get_level(9),
-			get_level(10), get_level(11), get_level(12), get_level(13), get_level(14),
-			get_level(15), get_level(16), get_level(17), get_level(18), get_level(19),
-			get_level(20), get_level(21), get_level(22), get_level(23), get_level(24),
-			get_level(25), get_level(26), get_level(27), get_level(28)
-		);
-
+	if (strcmp(config_struct->data_output_format, ".csv") == 0) {
+		for (unsigned i = 0; i < levels->segment_number; ++i) {
+			fprintf(data_output_fd,
+				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+				"-, "
+				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f\n",
+				levels->LAeq[i], levels->LAFmin[i], levels->LAE[i], levels->LAFmax[i], levels->LApeak[i],
+				get_level(0), get_level(1), get_level(2), get_level(3), get_level(4),
+				get_level(5), get_level(6), get_level(7), get_level(8), get_level(9),
+				get_level(10), get_level(11), get_level(12), get_level(13), get_level(14),
+				get_level(15), get_level(16), get_level(17), get_level(18), get_level(19),
+				get_level(20), get_level(21), get_level(22), get_level(23), get_level(24),
+				get_level(25), get_level(26), get_level(27), get_level(28), get_level(29)
+			);
+		}
+		sample_count += config_struct->sample_rate/config_struct->levels_record_period;
 	}
-	}
-	else if (strcmp(config_struct->output_format, ".json") == 0)
-	{
-	for (unsigned i = 0; i < levels->segment_number; ++i) {
-		JSON_ARRAY_SET(LAeq_json, levels->LAeq[i]);
-		JSON_ARRAY_SET(LAE_json, levels->LAE[i]);
-		JSON_ARRAY_SET(LAFmin_json, levels->LAFmin[i]);
-		JSON_ARRAY_SET(LAFmax_json, levels->LAFmax[i]);
-		JSON_ARRAY_SET(LApeak_json, levels->LApeak[i]);
-	}
-	output_index += levels->segment_number;
+	else if (strcmp(config_struct->data_output_format, ".json") == 0) {
+		for (unsigned i = 0; i < levels->segment_number; ++i) {
+			JSON_ARRAY_SET(LAeq_json, levels->LAeq[i]);
+			JSON_ARRAY_SET(LAE_json, levels->LAE[i]);
+			JSON_ARRAY_SET(LAFmin_json, levels->LAFmin[i]);
+			JSON_ARRAY_SET(LAFmax_json, levels->LAFmax[i]);
+			JSON_ARRAY_SET(LApeak_json, levels->LApeak[i]);
+		}
+		data_output_index += levels->segment_number;
 	}
 	output_time += config_struct->levels_record_period; //	tempo de registo
-	fflush(output_fd);
-	fsync(fileno(output_fd));
-	if (continuous && record_struct->sample_count >= (config_struct->sample_rate * config_struct->data_file_duration)) { // altura de mudança de ficheiro
+	if(config_struct->data_record_ok){
+		fflush(data_output_fd);
+		fsync(fileno(data_output_fd));
+	}
+	if (continuous && sample_count >= (config_struct->sample_rate * config_struct->data_file_duration)) { // altura de mudança de ficheiro
 		output_file_close();
 		output_new_filename((config_struct->segment_duration * output_time) / 1000);
-		output_file_open(output_filepath);
+		output_file_open(data_output_filepath);
 		output_time = 0;
+		sample_count = 0;
 	}
 }
 
-static const char *get_filename(const char *filename)
-{
-	const char *ptr = strrchr(filename, '/');
-	return ptr != NULL ? ptr + 1 : filename;
+static char *get_filename(const char *filename) {
+    const char *no_path = strrchr(filename, '/');
+    const char *start = no_path ? no_path + 1 : filename;
+
+    const char *ext = strrchr(start, '.');
+    size_t filename_len = ext ? (size_t)(ext - start) : strlen(start);
+
+    char *ptr = malloc(filename_len + 1);
+    if (!ptr) return NULL;
+
+    strncpy(ptr, start, filename_len);
+    ptr[filename_len] = '\0';
+
+    return ptr;
 }
 
 static const char *get_extention(const char *filename)
@@ -431,23 +456,36 @@ void output_set_filename(const char *option_output_filename, const char *option_
 	if (option_output_filename != NULL) {
 		char first_letter = option_output_filename[0];
 		if (first_letter != '/' && first_letter != '.') // absoluto / relativo
-			output_filepath = concat2(config_struct->output_path, option_output_filename);
+			data_output_filepath = concat2(config_struct->output_path, option_output_filename);
 		else
-			output_filepath = strdup(option_output_filename);
+			data_output_filepath = strdup(option_output_filename);
 	}
 	else if (option_input_filename != NULL) {
-		output_filepath = concat3(config_struct->output_path,
-					get_filename(option_input_filename),
-					config_struct->output_format);
+		char *filename = get_filename(option_input_filename);
+				
+		data_output_filepath = concat3(config_struct->output_path,
+									filename,
+									config_struct->data_output_format);
+									
+		audio_output_filepath =  concat3(config_struct->output_path,
+									filename,
+									config_struct->audio_output_format);
+		free(filename);
 	}
 	else {
-		output_filepath = output_init_filename();
+		data_output_filepath = output_init_filename(config_struct->data_output_format);
+		audio_output_filepath = output_init_filename(config_struct->audio_output_format);
 	}
 }
 
-char *output_get_filepath()
+char *output_get_data_filepath()
 {
-	return output_filepath;
+	return data_output_filepath;
+}
+
+char *output_get_audio_filepath()
+{
+	return audio_output_filepath;
 }
 
 //------------------------------------------------------------------------------

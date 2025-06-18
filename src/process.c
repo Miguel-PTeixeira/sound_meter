@@ -32,7 +32,7 @@ static size_t laeq_counter;
  * lae_average_create:
  * Inicializar o cálculo de LAEq
  */
-void lae_average_create(unsigned laeq_time)
+void lae_average_create()
 {
 	laeq_accumulator = 0;
 	laeq_counter = 0;

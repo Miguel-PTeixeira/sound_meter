@@ -207,15 +207,13 @@ void third_octave_levels(float x[], unsigned size) {
 	unsigned length_read = size;
 	float *y = malloc(length_read * sizeof(float));
 	
-	for (int i = 0; i < 29; i++) {
+	for (int i = 0; i < 30; i++) {
 		ThirdOctaveFilter *filter = third_octave_create(i);
 		third_octave_filtering(filter, x, y, length_read);
 		third_octave_destroy(filter);
 		float sample_sum = 0;
 		for(int c = 0; c < size; c++)
 			sample_sum += y[c] * y[c];
-		if(sample_sum < -40.0)
-			sample_sum = -1000.0;
 		TO_levels[i]= linear_to_decibel(sample_sum/size);
 	}
 	free(y);

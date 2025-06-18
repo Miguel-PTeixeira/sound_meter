@@ -3,16 +3,18 @@
 #include <string.h>
 #include <time.h>
 #include <vorbis/vorbisenc.h>
-#include <sys/statvfs.h>
+
 
 #include "config.h"
+#include "storage.h"
 
 #ifndef RECORD_H
 #define RECORD_H
 
-#define OUTPUT_FORMAT "MM-DD-AAAA_HH:MM:SS"
-#define TIME_FORMAT "%m-%d-%Y_%H:%M:%S"
+#define OUTPUT_FORMAT "AAAA-MM-DD_HH:MM:SS"
+#define TIME_FORMAT "%Y-%m-%d_%H:%M:%S"
 #define AUX_MEMORY_PERC 5
+#define FILE_COMPRESSION_RATIO 30
 
 typedef struct{
   FILE *			output;
@@ -35,8 +37,8 @@ typedef struct{
   long				endfile_size;
   long      		sample_count;
   
-  char **			created_files;
-  
+  Files_Storage*			created_audio_files;
+  Files_Storage*			created_data_files;
   
   time_t 			time_start; /* startung time */
   time_t        	time_elapsed; /* current time */

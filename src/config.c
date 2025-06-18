@@ -25,7 +25,8 @@ static struct config config = {
 	.input_device = CONFIG_INPUT_DEVICE,
 	.output_path = CONFIG_OUTPUT_PATH,
 	.output_filename = CONFIG_OUTPUT_FILENAME,
-	.output_format = CONFIG_OUTPUT_FORMAT,
+	.audio_output_format = CONFIG_AUDIO_OUTPUT_FORMAT,
+	.data_output_format = CONFIG_DATA_OUTPUT_FORMAT,
 	.sample_rate = CONFIG_SAMPLE_RATE,
 	.channels = CONFIG_CHANNELS,
 	.bits_per_sample = CONFIG_BITS_PER_SAMPLE,
@@ -39,7 +40,6 @@ static struct config config = {
 	.data_loop_recording = CONFIG_DATA_LOOP_RECORDING,
 	.data_file_duration = CONFIG_DATA_FILE_DURATION,
 	.data_record_ok = CONFIG_DATA_RECORD_OK,
-	.laeq_time = CONFIG_LAEQ_TIME,
 	.calibration_reference = CONFIG_CALIBRATION_REFERENCE,
 	.mqtt_enable = CONFIG_MQTT_ENABLE,
 	.mqtt_broker = CONFIG_MQTT_BROKER,
@@ -62,7 +62,8 @@ void config_print()
 		"\tInput file: %s\n"
 		"\tOutput path: %s\n"
 		"\tOutput file: %s\n"
-		"\tOutput format: %s\n"
+		"\tAudio Output format: %s\n"
+		"\tData Output format: %s\n"
 		"\tSample Rate: %d\n"
 		"\tChannels: %d\n"
 		"\tBits per sample: %d\n"
@@ -90,7 +91,8 @@ void config_print()
 		config_struct->input_file,
 		config_struct->output_path,
 		config_struct->output_filename,
-		config_struct->output_format,
+		config_struct->audio_output_format,
+		config_struct->data_output_format,
 		config_struct->sample_rate,
 		config_struct->channels,
 		config_struct->bits_per_sample,
@@ -158,7 +160,7 @@ static void config_update_from_json(struct config *config_struct, json_t *config
 	CONFIG_UPDATE_FROM_JSON_STRING(config_struct, config_json, input_device);
 	CONFIG_UPDATE_FROM_JSON_STRING(config_struct, config_json, output_path);
 	CONFIG_UPDATE_FROM_JSON_STRING(config_struct, config_json, output_filename);
-	CONFIG_UPDATE_FROM_JSON_STRING(config_struct, config_json, output_format);
+	CONFIG_UPDATE_FROM_JSON_STRING(config_struct, config_json, data_output_format);
 
 	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, sample_rate);
 	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, channels);
@@ -172,7 +174,6 @@ static void config_update_from_json(struct config *config_struct, json_t *config
 	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, data_loop_recording);
 	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, data_file_duration);
 	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, data_record_ok);
-	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, laeq_time);
 
 	CONFIG_UPDATE_FROM_JSON_REAL(config_struct, config_json, calibration_reference);
 	CONFIG_UPDATE_FROM_JSON_REAL(config_struct, config_json, calibration_delta);
@@ -259,7 +260,7 @@ static void config_update_to_json(struct config *config_struct, json_t *config_j
 	CONFIG_UPDATE_TO_JSON(string, config_struct, config_json, input_device);
 	CONFIG_UPDATE_TO_JSON(string, config_struct, config_json, output_path);
 	CONFIG_UPDATE_TO_JSON(string, config_struct, config_json, output_filename);
-	CONFIG_UPDATE_TO_JSON(string, config_struct, config_json, output_format);
+	CONFIG_UPDATE_TO_JSON(string, config_struct, config_json, data_output_format);
 
 	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, sample_rate);
 	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, channels);
@@ -273,7 +274,6 @@ static void config_update_to_json(struct config *config_struct, json_t *config_j
 	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, data_loop_recording);
 	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, data_file_duration);
 	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, data_record_ok);
-	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, laeq_time);
 
 	CONFIG_UPDATE_TO_JSON_REAL(config_struct, config_json, calibration_reference);
 	CONFIG_UPDATE_TO_JSON_REAL(config_struct, config_json, calibration_delta);

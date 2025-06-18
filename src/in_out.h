@@ -35,10 +35,13 @@ size_t input_device_read(float *buffer, size_t frames);
 void input_device_close();
 
 void output_open(bool);
+void output_file_open(char* filepath);
+void output_new_filename(time_t time);
 void output_close();
 
 void output_set_filename(const char *filename, const char *extension);
-char *output_get_filepath();
+char *output_get_data_filepath();
+char *output_get_audio_filepath();
 void output_record(Levels *levels, bool continuous);
 void output_file_close();
 

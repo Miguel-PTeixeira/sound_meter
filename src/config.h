@@ -1,4 +1,4 @@
-/*
+ /*
 Copyright 2022 Laboratório de Audio e Acústica do ISEL
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,8 +27,9 @@ limitations under the License.
 #define CONFIG_INPUT_DEVICE "default"
 
 #define CONFIG_OUTPUT_PATH "data/"
-#define CONFIG_OUTPUT_FILENAME "sound_meter_"
-#define CONFIG_OUTPUT_FORMAT ".csv"
+#define CONFIG_OUTPUT_FILENAME "_"
+#define CONFIG_AUDIO_OUTPUT_FORMAT ".ogg"
+#define CONFIG_DATA_OUTPUT_FORMAT ".csv"
 
 #define CONFIG_IDENTIFICATION "XXXX_NNNN"
 
@@ -64,8 +65,6 @@ limitations under the License.
 #define CONFIG_DATA_FILE_DURATION	(60*60)					// duração em segundos de cada ficheiro de registo
 #define CONFIG_DATA_RECORD_OK true							// permitir o ficheiro de dados
 
-#define CONFIG_LAEQ_TIME	((60 / CONFIG_SEGMENT_DURATION) * 60 * 24)	// periodo de cálculo de LAEeq (1 dia)
-
 #define CONFIG_CALIBRATION_TIME		0	// tempo útil de calibração
 #define CONFIG_CALIBRATION_GUARD	2	// tempo de guarda desde o arranque do programa até ao início da calibração
 
@@ -86,7 +85,8 @@ struct config
 	const char *input_file;		// ficheiro WAVE com som de entrada
 	const char *output_path;	// diretoria onde são depositados os ficheiros criados
 	const char *output_filename;	// nome do ficheiro de saída
-	const char *output_format;	// formato dos dados de saída (extensão do ficheiro de saída)
+	const char *audio_output_format;// formato do ficheiro de saída de áudio
+	const char *data_output_format;	// formato do ficheiro de saída de dados
 
 	unsigned sample_rate;		// ritmo de amostragem
 	unsigned channels;		// número de canais
@@ -102,7 +102,6 @@ struct config
 	unsigned data_loop_recording;// gravação em loop do csv
 	unsigned data_file_duration; // duração do ficheiro csv
 	bool 	 data_record_ok;
-	unsigned laeq_time;		// duração da janela deslizante de laeq
 
 	unsigned calibration_time;	// tempo despendido na calibração
 	float calibration_reference;	// valor de referência de calibração

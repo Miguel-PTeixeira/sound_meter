@@ -58,7 +58,7 @@ void process_segment_lapeak(Levels *levels, struct sbuffer *ring, struct config 
 void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config *config);
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config);
 
-void lae_average_create(unsigned laeq_time);	//	Para cálculo de LAeq
+void lae_average_create();	//	Para cálculo de LAeq
 void lae_average_destroy();
 
 typedef struct {

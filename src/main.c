@@ -34,6 +34,19 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
 #include "server.h"
 #include "record.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#define my_assert(cond, msg) do { \
+    if (!(cond)) { \
+        fprintf(stderr, "Assertion failed: %s\n", msg); \
+        printf("\n"); \
+        help("sound_meter"); \
+        exit(EXIT_FAILURE); \
+    } \
+} while(0)
+
+
 bool running = true;
 
 static void int_handler(int unused) {
@@ -51,13 +64,14 @@ static void help(char *prog_name)
 		"\t-d, --device <device name>\n"
 		"\t-i, --input <file name>\n"
 		"\t-o, --output <file name>\n"
-		"\t-f, --output_format <csv | json>\n"
+		"\t-f, --data_output_format <csv | json>\n"
 		"\t-r, --sample_rate <rate>\n"
 		"\t-a, --channels <channels>\n"
 		"\t-n, --identification <name>\n"
 		"\t-t, --duration <seconds>\n"
 		"\t-c, --calibrate <seconds>\n"
-		"\t-g, --config <filename>\n",
+		"\t-g, --config <file name>\n"
+		"\t-b, --block_size <sample number>\n",
 		prog_name);
 }
 
@@ -85,6 +99,7 @@ int main (int argc, char *argv[])
 		{"duration", required_argument, 0, 't'},
 		{"calibrate", optional_argument, 0, 'c'},
 		{"config", required_argument, 0, 'g'},
+		{"block_size", required_argument, 0, 'b'},
 		{0, 0, 0, 0}
 	};
 
@@ -94,17 +109,18 @@ int main (int argc, char *argv[])
 	char *option_device_filename = NULL;
 	char *option_input_filename = NULL;
 	char *option_output_filename = NULL;
-	char *option_output_format = NULL;
+	char *option_data_output_format = NULL;
 	char *option_sample_rate = NULL;
 	char *option_channels = NULL;
 	char *option_identification = NULL;
 	char *option_calibration_time = NULL;
 	char *option_config_filename = NULL;
+	char *option_block_size = NULL;
 	int run_duration = 0;
 
 	signal(SIGINT, int_handler);
 
-	while ((option_char = getopt_long(argc, argv, ":hvd:i:o:f:r:a:n:t:c:g:",
+	while ((option_char = getopt_long(argc, argv, ":hvd:i:o:f:r:a:n:t:c:g:b:",
 			long_options, &option_index)) != -1) {
 		switch (option_char) {
 		case 0:	//	Opções longas com afetação de flag
@@ -125,13 +141,15 @@ int main (int argc, char *argv[])
 			option_output_filename = optarg;
 			break;
 		case 'f':
-			option_output_format = optarg;
+			option_data_output_format = optarg;
 			break;
 		case 'g':
 			option_config_filename = optarg;
 			break;
 		case 'r':
 			option_sample_rate = optarg;
+			my_assert(strcmp(option_block_size,"44100") == 0 || strcmp(option_block_size,"48000") == 0,
+			"expected sample_rate [44100,48000]");
 			break;
 		case 'a':
 			option_channels = optarg;
@@ -144,6 +162,11 @@ int main (int argc, char *argv[])
 			break;
 		case 'c':
 			option_calibration_time = optarg;
+			break;
+		case 'b':
+			option_block_size = optarg;
+			my_assert(strcmp(option_block_size,"512") == 0 || strcmp(option_block_size,"1024") == 0 || strcmp(option_block_size,"2048") == 0,
+			"expected block_size [512, 1024, 2028]");
 			break;
 		case ':':
 			fprintf(stderr, "Error in option -%c argument\n", optopt);
@@ -215,8 +238,8 @@ int main (int argc, char *argv[])
 	if (option_input_filename != NULL)
 		config_struct->input_file = option_input_filename;
 
-	if (option_output_format != NULL)
-		config_struct->output_format = option_output_format;
+	if (option_data_output_format != NULL)
+		config_struct->data_output_format = option_data_output_format;
 
 	if (option_sample_rate != NULL)
 		config_struct->sample_rate = atoi(option_sample_rate);
@@ -232,6 +255,9 @@ int main (int argc, char *argv[])
 
 	if (option_calibration_time != NULL)
 		config_struct->calibration_time = atoi(option_calibration_time);
+		
+	if (option_block_size != NULL)
+		config_struct->block_size = atoi(option_block_size);
 
 	output_set_filename(option_output_filename, option_input_filename);
 
@@ -242,7 +268,7 @@ int main (int argc, char *argv[])
 		printf("\n"
 			"\tOutput file: %s\n"
 			"\tRun duration: %d seconds\n\n",
-			output_get_filepath(),
+			output_get_data_filepath(),
 			run_duration);
 	}
 
@@ -278,6 +304,7 @@ int main (int argc, char *argv[])
 		float average_sum = 0;
 		unsigned average_n = 0;
 		printf("\nCalibrating for %d seconds\n",config_struct->calibration_time);
+		
 		while (milisecs < calibration_milisecs) {
 			size_t lenght_read = input_device_read(block_a, config_struct->block_size);
 			if (lenght_read == 0)
@@ -298,7 +325,7 @@ int main (int argc, char *argv[])
 			sbuffer_write_produces(ring_d, lenght_read);
 
 			if (sbuffer_size(ring_d) >= config_struct->segment_size) {
-				process_segment_levels(levels, ring_d, 0);
+				process_segment_levels(levels, ring_d, config_struct);
 				if (milisecs < CONFIG_CALIBRATION_GUARD * 1000) {
 					if (verbose_flag)
 						puts("-");
@@ -313,6 +340,7 @@ int main (int argc, char *argv[])
 				milisecs += config_struct->segment_duration;
 			}
 		}
+		
 		config_struct->calibration_delta = config_struct->calibration_reference -
 			average_sum / average_n;
 
@@ -355,13 +383,15 @@ int main (int argc, char *argv[])
 			config_struct->levels_record_period = 1;
 	}
 
-	lae_average_create(config_struct->laeq_time);
+	lae_average_create();
 
 	if (verbose_flag)
 		printf("LAeq, LAFmin, LAE, LAFmax, LApeak\n");
 
 	unsigned time_elapsed = 0;	// Tempo que passou baseado na duração do segmento (milisegundos)
 	run_duration *= 1000; 		// Converter para milisegundos
+	
+	record_start(); //Necessário para inicializar o Codec de áudio corretamente
 
 	while (running && (run_duration == 0 || time_elapsed < run_duration)) {
 		size_t lenght_read = input_device_read(block_a, config_struct->block_size);
@@ -394,7 +424,6 @@ int main (int argc, char *argv[])
 
 		if (sbuffer_size(ring_d) >= config_struct->segment_size) {
 			process_segment_levels(levels, ring_d, config_struct);
-			third_octave_levels(block_a,lenght_read); //ADDED
 			time_elapsed += config_struct->segment_duration;
 
 			int segment_index = levels->segment_number - 1;
@@ -420,6 +449,16 @@ int main (int argc, char *argv[])
 		if (levels->segment_number == config_struct->levels_record_period) {
 			output_record(levels, continuous);
 			levels->segment_number = 0;
+		}
+		
+		if (continuous && 
+			record_struct->sample_count >= config_struct->sample_rate * config_struct->audio_file_duration) {
+				
+			record_stop();
+			if(!record_start()){
+				fprintf(stderr,"ERROR : could not start recording (in_out.c : 79)");
+				return 1;
+			}
 		}
 	}
 	running = false;
@@ -456,5 +495,7 @@ int main (int argc, char *argv[])
 	free(block_c);
 	sbuffer_destroy(ring_b);
 	sbuffer_destroy(ring_d);
+	delete_files_storage(record_struct->created_audio_files);
+	delete_files_storage(record_struct->created_data_files);
 
 }
