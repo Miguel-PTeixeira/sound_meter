@@ -29,6 +29,8 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
 #define BIQUAD_STATE_SIZE 3
 #define BIQUAD_COEFS_PER_STAGE 6 // b0,b1,b2,a0,a1,a2 per stage
 
+#define THIRD_OCTAVE_BAND_MAX 30
+
 typedef struct {
 	float previous; // saves y[n-1]
 } Timeweight;
@@ -56,6 +58,18 @@ void aweighting_filtering(Afilter *af, float *input, float *output, unsigned len
 
 float *aweighting_get_coef_a(int);
 float *aweighting_get_coef_b(int);
+
+typedef struct {
+	float *u;				// variável de estado
+//	const float *coef_a;	// coeficientes do filtro
+//	const float *coef_b;	// coeficientes do filtro
+	int N;					// ordem do filtro
+	const float *coefs;		// coeficientes do filtro; formato Joao Casaleiro
+} Cfilter;
+
+Cfilter *cweighting_create(int N);
+void cweighting_destroy(Cfilter *cf);
+void cweighting_filtering(Cfilter *cf, float x[], float y[], unsigned size);
 
 typedef struct {
     float* u;

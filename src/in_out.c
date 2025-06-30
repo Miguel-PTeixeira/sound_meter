@@ -119,7 +119,7 @@ size_t input_device_read(float *buffer, size_t nframes)
 	}
 	samples_int16_to_float(samples_int16, buffer, read_frames);
 	/*added*/
-	record_append_samples(buffer,read_frames);
+	record_append_samples(buffer,read_frames, record_struct->output);
 	third_octave_levels(buffer,read_frames);
 	/*end*/
 	free(samples_int16);
@@ -462,7 +462,7 @@ void output_set_filename(const char *option_output_filename, const char *option_
 	}
 	else if (option_input_filename != NULL) {
 		char *filename = get_filename(option_input_filename);
-				
+			
 		data_output_filepath = concat3(config_struct->output_path,
 									filename,
 									config_struct->data_output_format);

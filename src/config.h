@@ -65,6 +65,8 @@ limitations under the License.
 #define CONFIG_DATA_FILE_DURATION	(60*60)					// duração em segundos de cada ficheiro de registo
 #define CONFIG_DATA_RECORD_OK true							// permitir o ficheiro de dados
 
+#define CONFIG_BACKGROUND_DURATION 1800						// duração de calibração do ruído de fundo (utilizado para detetar eventos)
+
 #define CONFIG_CALIBRATION_TIME		0	// tempo útil de calibração
 #define CONFIG_CALIBRATION_GUARD	2	// tempo de guarda desde o arranque do programa até ao início da calibração
 
@@ -102,6 +104,7 @@ struct config
 	unsigned data_loop_recording;// gravação em loop do csv
 	unsigned data_file_duration; // duração do ficheiro csv
 	bool 	 data_record_ok;
+	unsigned background_duration;//duração de calibração do ruído de fundo
 
 	unsigned calibration_time;	// tempo despendido na calibração
 	float calibration_reference;	// valor de referência de calibração

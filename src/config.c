@@ -40,6 +40,7 @@ static struct config config = {
 	.data_loop_recording = CONFIG_DATA_LOOP_RECORDING,
 	.data_file_duration = CONFIG_DATA_FILE_DURATION,
 	.data_record_ok = CONFIG_DATA_RECORD_OK,
+	.background_duration = CONFIG_BACKGROUND_DURATION,
 	.calibration_reference = CONFIG_CALIBRATION_REFERENCE,
 	.mqtt_enable = CONFIG_MQTT_ENABLE,
 	.mqtt_broker = CONFIG_MQTT_BROKER,
@@ -77,6 +78,7 @@ void config_print()
 		"\tData loop recording: %d seconds\n"
 		"\tData file duration: %d seconds\n"
 		"\tData record ok: %d\n"
+		"\tBackground duration: %d\n"
 		"\tCalibration time: %d\n"
 		"\tCalibration reference: %.1f dba\n"
 		"\tCalibration delta: %.1f dba\n"
@@ -106,6 +108,7 @@ void config_print()
 		config_struct->data_loop_recording,
 		config_struct->data_file_duration,
 		config_struct->data_record_ok,
+		config_struct->background_duration,
 		config_struct->calibration_time,
 		config_struct->calibration_reference,
 		config_struct->calibration_delta,
@@ -174,6 +177,7 @@ static void config_update_from_json(struct config *config_struct, json_t *config
 	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, data_loop_recording);
 	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, data_file_duration);
 	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, data_record_ok);
+	CONFIG_UPDATE_FROM_JSON_INTEGER(config_struct, config_json, background_duration);
 
 	CONFIG_UPDATE_FROM_JSON_REAL(config_struct, config_json, calibration_reference);
 	CONFIG_UPDATE_FROM_JSON_REAL(config_struct, config_json, calibration_delta);
@@ -274,6 +278,7 @@ static void config_update_to_json(struct config *config_struct, json_t *config_j
 	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, data_loop_recording);
 	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, data_file_duration);
 	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, data_record_ok);
+	CONFIG_UPDATE_TO_JSON_INTEGER(config_struct, config_json, background_duration);
 
 	CONFIG_UPDATE_TO_JSON_REAL(config_struct, config_json, calibration_reference);
 	CONFIG_UPDATE_TO_JSON_REAL(config_struct, config_json, calibration_delta);

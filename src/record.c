@@ -21,6 +21,7 @@ static char filename[MAX_FILENAME];
 bool removing = false;
 bool start = false;
 
+
 /**
  * @brief cria o ficheiro de áudio
  *
@@ -71,8 +72,9 @@ int storage_window_init(){
 	unsigned long long memory_needed;
 	
 	if(config_struct->input_file == NULL){
-		unsigned int max_audio_files = config_struct->audio_loop_recording / config_struct->audio_file_duration;
-		unsigned int max_data_files = config_struct->data_loop_recording / config_struct->data_file_duration;
+		unsigned int max_audio_files = (config_struct->audio_loop_recording + (config_struct->audio_file_duration-1)) / config_struct->audio_file_duration;
+		
+		unsigned int max_data_files = (config_struct->data_loop_recording + (config_struct->data_file_duration-1)) / config_struct->data_file_duration;
 		
 		printf("For file managing reasons, the parameters used will be:\n");
 		if(config_struct->audio_record_ok){
@@ -225,7 +227,7 @@ void record_stop(){
  * @param estrutura de configuração "config"
  * @return estrutura de gravação "record_state"
  */ 
-int record_append_samples(float *frames_buffer,size_t frames_read){
+int record_append_samples(float *frames_buffer,size_t frames_read, FILE* output){
 	if(!config_struct->audio_record_ok) return 1;
 	assert(frames_read <= config_struct->block_size);
 	
@@ -266,8 +268,8 @@ int record_append_samples(float *frames_buffer,size_t frames_read){
 			while(!record.eos){
 				int result=ogg_stream_pageout(&record.os,&record.og);
 				if(result==0)break;
-				fwrite(record.og.header,1,record.og.header_len,record.output);
-				fwrite(record.og.body,1,record.og.body_len,record.output);
+				fwrite(record.og.header,1,record.og.header_len,output);
+				fwrite(record.og.body,1,record.og.body_len,output);
 
 				if(ogg_page_eos(&record.og))record.eos=1;
 			}

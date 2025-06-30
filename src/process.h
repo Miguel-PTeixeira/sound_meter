@@ -30,6 +30,8 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
 #include "config.h"
 #include "sbuffer.h"
 
+#define EVENT_TRESHOLD 10
+
 static inline float linear_to_decibel(float linear)
 {
 	return 20.0f * log10(linear / CONFIG_PRESSURE_REFERENCE);
@@ -54,9 +56,11 @@ Levels *levels_create();
 void levels_destroy(Levels *);
 
 void process_block_square(float *input, float *output, unsigned length);
-void process_segment_lapeak(Levels *levels, struct sbuffer *ring, struct config *config);
+void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config);
 void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config *config);
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config);
+float get_percentil(float* array, int size, int perc);
+int event_check(Levels* levels, float background_level);
 
 void lae_average_create();	//	Para cálculo de LAeq
 void lae_average_destroy();
