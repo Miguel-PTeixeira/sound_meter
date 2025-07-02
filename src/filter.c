@@ -117,32 +117,6 @@ void aweighting_filtering(Afilter *af, float x[], float y[], unsigned size)
 	}
 }
 
-Cfilter *cweighting_create(int N)
-{
-	Cfilter *cf = malloc(sizeof *cf);
-	cf->coefs = C_WEIGHTED_taps;
-	cf->u = calloc(3 * N, sizeof(float));
-	cf->N = N;
-	return cf;
-}
-
-void cweighting_destroy(Cfilter *cf)
-{
-	free(cf->u);
-	free(cf);
-}
-
-void cweighting_filtering(Cfilter *cf, float x[], float y[], unsigned size)
-{
-	for (int n = 0; n < size; n++) {
-		shift_right(cf->u, cf->N);
-		shift_right(cf->u + 3, cf->N);
-		float c = cascade_biquad(x[n], cf->u, cf->coefs, cf->N);
-		y[n] = c;
-//		assert(c >= -1.0 && c <= +1.0);
-	}
-}
-
 static const float* bands[] = {
         THIRD_OCTAVE_BAND_1,
         THIRD_OCTAVE_BAND_2,
@@ -188,8 +162,21 @@ ThirdOctaveFilter* third_octave_create(int band_idx) {
     const int biquad_stages = 4;
     
     ThirdOctaveFilter* filter = malloc(sizeof(*filter));
-    filter->coefs = bands[band_idx];
+    if (!filter) return NULL;
+    
     filter->u = calloc(BIQUAD_STATE_SIZE * biquad_stages, sizeof(float));
+    if (!filter->u) {
+        free(filter);
+        return NULL;
+    }
+    
+    filter->coefs = bands[band_idx];
+    if (!filter->coefs) {
+        free(filter->u);
+        free(filter);
+        return NULL;
+    }
+    
     filter->N = biquad_stages;
     return filter;
 }

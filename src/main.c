@@ -46,8 +46,6 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
     } \
 } while(0)
 
-#define ARRAY_SIZE(a)	sizeof(a) / sizeof(a[0])
-
 
 bool running = true;
 
@@ -280,49 +278,20 @@ int main (int argc, char *argv[])
 	if (!input_device_open(config_struct))
 	exit(EXIT_FAILURE);
 
-	Timeweight *twfilter_fast = timeweight_create();
-	Timeweight *twfilter_slow = timeweight_create();
+	Timeweight *twfilter = timeweight_create();
 	Afilter *afilter = aweighting_create(3);
-	Cfilter *cfilter = cweighting_create(2);
 
-	float *raw_block = malloc(config_struct->channels * config_struct->block_size * sizeof *raw_block);
-	float *asquared_block = malloc(config_struct->block_size * sizeof *asquared_block);
+	float *block_a = malloc(config_struct->channels * config_struct->block_size * sizeof *block_a);
+	float *block_c = malloc(config_struct->block_size * sizeof *block_c);
 
 	// Os buffers de segmento têm capacidade para um segmento e uma dimensão múltipla de um bloco
 	unsigned segment_buffer_size = (((config_struct->segment_size + config_struct->block_size - 1)
 								/ config_struct->block_size) + 1)
 								* config_struct->block_size;
-								
-	struct sbuffer *zfilter_ring = sbuffer_create(segment_buffer_size);
-	struct sbuffer *afilter_ring = sbuffer_create(segment_buffer_size);
-	struct sbuffer *cfilter_ring = sbuffer_create(segment_buffer_size);
-	struct sbuffer *afast_ring = sbuffer_create(segment_buffer_size);
-	struct sbuffer *aslow_ring = sbuffer_create(segment_buffer_size);
-	
-	Levels *zlevels = levels_create();
-	Levels *alevels = levels_create();
-	Levels *clevels = levels_create();
-	Levels *afastlevels = levels_create();
-	Levels *aslowlevels = levels_create();
-	
-	//float filter_levels[segment_buffer_size*30];
-	
-	struct {
-		ThirdOctaveFilter	*filter;
-		struct sbuffer		*ring;
-	} third_octave_rings[THIRD_OCTAVE_BAND_MAX];
-	
-	for (int i = 0; i < ARRAY_SIZE(third_octave_rings); i++){
-		third_octave_rings[i].filter = third_octave_create(i);
-		third_octave_rings[i].ring = sbuffer_create(segment_buffer_size);
-	}
+	struct sbuffer *ring_b = sbuffer_create(segment_buffer_size);
+	struct sbuffer *ring_d = sbuffer_create(segment_buffer_size);
 
-	int segment_duration_sec = config_struct->segment_duration / 1000;
-	int percentil_segment_number = (config_struct->background_duration / segment_duration_sec);
-	int percentil_count = 0;
-	
-	float background_level = 40;
-	float percentil_array[percentil_segment_number];
+	Levels *levels = levels_create();
 
 	//----------------------------------------------------------------------
 	//	Calibração
@@ -337,38 +306,37 @@ int main (int argc, char *argv[])
 		printf("\nCalibrating for %d seconds\n",config_struct->calibration_time);
 		
 		while (milisecs < calibration_milisecs) {
-			size_t lenght_read = input_device_read(raw_block, config_struct->block_size);
+			size_t lenght_read = input_device_read(block_a, config_struct->block_size);
 			if (lenght_read == 0)
 				break;
 
-			float *block_afilter_ring = sbuffer_write_ptr(afilter_ring);
-			assert(lenght_read <= sbuffer_write_size(afilter_ring));	// Há sempre um bloco disponível
+			float *block_ring_b = sbuffer_write_ptr(ring_b);
+			assert(lenght_read <= sbuffer_write_size(ring_b));	// Há sempre um bloco disponível
 
-			aweighting_filtering(afilter, raw_block, block_afilter_ring, lenght_read);
-			
-			sbuffer_write_produces(afilter_ring, lenght_read);
-			process_block_square(block_afilter_ring, asquared_block, lenght_read);
-			sbuffer_read_consumes(afilter_ring, lenght_read);
+			aweighting_filtering(afilter, block_a, block_ring_b, lenght_read);
+			sbuffer_write_produces(ring_b, lenght_read);
+			process_block_square(block_ring_b, block_c, lenght_read);
+			sbuffer_read_consumes(ring_b, lenght_read);
 
-			float *block_afast_ring = sbuffer_write_ptr(afast_ring);
-			assert(lenght_read <= sbuffer_write_size(afast_ring));
+			float *block_ring_d = sbuffer_write_ptr(ring_d);
+			assert(lenght_read <= sbuffer_write_size(ring_d));
 
-			timeweight_filtering(twfilter_fast, asquared_block, block_afast_ring, lenght_read);
-			sbuffer_write_produces(afast_ring, lenght_read);
+			timeweight_filtering(twfilter, block_c, block_ring_d, lenght_read);
+			sbuffer_write_produces(ring_d, lenght_read);
 
-			if (sbuffer_size(afast_ring) >= config_struct->segment_size) {
-				process_segment_levels(afastlevels, afast_ring, config_struct);
+			if (sbuffer_size(ring_d) >= config_struct->segment_size) {
+				process_segment_levels(levels, ring_d, config_struct);
 				if (milisecs < CONFIG_CALIBRATION_GUARD * 1000) {
 					if (verbose_flag)
 						puts("-");
 				}
 				else {
-					average_sum += afastlevels->LAE[0];
+					average_sum += levels->LAE[0];
 					average_n++;
 					if (verbose_flag)
 						printf("%d\n", (calibration_milisecs - milisecs) / 1000);
 				}
-				afastlevels->segment_number = 0;
+				levels->segment_number = 0;
 				milisecs += config_struct->segment_duration;
 			}
 		}
@@ -426,97 +394,61 @@ int main (int argc, char *argv[])
 	record_start(); //Necessário para inicializar o Codec de áudio corretamente
 
 	while (running && (run_duration == 0 || time_elapsed < run_duration)) {
-		size_t lenght_read = input_device_read(raw_block, config_struct->block_size);
+		size_t lenght_read = input_device_read(block_a, config_struct->block_size);
 		if (lenght_read == 0)
 			break;
-		
-		//third_octave_filtering(ring_a)
-		
-///GET THE POINTER TO A RING BLOCK
-		float *block_zfilter_ring = sbuffer_write_ptr(zfilter_ring);
-		float *block_afilter_ring = sbuffer_write_ptr(afilter_ring);
-		float *block_cfilter_ring = sbuffer_write_ptr(cfilter_ring);
-		float *block_afast_ring = sbuffer_write_ptr(afast_ring);
-		float *block_aslow_ring = sbuffer_write_ptr(aslow_ring);
-		assert(lenght_read <= sbuffer_write_size(zfilter_ring));
-		assert(lenght_read <= sbuffer_write_size(afilter_ring));
-		assert(lenght_read <= sbuffer_write_size(cfilter_ring));
-		assert(lenght_read <= sbuffer_write_size(afast_ring));
-		assert(lenght_read <= sbuffer_write_size(aslow_ring));
 
-///FILL THE Z,A AND C RINGS
-		memcpy(block_zfilter_ring, raw_block, lenght_read*sizeof(float));
-		aweighting_filtering(afilter, raw_block, block_afilter_ring, lenght_read);
-		cweighting_filtering(cfilter, raw_block, block_cfilter_ring, lenght_read);
-		sbuffer_write_produces(zfilter_ring, lenght_read);
-		sbuffer_write_produces(afilter_ring, lenght_read);
-		sbuffer_write_produces(cfilter_ring, lenght_read);
+		float *block_ring_b = sbuffer_write_ptr(ring_b);
+		assert(lenght_read <= sbuffer_write_size(ring_b));
 
-///SQUARE A-WEIGHTED BLOCK
-		//process_block_square(block_afilter_ring, asquared_block, lenght_read);
+		aweighting_filtering(afilter, block_a, block_ring_b, lenght_read);
 
+		sbuffer_write_produces(ring_b, lenght_read);
 
-///APPLY TIME WEIGHTING
-		timeweight_filtering(twfilter_fast, block_afilter_ring, block_afast_ring, lenght_read);
-		timeweight_filtering(twfilter_slow, block_afilter_ring, block_aslow_ring, lenght_read);
-		sbuffer_write_produces(afast_ring, lenght_read);
-		sbuffer_write_produces(aslow_ring, lenght_read);	
-		
-		if(sbuffer_size(afast_ring) >= config_struct->segment_size) {
-			//process_segment_levelpeak(zlevels, zfilter_ring, config_struct);
-			process_segment_levels(zlevels, zfilter_ring, config_struct);
-			
-			//process_segment_levelpeak(alevels, afilter_ring, config_struct);
-			process_segment_levels(alevels, afilter_ring, config_struct);
-			
-			//process_segment_levelpeak(clevels, cfilter_ring, config_struct);
-			process_segment_levels(clevels, cfilter_ring, config_struct);	
-			
-			//process_segment_levelpeak(afastlevels, afast_ring, config_struct);
-			process_segment_levels(afastlevels, afast_ring, config_struct);
-			
-			//process_segment_levelpeak(aslowlevels, aslow_ring, config_struct);
-			process_segment_levels(aslowlevels, aslow_ring, config_struct);
-			
-			percentil_array[percentil_count] = aslowlevels->LAE[aslowlevels->segment_number-1];
-			
-			if(percentil_count >= percentil_segment_number){
-				
-				background_level = get_percentil(percentil_array,percentil_count,10);
-				percentil_count = 0;
-			}
-			
-			if(event_check(aslowlevels, background_level)){
-				printf("\tan event occurred\n");
-				fflush(stdout);
-			}
-			
+		process_segment_lapeak(levels, ring_b, config_struct);
 
-			int segment_index = afastlevels->segment_number - 1;
-			server_send((uint64_t)time(NULL), afastlevels->LAeq[segment_index],
-					afastlevels->LAFmin[segment_index],
-					afastlevels->LAE[segment_index],
-					afastlevels->LAFmax[segment_index],
-					afastlevels->LApeak[segment_index]);
+		process_block_square(block_ring_b, block_c, lenght_read);
 
-			if (config_struct->mqtt_enable)
-				mqtt_publish(alevels, afastlevels->segment_number - 1);
-			if (verbose_flag) {
-				printf("\r%6.1f%6.1f%6.1f%6.1f%6.1f\n",
-					afastlevels->LAeq[segment_index],
-					afastlevels->LAFmin[segment_index],
-					afastlevels->LAE[segment_index],
-					afastlevels->LAFmax[segment_index],
-					afastlevels->LApeak[segment_index]);
-			}
-			
-			percentil_count ++;
-			time_elapsed += config_struct->segment_duration;
+		float *block_ring_d = sbuffer_write_ptr(ring_d);
+		assert(lenght_read <= sbuffer_write_size(ring_d));
+
+		timeweight_filtering(twfilter, block_c, block_ring_d, lenght_read);
+		sbuffer_write_produces(ring_d, lenght_read);
+
+		if (!continuous) {
+			audit_append_samples(wa, block_a, lenght_read);
+			audit_append_samples(wb, block_ring_b, lenght_read);
+			audit_append_samples(wc, block_c, lenght_read);
+			audit_append_samples(wd, block_ring_d, lenght_read);
 		}
 
-		if (afastlevels->segment_number == config_struct->levels_record_period) {
-			output_record(afastlevels, continuous);
-			afastlevels->segment_number = 0;
+		if (sbuffer_size(ring_d) >= config_struct->segment_size) {
+			process_segment_levels(levels, ring_d, config_struct);
+			time_elapsed += config_struct->segment_duration;
+
+			int segment_index = levels->segment_number - 1;
+
+			server_send((uint64_t)time(NULL), levels->LAeq[segment_index],
+					levels->LAFmin[segment_index],
+					levels->LAE[segment_index],
+					levels->LAFmax[segment_index],
+					levels->LApeak[segment_index]);
+
+			if (config_struct->mqtt_enable)
+				mqtt_publish(levels, levels->segment_number - 1);
+			if (verbose_flag) {
+				printf("\r%6.1f%6.1f%6.1f%6.1f%6.1f\n",
+					levels->LAeq[segment_index],
+					levels->LAFmin[segment_index],
+					levels->LAE[segment_index],
+					levels->LAFmax[segment_index],
+					levels->LApeak[segment_index]);
+			}
+		}
+
+		if (levels->segment_number == config_struct->levels_record_period) {
+			output_record(levels, continuous);
+			levels->segment_number = 0;
 		}
 		
 		if (continuous && 
@@ -528,55 +460,42 @@ int main (int argc, char *argv[])
 				return 1;
 			}
 		}
-		
-		if (!continuous) {
-			audit_append_samples(wa, raw_block, lenght_read);
-			audit_append_samples(wb, block_afilter_ring, lenght_read);
-			audit_append_samples(wc, asquared_block, lenght_read);
-			audit_append_samples(wd, block_afast_ring, lenght_read);
-		}
 	}
 	running = false;
 	if (verbose_flag)
 		printf("\nTotal time: %d seconds\n", time_elapsed / 1000);
 
-	output_record(afastlevels, continuous);
+	output_record(levels, continuous);
 
 	if (verbose_flag)
 		printf("Saving configuration in " CONFIG_CONFIG_FILEPATH CONFIG_CONFIG_FILENAME "\n");
 	config_save(CONFIG_CONFIG_FILEPATH CONFIG_CONFIG_FILENAME);
 
 
-	if (!continuous) {
+	if (!continuous) { //Creates the .wav files
+/*
 		audit_destroy(wa);
 		audit_destroy(wb);
 		audit_destroy(wc);
 		audit_destroy(wd);
+*/
+
 	}
-	
 	server_end();
 	if (config_struct->mqtt_enable)
 		mqtt_end();
 	input_device_close();
 	output_close();
-	levels_destroy(zlevels);
-	levels_destroy(alevels);
-	levels_destroy(clevels);
-	levels_destroy(afastlevels);
-	levels_destroy(aslowlevels);
-	timeweight_destroy(twfilter_fast);
-	timeweight_destroy(twfilter_slow);
+	levels_destroy(levels);
+	timeweight_destroy(twfilter);
 	aweighting_destroy(afilter);
-	cweighting_destroy(cfilter);
 	lae_average_destroy();
 	config_destroy(config_struct);
-	free(raw_block);
-	free(asquared_block);
-	sbuffer_destroy(zfilter_ring);
-	sbuffer_destroy(afilter_ring);
-	sbuffer_destroy(cfilter_ring);
-	sbuffer_destroy(afast_ring);
-	sbuffer_destroy(aslow_ring);
+	free(block_a);
+	free(block_c);
+	sbuffer_destroy(ring_b);
+	sbuffer_destroy(ring_d);
 	delete_files_storage(record_struct->created_audio_files);
 	delete_files_storage(record_struct->created_data_files);
+
 }

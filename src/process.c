@@ -20,6 +20,7 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
 
 #include <assert.h>
 #include <math.h>
+
 #include "process.h"
 #include "config.h"
 #include "ring.h"
@@ -99,7 +100,7 @@ static inline unsigned min(unsigned a, unsigned b) {
 	return a < b ? a : b;
 }
 
-void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config)
+void process_segment_lapeak(Levels *levels, struct sbuffer *ring, struct config *config)
 {
 	/* Só processa ao fim de um segmento */
 	if (sbuffer_size(ring) >= config_struct->segment_size) {
@@ -136,13 +137,13 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config 
 	float *samples = sbuffer_read_ptr(ring);
 	unsigned size = min(sbuffer_read_size(ring), config_struct->segment_size);
 
-	float sample_sum = sqrt(samples[0] * samples[0]);
-	float sample_max = fabs(samples[0]);
-	float sample_min = fabs(samples[0]);
+	float sample_sum = samples[0];
+	float sample_max = samples[0];
+	float sample_min = samples[0];
 	for (unsigned i = 1; i < size; i++) {
 //		assert(samples[i] >= -1.0 && samples[i] <= +1.0);
-		float sample = fabs(samples[i]);
-		sample_sum += sqrt(sample * sample);
+		float sample = samples[i];
+		sample_sum += sample;
 		if (sample_max < sample)
 			sample_max = sample;
 		if (sample_min > sample)
@@ -154,8 +155,8 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config 
 		size = config_struct->segment_size - size;
 		for (unsigned i = 0; i < size; i++) {
 // 				assert(samples[i] >= -1.0 && samples[i] <= +1.0);
-			float sample = fabs(samples[i]);
-			sample_sum += sqrt(sample * sample);
+			float sample = samples[i];
+			sample_sum += sample;
 			if (sample_max < sample)
 				sample_max = sample;
 			if (sample_min > sample)
@@ -183,32 +184,4 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config 
  */
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config)
 {
-}
-
-static int cmp_func(const void* a, const void* b) {
-    float fa = *(float*)a;
-    float fb = *(float*)b;
-    return (fa > fb) - (fa < fb);
-}
-
-float get_percentil(float* array, int size, int perc){
-	
-	qsort(array,size,sizeof(array[0]),cmp_func);
-	
-	int index = (perc * size) / 100;
-    if (index >= size) index = size - 1;
-    
-    return array[index];
-}
-
-int event_check(Levels* levels, float background_level){
-		
-	float noise_level = get_percentil(levels->LAFmax,levels->segment_number,100);
-
-	printf("background_level = %f\tnoise_level = %f\n",background_level,noise_level);
-	fflush(stdout);
-	
-	if(noise_level > background_level + EVENT_TRESHOLD)
-			return 1;
-	return 0;
 }
