@@ -117,6 +117,32 @@ void aweighting_filtering(Afilter *af, float x[], float y[], unsigned size)
 	}
 }
 
+Cfilter *cweighting_create(int N)
+{
+	Cfilter *cf = malloc(sizeof *cf);
+	cf->coefs = C_WEIGHTED_taps;
+	cf->u = calloc(3 * N, sizeof(float));
+	cf->N = N;
+	return cf;
+}
+
+void cweighting_destroy(Cfilter *cf)
+{
+	free(cf->u);
+	free(cf);
+}
+
+void cweighting_filtering(Cfilter *cf, float x[], float y[], unsigned size)
+{
+	for (int n = 0; n < size; n++) {
+		shift_right(cf->u, cf->N);
+		shift_right(cf->u + 3, cf->N);
+		float c = cascade_biquad(x[n], cf->u, cf->coefs, cf->N);
+		y[n] = c;
+		assert(c >= -1.0 && c <= +1.0);
+	}
+}
+
 static const float* bands[] = {
         THIRD_OCTAVE_BAND_1,
         THIRD_OCTAVE_BAND_2,
@@ -162,21 +188,8 @@ ThirdOctaveFilter* third_octave_create(int band_idx) {
     const int biquad_stages = 4;
     
     ThirdOctaveFilter* filter = malloc(sizeof(*filter));
-    if (!filter) return NULL;
-    
-    filter->u = calloc(BIQUAD_STATE_SIZE * biquad_stages, sizeof(float));
-    if (!filter->u) {
-        free(filter);
-        return NULL;
-    }
-    
     filter->coefs = bands[band_idx];
-    if (!filter->coefs) {
-        free(filter->u);
-        free(filter);
-        return NULL;
-    }
-    
+    filter->u = calloc(3 * biquad_stages, sizeof(float));
     filter->N = biquad_stages;
     return filter;
 }
@@ -187,20 +200,18 @@ void third_octave_destroy(ThirdOctaveFilter* filter) {
         free(filter);
     }
 }
-
+ 
 void third_octave_filtering(ThirdOctaveFilter* of, float x[], float y[], unsigned size) 
 {
     for (unsigned n = 0; n < size; n++) {
-        // Process through cascade (using the same cascade_biquad function)
+        for (int stage = 0; stage < of->N; stage++) {
+            shift_right(of->u + stage * 3, 3); // 3 floats per biquad stage
+        }
         float filtered = cascade_biquad(x[n], of->u, of->coefs, of->N);
         y[n] = filtered;
-        
-        // Update state variables for next sample
-        for (int stage = 0; stage < of->N; stage++) {
-            shift_right(of->u + stage * 3, 3);  // Shift 3 state variables per stage
-        }
     }
 }
+
 /*ADDED*/
 
 void third_octave_levels(float x[], unsigned size) {

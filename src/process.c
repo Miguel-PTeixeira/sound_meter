@@ -20,22 +20,23 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
 
 #include <assert.h>
 #include <math.h>
-
 #include "process.h"
 #include "config.h"
 #include "ring.h"
-
-static double laeq_accumulator;
-static size_t laeq_counter;
 
 /**
  * lae_average_create:
  * Inicializar o cálculo de LAEq
  */
+ 
+ //float laeq_accumulator;
+ //int laeq_counter;
 void lae_average_create()
 {
+/*
 	laeq_accumulator = 0;
 	laeq_counter = 0;
+*/
 }
 
 void lae_average_destroy()
@@ -50,11 +51,12 @@ void lae_average_destroy()
  *
  * Returns: Valor LAEq
  */
-float lae_average(float lae)
+float lae_average(Levels *levels)
 {
-	laeq_accumulator += lae;
-	laeq_counter++;
-	return laeq_accumulator / laeq_counter;
+	float laeq_accumulator = decibel_to_linear(levels->LAeq[levels->segment_number]) * (levels->segment_number);
+	laeq_accumulator += decibel_to_linear(levels->LAE[levels->segment_number]);
+
+	return laeq_accumulator / (levels->segment_number+1);
 }
 
 //==============================================================================
@@ -73,6 +75,7 @@ Levels *levels_create()
 	}
 	memset(buffer, 0, 5 * segment_data_size);
 	levels->LAeq = buffer;
+	levels->LAeq[0] = 0;
 	levels->LApeak = buffer += config_struct->levels_record_period;
 	levels->LAFmax = buffer += config_struct->levels_record_period;
 	levels->LAFmin = buffer += config_struct->levels_record_period;
@@ -100,7 +103,7 @@ static inline unsigned min(unsigned a, unsigned b) {
 	return a < b ? a : b;
 }
 
-void process_segment_lapeak(Levels *levels, struct sbuffer *ring, struct config *config)
+void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config)
 {
 	/* Só processa ao fim de um segmento */
 	if (sbuffer_size(ring) >= config_struct->segment_size) {
@@ -166,13 +169,15 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config 
 	}
 //	assert(sample_sum <= 48000.0);
 	float lae = sqrt(sample_sum / (config_struct->segment_size));
+	if(sample_sum < 0)
+		lae = -sqrt(abs(sample_sum / (config_struct->segment_size)));		
 	float lafmax = sqrt(sample_max);
 	float lafmin = sqrt(sample_min);
-	float laeq = lae_average(lae);
-	levels->LAeq[levels->segment_number] = linear_to_decibel(laeq) + config->calibration_delta;
 	levels->LAFmax[levels->segment_number] = linear_to_decibel(lafmax) + config->calibration_delta;
 	levels->LAFmin[levels->segment_number] = linear_to_decibel(lafmin) + config->calibration_delta;
 	levels->LAE[levels->segment_number] = linear_to_decibel(lae) + config->calibration_delta;
+	float laeq = lae_average(levels);
+	levels->LAeq[levels->segment_number] = linear_to_decibel(laeq);
 	levels->segment_number++;
 }
 
@@ -185,3 +190,32 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config 
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config)
 {
 }
+
+static int cmp_func(const void* a, const void* b) {
+    float fa = *(float*)a;
+    float fb = *(float*)b;
+    return (fa > fb) - (fa < fb);
+}
+
+float get_percentil(float* array, int size, int perc){
+	
+	qsort(array,size,sizeof(array[0]),cmp_func);
+	
+	int index = (perc * size) / 100;
+    if (index >= size) index = size - 1;
+    
+    return array[index];
+}
+
+int event_check(Levels* levels, float background_level){
+		
+	float noise_level = levels->LAFmax[levels->segment_number-1];
+
+	//printf("background_level = %f\tnoise_level = %f\n",background_level,noise_level);
+	fflush(stdout);
+	
+	if(noise_level > background_level + EVENT_TRESHOLD)
+			return 1;
+	return 0;
+}
+ 
