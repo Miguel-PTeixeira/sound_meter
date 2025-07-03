@@ -29,8 +29,8 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
  * Inicializar o cálculo de LAEq
  */
  
- //float laeq_accumulator;
- //int laeq_counter;
+ //static double laeq_accumulator;
+ //static unsigned laeq_counter;
 void lae_average_create()
 {
 /*
@@ -51,12 +51,11 @@ void lae_average_destroy()
  *
  * Returns: Valor LAEq
  */
-float lae_average(Levels *levels)
+float lae_average(Levels *levels, float le)
 {
-	float laeq_accumulator = decibel_to_linear(levels->LAeq[levels->segment_number]) * (levels->segment_number);
-	laeq_accumulator += decibel_to_linear(levels->LAE[levels->segment_number]);
-
-	return laeq_accumulator / (levels->segment_number+1);
+	levels->le_accumulator += le;
+	levels->le_counter ++;
+	return levels->le_accumulator / levels->le_counter;
 }
 
 //==============================================================================
@@ -80,6 +79,8 @@ Levels *levels_create()
 	levels->LAFmax = buffer += config_struct->levels_record_period;
 	levels->LAFmin = buffer += config_struct->levels_record_period;
 	levels->LAE = buffer += config_struct->levels_record_period;
+	levels->le_accumulator = 0;
+	levels->le_counter = 0;
 
 	levels->segment_number = 0;
 	return levels;
@@ -137,6 +138,8 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config 
 {
 	/* Só processa se o número de amostras disponível for maior ou igual a um segmento */
 	assert(sbuffer_size(ring) >= config_struct->segment_size);
+	if(levels->segment_number >= (config_struct->levels_record_period*sizeof(*(levels->LAeq)) - 1))
+		levels->segment_number = 0;
 	float *samples = sbuffer_read_ptr(ring);
 	unsigned size = min(sbuffer_read_size(ring), config_struct->segment_size);
 
@@ -173,11 +176,12 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config 
 		lae = -sqrt(abs(sample_sum / (config_struct->segment_size)));		
 	float lafmax = sqrt(sample_max);
 	float lafmin = sqrt(sample_min);
-	levels->LAFmax[levels->segment_number] = linear_to_decibel(lafmax) + config->calibration_delta;
-	levels->LAFmin[levels->segment_number] = linear_to_decibel(lafmin) + config->calibration_delta;
 	levels->LAE[levels->segment_number] = linear_to_decibel(lae) + config->calibration_delta;
-	float laeq = lae_average(levels);
-	levels->LAeq[levels->segment_number] = linear_to_decibel(laeq);
+	levels->LAFmax[levels->segment_number] = linear_to_decibel(lafmax) + config->calibration_delta;
+	levels->LAFmin[levels->segment_number] = linear_to_decibel(lafmin + pow(10,-6)) + config->calibration_delta;
+	
+	float laeq = lae_average(levels, lae);
+	levels->LAeq[levels->segment_number] = linear_to_decibel(laeq) + config->calibration_delta;
 	levels->segment_number++;
 }
 

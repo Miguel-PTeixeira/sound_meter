@@ -31,10 +31,15 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
 #include "sbuffer.h"
 
 #define EVENT_TRESHOLD 10
+#define EPS pow(10,-6)
+#define FILL_LEVELS_PARAMETER(level_dest, level_src, level_param) \
+{ \
+	level_dest->level_param[level_dest->segment_number] = level_src->level_param[level_src->segment_number]; \
+}
 
 static inline float linear_to_decibel(float linear)
 {
-	return 20.0f * log10(linear / CONFIG_PRESSURE_REFERENCE);
+	return 20.0f * log10((linear + EPS) / CONFIG_PRESSURE_REFERENCE);
 }
 
 static inline float decibel_to_linear(float decibel)
@@ -49,6 +54,8 @@ typedef struct {
 	float *LAFmax;
 	float *LAFmin;
 	float *LAE;
+	double le_accumulator;
+	unsigned le_counter;
 	int direction;	//	Direção da fonte sonora (0-360 graus)
 } Levels;
 
