@@ -278,8 +278,10 @@ int main (int argc, char *argv[])
 	if (!input_device_open(config_struct))
 	exit(EXIT_FAILURE);
 
-	Timeweight *twfilter = timeweight_create();
+	Timeweight *twfastfilter = timeweight_create();
+	Timeweight *twslowfilter = timeweight_create();
 	Afilter *afilter = aweighting_create(3);
+	Cfilter *cfilter = cweighting_create(2);
 
 	float *block_raw = malloc(config_struct->channels * config_struct->block_size * sizeof *block_raw);
 	
@@ -287,10 +289,20 @@ int main (int argc, char *argv[])
 	unsigned segment_buffer_size = (((config_struct->segment_size + config_struct->block_size - 1)
 								/ config_struct->block_size) + 1)
 								* config_struct->block_size;
+								
+	struct sbuffer *ring_z = sbuffer_create(segment_buffer_size);
 	struct sbuffer *ring_a = sbuffer_create(segment_buffer_size);
+	struct sbuffer *ring_c = sbuffer_create(segment_buffer_size);
 	struct sbuffer *ring_afast = sbuffer_create(segment_buffer_size);
+	struct sbuffer *ring_aslow = sbuffer_create(segment_buffer_size);
 	
+	Levels *levels_z = levels_create();
+	Levels *levels_a = levels_create();
+	Levels *levels_c = levels_create();
 	Levels *levels_afast = levels_create();
+	Levels *levels_aslow = levels_create();
+	
+	Levels *levels_return = levels_create();
 
 	//----------------------------------------------------------------------
 	//	Calibração
@@ -304,43 +316,42 @@ int main (int argc, char *argv[])
 		unsigned average_n = 0;
 		printf("\nCalibrating for %d seconds\n",config_struct->calibration_time);
 		
+		struct sbuffer *ring_calibration = sbuffer_create(segment_buffer_size);
+		
 		while (milisecs < calibration_milisecs) {
 			size_t lenght_read = input_device_read(block_raw, config_struct->block_size);
 			if (lenght_read == 0)
 				break;
 
-			float *block_ring_a = sbuffer_write_ptr(ring_a);
-			float *block_ring_afast = sbuffer_write_ptr(ring_afast);
-			assert(lenght_read <= sbuffer_write_size(ring_a));	// Há sempre um bloco disponível
-			assert(lenght_read <= sbuffer_write_size(ring_afast));
+			float *block_ring_calibration = sbuffer_write_ptr(ring_calibration);
+			assert(lenght_read <= sbuffer_write_size(ring_calibration));
 
-			aweighting_filtering(afilter, block_raw, block_ring_a, lenght_read);
-			sbuffer_write_produces(ring_a, lenght_read);
-			process_block_square(block_ring_a, block_ring_a, lenght_read);
-			sbuffer_read_consumes(ring_a, lenght_read);
+			aweighting_filtering(afilter, block_raw, block_ring_calibration, lenght_read);
+			process_block_square(block_ring_calibration, block_ring_calibration, lenght_read);
+			timeweight_filtering(twfastfilter, block_ring_calibration, block_ring_calibration, lenght_read);
+			sbuffer_write_produces(ring_calibration, lenght_read);
 
-			timeweight_filtering(twfilter, block_ring_a, block_ring_afast, lenght_read);
-			sbuffer_write_produces(ring_afast, lenght_read);
-
-			if (sbuffer_size(ring_afast) >= config_struct->segment_size) {
-				process_segment_levels(levels_afast, ring_afast, config_struct);
+			if (sbuffer_size(ring_calibration) >= config_struct->segment_size) {
+				process_segment_levels(levels_afast, ring_calibration, config_struct);
 				if (milisecs < CONFIG_CALIBRATION_GUARD * 1000) {
 					if (verbose_flag)
 						puts("-");
 				}
 				else {
-					average_sum += levels_afast->LAeq[0];
+					average_sum += levels_afast->LAE[0];
 					average_n++;
 					if (verbose_flag)
 						printf("%d\n", (calibration_milisecs - milisecs) / 1000);
 				}
-				levels_afast->segment_number = 0; //If removed, (because of the process_segment adjustments) results in a segmentation fault)
+				levels_afast->segment_number = 0;
 				milisecs += config_struct->segment_duration;
 			}
 		}
 		config_struct->calibration_time = 0;
 		config_struct->calibration_delta = config_struct->calibration_reference -
 			average_sum / average_n;
+			
+		sbuffer_destroy(ring_calibration);
 
 //		input_device_close();
 
@@ -395,21 +406,31 @@ int main (int argc, char *argv[])
 		size_t lenght_read = input_device_read(block_raw, config_struct->block_size);
 		if (lenght_read == 0)
 			break;
-
+		float *block_ring_z = sbuffer_write_ptr(ring_z);
 		float *block_ring_a = sbuffer_write_ptr(ring_a);
+		float *block_ring_c = sbuffer_write_ptr(ring_c);
 		float *block_ring_afast = sbuffer_write_ptr(ring_afast);
+		float *block_ring_aslow = sbuffer_write_ptr(ring_afast);
+		assert(lenght_read <= sbuffer_write_size(ring_z));
 		assert(lenght_read <= sbuffer_write_size(ring_a));
+		assert(lenght_read <= sbuffer_write_size(ring_c));
 		assert(lenght_read <= sbuffer_write_size(ring_afast));
+		assert(lenght_read <= sbuffer_write_size(ring_aslow));
 
+		memcpy(block_ring_z, block_raw, lenght_read*sizeof(float));
 		aweighting_filtering(afilter, block_raw, block_ring_a, lenght_read);
+		cweighting_filtering(cfilter, block_raw, block_ring_c, lenght_read);
+		sbuffer_write_produces(ring_z, lenght_read);
 		sbuffer_write_produces(ring_a, lenght_read);
-		
-		process_segment_levelpeak(levels_afast, ring_a, config_struct);
+		sbuffer_write_produces(ring_c, lenght_read);
 
-		process_block_square(block_ring_a, block_ring_a, lenght_read);
+		process_block_square(block_ring_a, block_ring_afast, lenght_read);
+		process_block_square(block_ring_a, block_ring_aslow, lenght_read);
 
-		timeweight_filtering(twfilter, block_ring_a, block_ring_afast, lenght_read);
+		timeweight_filtering(twfastfilter, block_ring_afast, block_ring_afast, lenght_read);
+		timeweight_filtering(twslowfilter, block_ring_aslow, block_ring_aslow, lenght_read);
 		sbuffer_write_produces(ring_afast, lenght_read);
+		sbuffer_write_produces(ring_aslow, lenght_read);
 
 		if (!continuous) {
 			audit_append_samples(wa, block_raw, lenght_read);
@@ -419,33 +440,44 @@ int main (int argc, char *argv[])
 		}
 
 		if (sbuffer_size(ring_afast) >= config_struct->segment_size) {
+			process_segment_levels(levels_z, ring_z, config_struct);
+			process_segment_levels(levels_a, ring_a, config_struct);
+			process_segment_levels(levels_c, ring_c, config_struct);
 			process_segment_levels(levels_afast, ring_afast, config_struct);
+			process_segment_levels(levels_aslow, ring_aslow, config_struct);
 			
-			int segment_index = levels_afast->segment_number - 1;
+			levels_return->segment_number = levels_afast->segment_number;
+			FILL_LEVELS_PARAMETER(levels_return, LAeq, levels_afast, LAeq)
+			FILL_LEVELS_PARAMETER(levels_return, LAFmin, levels_afast, LAFmin)
+			FILL_LEVELS_PARAMETER(levels_return, LAE, levels_afast, LAE)
+			FILL_LEVELS_PARAMETER(levels_return, LAFmax, levels_afast, LAFmax)
+			FILL_LEVELS_PARAMETER(levels_return, LApeak, levels_c, LAFmax)		
+			
+			
+			int segment_index = levels_return->segment_number - 1;
 
-			server_send((uint64_t)time(NULL), levels_afast->LAeq[segment_index],
-					levels_afast->LAFmin[segment_index],
-					levels_afast->LAE[segment_index],
-					levels_afast->LAFmax[segment_index],
-					levels_afast->LApeak[segment_index]);
+			server_send((uint64_t)time(NULL), levels_return->LAeq[segment_index],
+					levels_return->LAFmin[segment_index],
+					levels_return->LAE[segment_index],
+					levels_return->LAFmax[segment_index],
+					levels_return->LApeak[segment_index]);
 
 			if (config_struct->mqtt_enable)
-				mqtt_publish(levels_afast, levels_afast->segment_number - 1);
+				mqtt_publish(levels_return, levels_return->segment_number - 1);
 			if (verbose_flag) {
 				printf("\r%6.1f%6.1f%6.1f%6.1f%6.1f\n",
-					levels_afast->LAeq[segment_index],
-					levels_afast->LAFmin[segment_index],
-					levels_afast->LAE[segment_index],
-					levels_afast->LAFmax[segment_index],
-					levels_afast->LApeak[segment_index]);
+					levels_return->LAeq[segment_index],
+					levels_return->LAFmin[segment_index],
+					levels_return->LAE[segment_index],
+					levels_return->LAFmax[segment_index],
+					levels_return->LApeak[segment_index]);
 			}
 			time_elapsed += config_struct->segment_duration;
 
 		}
 
-		if (levels_afast->segment_number == config_struct->levels_record_period) {
+		if (levels_return->segment_number == config_struct->levels_record_period) {
 			output_record(levels_afast, continuous);
-			levels_afast->segment_number = 0;
 		}
 		
 		if (continuous && 
@@ -462,7 +494,7 @@ int main (int argc, char *argv[])
 	if (verbose_flag)
 		printf("\nTotal time: %d seconds\n", time_elapsed / 1000);
 
-	output_record(levels_afast, continuous);
+	output_record(levels_return, continuous);
 
 	if (verbose_flag)
 		printf("Saving configuration in " CONFIG_CONFIG_FILEPATH CONFIG_CONFIG_FILENAME "\n");
@@ -483,13 +515,23 @@ int main (int argc, char *argv[])
 		mqtt_end();
 	input_device_close();
 	output_close();
+	levels_destroy(levels_return);
+	levels_destroy(levels_c);
+	levels_destroy(levels_a);
+	levels_destroy(levels_z);
+	levels_destroy(levels_aslow);
 	levels_destroy(levels_afast);
-	timeweight_destroy(twfilter);
+	timeweight_destroy(twfastfilter);
+	timeweight_destroy(twslowfilter);
 	aweighting_destroy(afilter);
+	cweighting_destroy(cfilter);
 	lae_average_destroy();
 	config_destroy(config_struct);
 	free(block_raw);
+	sbuffer_destroy(ring_c);
 	sbuffer_destroy(ring_a);
+	sbuffer_destroy(ring_z);
+	sbuffer_destroy(ring_aslow);
 	sbuffer_destroy(ring_afast);
 	delete_files_storage(record_struct->created_audio_files);
 	delete_files_storage(record_struct->created_data_files);
