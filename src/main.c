@@ -46,6 +46,7 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
     } \
 } while(0)
 
+#define ARRAY_SIZE(a)	sizeof(a) / sizeof(a[0])
 
 bool running = true;
 
@@ -290,6 +291,15 @@ int main (int argc, char *argv[])
 								/ config_struct->block_size) + 1)
 								* config_struct->block_size;
 								
+	ThirdOctaveData third_octave_data[THIRD_OCTAVE_BAND_MAX];
+
+	
+	for (int i = 0; i < ARRAY_SIZE(third_octave_data); i++){
+		third_octave_data[i].filter = third_octave_create(i);
+		third_octave_data[i].levels = levels_create();
+		third_octave_data[i].ring = sbuffer_create(segment_buffer_size);
+	}
+								
 	struct sbuffer *ring_z = sbuffer_create(segment_buffer_size);
 	struct sbuffer *ring_a = sbuffer_create(segment_buffer_size);
 	struct sbuffer *ring_c = sbuffer_create(segment_buffer_size);
@@ -303,6 +313,7 @@ int main (int argc, char *argv[])
 	Levels *levels_aslow = levels_create();
 	
 	Levels *levels_return = levels_create();
+	
 
 	//----------------------------------------------------------------------
 	//	Calibração
@@ -406,6 +417,16 @@ int main (int argc, char *argv[])
 		size_t lenght_read = input_device_read(block_raw, config_struct->block_size);
 		if (lenght_read == 0)
 			break;
+			
+		for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){//MOre than 2 results in corrupted data. (wrong memory access)
+			float *block_filter = sbuffer_write_ptr(third_octave_data[i].ring);
+			assert(lenght_read <= sbuffer_write_size(third_octave_data[i].ring));
+			third_octave_filtering(third_octave_data[i].filter, block_raw, block_filter, lenght_read);
+			process_block_square(block_filter, block_filter, lenght_read);
+			timeweight_filtering(twfastfilter, block_filter, block_filter, lenght_read);
+			sbuffer_write_produces(third_octave_data[i].ring, lenght_read);
+		}
+			
 		float *block_ring_z = sbuffer_write_ptr(ring_z);
 		float *block_ring_a = sbuffer_write_ptr(ring_a);
 		float *block_ring_c = sbuffer_write_ptr(ring_c);
@@ -440,6 +461,9 @@ int main (int argc, char *argv[])
 		}
 
 		if (sbuffer_size(ring_afast) >= config_struct->segment_size) {
+			for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){//MOre than 2 results in corrupted data. (wrong memory access)
+				process_segment_levels(third_octave_data[i].levels, third_octave_data[i].ring, config_struct);
+			}
 			process_segment_levels(levels_z, ring_z, config_struct);
 			process_segment_levels(levels_a, ring_a, config_struct);
 			process_segment_levels(levels_c, ring_c, config_struct);
@@ -477,7 +501,7 @@ int main (int argc, char *argv[])
 		}
 
 		if (levels_return->segment_number == config_struct->levels_record_period) {
-			output_record(levels_afast, continuous);
+			output_record(levels_return, continuous);
 		}
 		
 		if (continuous && 
@@ -515,6 +539,13 @@ int main (int argc, char *argv[])
 		mqtt_end();
 	input_device_close();
 	output_close();
+	
+	for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){//MOre than 2 results in corrupted data. (wrong memory access)
+		levels_destroy(third_octave_data[i].levels);
+		third_octave_destroy(third_octave_data[i].filter);
+		sbuffer_destroy(third_octave_data[i].ring);
+	}
+	
 	levels_destroy(levels_return);
 	levels_destroy(levels_c);
 	levels_destroy(levels_a);
@@ -535,5 +566,4 @@ int main (int argc, char *argv[])
 	sbuffer_destroy(ring_afast);
 	delete_files_storage(record_struct->created_audio_files);
 	delete_files_storage(record_struct->created_data_files);
-
 }

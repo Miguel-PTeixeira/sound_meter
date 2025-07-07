@@ -15,14 +15,11 @@ SOURCES = \
 	src/mqtt.c \
 	src/server.c \
 	src/record.c \
-	src/storage.c \
-	src/ring.c
+	src/storage.c
 
 OBJECTS = $(SOURCES:%.c=build/%.o)
 
 DEPENDENCIES = $(OBJECTS:%.o=%d)
-
-all: build_dir build/sound_meter
 
 build/sound_meter: build_dir $(OBJECTS)
 	gcc $(LDFLAGS) $(OBJECTS) $(LIBS) -o build/sound_meter

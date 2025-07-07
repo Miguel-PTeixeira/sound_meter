@@ -21,6 +21,7 @@ limitations under the License.
 #include <wave.h>
 #include "config.h"
 #include "process.h"
+#include "filter.h"
 
 typedef struct input_device {
 	enum {DEVICE_WAVE, DEVICE_SOUND_CARD} device;

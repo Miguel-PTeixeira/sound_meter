@@ -25,6 +25,8 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include "process.h"
+#include "sbuffer.h"
 
 #define BIQUAD_STATE_SIZE 3
 #define BIQUAD_COEFS_PER_STAGE 6 // b0,b1,b2,a0,a1,a2 per stage
@@ -76,6 +78,12 @@ typedef struct {
     int N;
     const float* coefs;
 } ThirdOctaveFilter;
+
+typedef struct {
+	ThirdOctaveFilter	*filter;
+	Levels				*levels;
+	struct sbuffer		*ring;
+}ThirdOctaveData;
 
 float get_level(int band_idx);
 

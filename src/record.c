@@ -227,7 +227,7 @@ void record_stop(){
  * @param estrutura de configuração "config"
  * @return estrutura de gravação "record_state"
  */ 
-int record_append_samples(float *frames_buffer,size_t frames_read, FILE* output){
+int record_append_samples(float *frames_buffer,size_t frames_read){
 	if(!config_struct->audio_record_ok) return 1;
 	assert(frames_read <= config_struct->block_size);
 	
@@ -268,8 +268,8 @@ int record_append_samples(float *frames_buffer,size_t frames_read, FILE* output)
 			while(!record.eos){
 				int result=ogg_stream_pageout(&record.os,&record.og);
 				if(result==0)break;
-				fwrite(record.og.header,1,record.og.header_len,output);
-				fwrite(record.og.body,1,record.og.body_len,output);
+				fwrite(record.og.header,1,record.og.header_len,record.output);
+				fwrite(record.og.body,1,record.og.body_len,record.output);
 
 				if(ogg_page_eos(&record.og))record.eos=1;
 			}

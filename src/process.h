@@ -32,9 +32,9 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
 
 #define EVENT_TRESHOLD 10
 #define EPS pow(10,-6)
-#define FILL_LEVELS_PARAMETER(level_dest, level_src, level_param) \
+#define FILL_LEVELS_PARAMETER(level_dest,level_dest_param, level_src, level_src_param) \
 { \
-	level_dest->level_param[level_dest->segment_number] = level_src->level_param[level_src->segment_number]; \
+	level_dest->level_dest_param[level_dest->segment_number - 1] = level_src->level_src_param[level_src->segment_number - 1]; \
 }
 
 static inline float linear_to_decibel(float linear)

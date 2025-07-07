@@ -16,25 +16,21 @@ O programa pode processar em tempo real som captado por microfone ou processar s
 | --------- | --------- | -------------- | ----------|
 | Identificação | XXXX_NNNN | -n \<id\> | identification |
 | Placa de som  | default | -d \<name\> | input_device |
+| Ficheiro de entrada | | -i \<filename\> | |
+| Ficheiro de saída  | | -o \<filename\> | |
 | Diretoria para ficheiros de saída | data/ | | output_path |
-| Ficheiros de saída | | | output_filename |
-| Formato de saída de áudio| OGG | | output_format |
-| Formato de saída de dados| CSV | -f CSV \| JSON | output_format |
-| Taxa de amostragem | 44100 | -r \<value\> | sample_rate  |
+| Ficheiros de saída | sound_meter_ | | output_filename |
+| Formato de saída | CSV | -f CSV \| JSON | output_format |
+| Ritmo de amostragem | 44100 | -r \<value\> | sample_rate  |
 | Número de canais | 1 | -a \<nchannels\> | channels |
-| Tamanho do Bloco | 1024 | -b 512 \| 1024 \| 2048 | block_size |
-| Duração do segmento | 1000 | | segment_duration |
-| Período de registo de níveis | 60 | | levels_record_period|
-| Duração do processamento | inf | -t \<seconds\> | run_duration |
-| Duração do Ficheiro de áudio | 60 * 60 | | audio_file_duration |
-| Janela Deslizante do áudio | 60 * 60 * 4 | | audio_loop_recording |
-| Permitir Registo de áudio | 60 * 60 * 4 | | audio_record_ok |
-| Duração do Ficheiro de dados | 60 * 60 | | data_file_duration |
-| Janela Deslizante dos dados | 60 * 60 * 4 | | data_loop_recording |
-| Permitir Registo de dados | 60 * 60 * 4 | | data_record_ok |
-| Tempo de calibração | 0 | -c \<seconds\> | |
+| Duração do processamento | | -t \<seconds\> | |
+| Periodo de calibração |  | -c \<seconds\> | |
 | Calibração de referência | 94.0 dba | | calibration_reference |
 | Diferença de calibração |0 dba | | calibration_delta |
+| Duração do segmento | 1000 | | segment_duration |
+| Duração do bloco | 1024 | | block_size |
+| Período de registo | 60 | | record_period |
+| Período de ficheiro | 60 * 60 | | file_period |
 | MQTT | false | | mqtt_enable |
 | MQTT broker | tcp://demo.thingsboard.io:1883 | | mqtt_broker |
 | MQTT topic | v1/devices/me/telemetry | | mqtt_topic |
@@ -53,7 +49,7 @@ Ficheiro de entrada
 : O ficheiro de entrada para operação em modo discreto.
 
 Ficheiro de saída
-: Ficheiro com os níveis calculados. O formato pode ser CSV ou JSON. Em modo contínuo os nomes dos ficheiros de saída, sucessivamente gerados, são formados pelo dia e hora do momento em que são criados. Por exemplo, ``2022-12-31_07:41:55.csv`` será o nome do ficheiro criado a 31/12/2022 às 7:41:55.
+: Ficheiro com os níveis calculados. O formato pode ser CSV ou JSON. Em modo contínuo os nomes dos ficheiros de saída, sucessivamente gerados, são formados pelo dia e hora do momento em que são criados. Por exemplo, ``20221231074155.csv`` será o nome do ficheiro criado a 31/12/2022 às 7:41:55.
 
 Em modo discreto se esta opção for omitida o ficheiro de saída terá o mesmo nome do ficheiro de entrada terminado com a a extensão do formato escolhido. Por exemplo:
 ```

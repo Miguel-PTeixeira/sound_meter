@@ -45,7 +45,7 @@ typedef struct{
 }record_state;
 
 int record_start();
-int record_append_samples(float *buffer,size_t frames_read, FILE* output);
+int record_append_samples(float *buffer,size_t frames_read);
 void record_stop();
 
 extern record_state *record_struct;

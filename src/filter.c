@@ -107,14 +107,14 @@ static float cascade_biquad(float x, float *u, const float *coefs, int N)
 
 void aweighting_filtering(Afilter *af, float x[], float y[], unsigned size)
 {
-	for (int n = 0; n < size; n++) {
-		shift_right(af->u, af->N);
-		shift_right(af->u + 3, af->N);
-		shift_right(af->u + 6, af->N);
-		float a = cascade_biquad(x[n], af->u, af->coefs, af->N);
-		y[n] = a;
-//		assert(a >= -1.0 && a <= +1.0);
-	}
+    for (unsigned n = 0; n < size; n++) {
+        for (int stage = 0; stage < af->N; stage++) {
+            shift_right(af->u + stage * 3, 3); // 3 floats per biquad stage
+        }
+        float filtered = cascade_biquad(x[n], af->u, af->coefs, af->N);
+        y[n] = filtered;
+//        assert(filtered >= -1.0 && filtered <= +1.0);
+    }
 }
 
 Cfilter *cweighting_create(int N)
@@ -134,14 +134,16 @@ void cweighting_destroy(Cfilter *cf)
 
 void cweighting_filtering(Cfilter *cf, float x[], float y[], unsigned size)
 {
-	for (int n = 0; n < size; n++) {
-		shift_right(cf->u, cf->N);
-		shift_right(cf->u + 3, cf->N);
-		float c = cascade_biquad(x[n], cf->u, cf->coefs, cf->N);
-		y[n] = c;
-		assert(c >= -1.0 && c <= +1.0);
-	}
+    for (unsigned n = 0; n < size; n++) {
+        for (int stage = 0; stage < cf->N; stage++) {
+            shift_right(cf->u + stage * 3, 3); // 3 floats per biquad stage
+        }
+        float filtered = cascade_biquad(x[n], cf->u, cf->coefs, cf->N);
+        y[n] = filtered;
+//        assert(filtered >= -1.0 && filtered <= +1.0);
+    }
 }
+
 
 static const float* bands[] = {
         THIRD_OCTAVE_BAND_1,

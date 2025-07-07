@@ -138,7 +138,7 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config 
 {
 	/* Só processa se o número de amostras disponível for maior ou igual a um segmento */
 	assert(sbuffer_size(ring) >= config_struct->segment_size);
-	if(levels->segment_number >= (config_struct->levels_record_period*sizeof(*(levels->LAeq)) - 1))
+	if(levels->segment_number >= config_struct->levels_record_period)
 		levels->segment_number = 0;
 	float *samples = sbuffer_read_ptr(ring);
 	unsigned size = min(sbuffer_read_size(ring), config_struct->segment_size);
