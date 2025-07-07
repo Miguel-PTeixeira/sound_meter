@@ -35,9 +35,11 @@ ao PFC MoSEMusic realizado por Guilherme Albano e David Meneses
 
 typedef struct {
 	float previous; // saves y[n-1]
+	float alpha;
 } Timeweight;
 
 Timeweight *timeweight_create();
+Timeweight *timeweightSlow_create();
 void timeweight_destroy(Timeweight *);
 //void timeweight_filtering(Block *buff, Timeweight *tw);
 //void timeweight_filtering(const float *x, float *y, size_t size, Timeweight *tw);

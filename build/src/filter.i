@@ -1,5 +1,5 @@
 # 0 "src/filter.c"
-# 1 "/home/aluno/Desktop/sound_meter-master_v02_2//"
+# 1 "/home/aluno/Desktop/sound_meter-master_v03//"
 # 0 "<built-in>"
 # 0 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
@@ -3450,9 +3450,11 @@ typedef struct {
 
 typedef struct {
  float previous;
+ float alpha;
 } Timeweight;
 
 Timeweight *timeweight_create();
+Timeweight *timeweightSlow_create();
 void timeweight_destroy(Timeweight *);
 
 
@@ -3852,8 +3854,18 @@ Timeweight *timeweight_create()
 {
  Timeweight *tw = malloc(sizeof *tw);
  tw->previous = 0;
+ tw->alpha = 2.72072e-4;
  return tw;
 }
+
+Timeweight *timeweightSlow_create()
+{
+ Timeweight *tw = malloc(sizeof *tw);
+ tw->previous = 0;
+ tw->alpha = 3.40130e-5;
+ return tw;
+}
+
 
 void timeweight_destroy(Timeweight *tw)
 {
@@ -3866,7 +3878,7 @@ void timeweight_filtering(Timeweight *tw, float *x, float *y, unsigned n)
  for (unsigned i = 0; i < n; i++)
 
 
-  tw->previous = y[i] = ((0.0001666527785) * x[i]) + ((1 - 0.0001666527785) * tw->previous);
+  tw->previous = y[i] = ((tw->alpha) * x[i]) + ((1 - tw->alpha) * tw->previous);
 }
 
 static void shift_right(float u[], int size)
@@ -3889,7 +3901,7 @@ void aweighting_destroy(Afilter *af)
  free(af->u);
  free(af);
 }
-# 92 "src/filter.c"
+# 102 "src/filter.c"
 static float biquad(float x, float *u, const float *a, const float *b)
 {
 

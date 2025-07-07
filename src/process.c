@@ -136,6 +136,10 @@ void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct conf
 
 void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config *config)
 {
+	float delta = 0.0;
+	if(config != NULL){
+		delta = config->calibration_delta;
+	}
 	/* Só processa se o número de amostras disponível for maior ou igual a um segmento */
 	assert(sbuffer_size(ring) >= config_struct->segment_size);
 	if(levels->segment_number >= config_struct->levels_record_period)
@@ -176,12 +180,12 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config 
 		lae = -sqrt(abs(sample_sum / (config_struct->segment_size)));		
 	float lafmax = sqrt(sample_max);
 	float lafmin = sqrt(sample_min);
-	levels->LAE[levels->segment_number] = linear_to_decibel(lae) + config->calibration_delta;
-	levels->LAFmax[levels->segment_number] = linear_to_decibel(lafmax) + config->calibration_delta;
-	levels->LAFmin[levels->segment_number] = linear_to_decibel(lafmin + pow(10,-6)) + config->calibration_delta;
+	levels->LAE[levels->segment_number] = linear_to_decibel(lae) + delta;
+	levels->LAFmax[levels->segment_number] = linear_to_decibel(lafmax) + delta;
+	levels->LAFmin[levels->segment_number] = linear_to_decibel(lafmin) + delta;
 	
 	float laeq = lae_average(levels, lae);
-	levels->LAeq[levels->segment_number] = linear_to_decibel(laeq) + config->calibration_delta;
+	levels->LAeq[levels->segment_number] = linear_to_decibel(laeq) + delta;
 	levels->segment_number++;
 }
 
@@ -215,7 +219,7 @@ int event_check(Levels* levels, float background_level){
 		
 	float noise_level = levels->LAFmax[levels->segment_number-1];
 
-	//printf("background_level = %f\tnoise_level = %f\n",background_level,noise_level);
+	printf("background_level = %f\tnoise_level = %f\n",background_level,noise_level);
 	fflush(stdout);
 	
 	if(noise_level > background_level + EVENT_TRESHOLD)

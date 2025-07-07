@@ -1,5 +1,5 @@
 # 0 "src/record.c"
-# 1 "/home/aluno/Desktop/sound_meter-master_v02_2//"
+# 1 "/home/aluno/Desktop/sound_meter-master_v03//"
 # 0 "<built-in>"
 # 0 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
@@ -21151,9 +21151,11 @@ typedef struct {
 # 36 "src/filter.h"
 typedef struct {
  float previous;
+ float alpha;
 } Timeweight;
 
 Timeweight *timeweight_create();
+Timeweight *timeweightSlow_create();
 void timeweight_destroy(Timeweight *);
 
 
@@ -21242,11 +21244,11 @@ void output_close();
 void output_set_filename(const char *filename, const char *extension);
 char *output_get_data_filepath();
 char *output_get_audio_filepath();
-void output_record(Levels *levels, 
+void output_record(Levels *levels, ThirdOctaveData *td, 
 # 46 "src/in_out.h" 3 4
-                                  _Bool 
+                                                       _Bool 
 # 46 "src/in_out.h"
-                                       continuous);
+                                                            continuous);
 void output_file_close();
 
 

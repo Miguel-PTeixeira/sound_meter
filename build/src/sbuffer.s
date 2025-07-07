@@ -1,7 +1,7 @@
 	.file	"sbuffer.c"
 	.text
 .Ltext0:
-	.file 0 "/home/aluno/Desktop/sound_meter-master_v02_2" "src/sbuffer.c"
+	.file 0 "/home/aluno/Desktop/sound_meter-master_v03" "src/sbuffer.c"
 	.type	min, @function
 min:
 .LFB6:
@@ -1640,7 +1640,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"malloc"
 	.section	.debug_line_str,"MS",@progbits,1
 .LASF1:
-	.string	"/home/aluno/Desktop/sound_meter-master_v02_2"
+	.string	"/home/aluno/Desktop/sound_meter-master_v03"
 .LASF0:
 	.string	"src/sbuffer.c"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"

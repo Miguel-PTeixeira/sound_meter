@@ -34,8 +34,18 @@ Timeweight *timeweight_create()
 {
 	Timeweight *tw = malloc(sizeof *tw);
 	tw->previous = 0;
+	tw->alpha = alphaF;
 	return tw;
 }
+
+Timeweight *timeweightSlow_create()
+{
+	Timeweight *tw = malloc(sizeof *tw);
+	tw->previous = 0;
+	tw->alpha = alphaS;
+	return tw;
+}
+
 
 void timeweight_destroy(Timeweight *tw)
 {
@@ -48,7 +58,7 @@ void timeweight_filtering(Timeweight *tw, float *x, float *y, unsigned n)
 	for (unsigned i = 0; i < n; i++)
 //		tw->previous = y[i] = ((1 - alfa) * x[i]) + (alfa * tw->previous);
 		// y[n] = α * x[n] + (1 - α) * y[n−1]
-		tw->previous = y[i] = ((alfa) * x[i]) + ((1 - alfa) * tw->previous);
+		tw->previous = y[i] = ((tw->alpha) * x[i]) + ((1 - tw->alpha) * tw->previous);
 }
 
 static void shift_right(float u[], int size)

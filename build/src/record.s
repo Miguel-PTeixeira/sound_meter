@@ -1,7 +1,7 @@
 	.file	"record.c"
 	.text
 .Ltext0:
-	.file 0 "/home/aluno/Desktop/sound_meter-master_v02_2" "src/record.c"
+	.file 0 "/home/aluno/Desktop/sound_meter-master_v03" "src/record.c"
 	.globl	record
 	.bss
 	.align 32
@@ -4828,7 +4828,7 @@ __PRETTY_FUNCTION__.0:
 .LASF0:
 	.string	"src/record.c"
 .LASF1:
-	.string	"/home/aluno/Desktop/sound_meter-master_v02_2"
+	.string	"/home/aluno/Desktop/sound_meter-master_v03"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

@@ -1,7 +1,7 @@
 	.file	"in_out.c"
 	.text
 .Ltext0:
-	.file 0 "/home/aluno/Desktop/sound_meter-master_v02_2" "src/in_out.c"
+	.file 0 "/home/aluno/Desktop/sound_meter-master_v03" "src/in_out.c"
 	.type	json_decref, @function
 json_decref:
 .LFB18:
@@ -903,7 +903,7 @@ output_new_filename:
 	.string	".csv"
 	.align 8
 .LC13:
-	.string	"LAeq, LAFmin, LAE, LAFmax, LApeak, Freq[Hz]:, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1k, 1.25k, 1.6k, 2k, 2.5k, 3.15k, 4k, 5k, 6.3k, 8k, 10k, 12.5k, 16k, 20k\n"
+	.string	"LAFeq, LAFmin, LAFE, LAFmax, LCpeak, Freq[Hz]:, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1k, 1.25k, 1.6k, 2k, 2.5k, 3.15k, 4k, 5k, 6.3k, 8k, 10k, 12.5k, 16k, 20k\n"
 	.align 8
 .LC14:
 	.string	"Output: error creating JSON object \"output_json\".\n"
@@ -1025,7 +1025,7 @@ output_file_open:
 	.loc 2 241 3
 	movq	data_output_fd(%rip), %rax
 	movq	%rax, %rcx
-	movl	$195, %edx
+	movl	$197, %edx
 	movl	$1, %esi
 	leaq	.LC13(%rip), %rax
 	movq	%rax, %rdi
@@ -1383,10 +1383,11 @@ output_record:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$304, %rsp
+	subq	$224, %rsp
 	movq	%rdi, -56(%rbp)
-	movl	%esi, %eax
-	movb	%al, -60(%rbp)
+	movq	%rsi, -64(%rbp)
+	movl	%edx, %eax
+	movb	%al, -68(%rbp)
 	.loc 2 345 26
 	movq	config_struct(%rip), %rax
 	.loc 2 345 6
@@ -1404,210 +1405,469 @@ output_record:
 	.loc 2 346 3
 	jmp	.L58
 .L59:
-	.loc 2 362 65
-	movl	$29, %edi
-	call	get_level@PLT
-	.loc 2 347 4
-	pxor	%xmm6, %xmm6
-	cvtss2sd	%xmm0, %xmm6
-	movsd	%xmm6, -72(%rbp)
-	.loc 2 362 50
-	movl	$28, %edi
-	call	get_level@PLT
-	.loc 2 347 4
-	pxor	%xmm7, %xmm7
-	cvtss2sd	%xmm0, %xmm7
-	movsd	%xmm7, -80(%rbp)
-	.loc 2 362 35
-	movl	$27, %edi
-	call	get_level@PLT
+	.loc 2 362 99
+	movq	-64(%rbp), %rax
+	addq	$696, %rax
+	.loc 2 362 103
+	movq	8(%rax), %rax
+	.loc 2 362 110
+	movq	40(%rax), %rax
+	.loc 2 362 115
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm1, %xmm1
 	cvtss2sd	%xmm0, %xmm1
-	movsd	%xmm1, -88(%rbp)
-	.loc 2 362 20
-	movl	$26, %edi
-	call	get_level@PLT
+	movsd	%xmm1, -80(%rbp)
+	.loc 2 362 76
+	movq	-64(%rbp), %rax
+	addq	$672, %rax
+	.loc 2 362 80
+	movq	8(%rax), %rax
+	.loc 2 362 87
+	movq	40(%rax), %rax
+	.loc 2 362 92
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm2, %xmm2
 	cvtss2sd	%xmm0, %xmm2
-	movsd	%xmm2, -96(%rbp)
-	.loc 2 362 5
-	movl	$25, %edi
-	call	get_level@PLT
+	movsd	%xmm2, -88(%rbp)
+	.loc 2 362 53
+	movq	-64(%rbp), %rax
+	addq	$648, %rax
+	.loc 2 362 57
+	movq	8(%rax), %rax
+	.loc 2 362 64
+	movq	40(%rax), %rax
+	.loc 2 362 69
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm3, %xmm3
 	cvtss2sd	%xmm0, %xmm3
-	movsd	%xmm3, -104(%rbp)
-	.loc 2 361 65
-	movl	$24, %edi
-	call	get_level@PLT
+	movsd	%xmm3, -96(%rbp)
+	.loc 2 362 30
+	movq	-64(%rbp), %rax
+	addq	$624, %rax
+	.loc 2 362 34
+	movq	8(%rax), %rax
+	.loc 2 362 41
+	movq	40(%rax), %rax
+	.loc 2 362 46
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm4, %xmm4
 	cvtss2sd	%xmm0, %xmm4
-	movsd	%xmm4, -112(%rbp)
-	.loc 2 361 50
-	movl	$23, %edi
-	call	get_level@PLT
+	movsd	%xmm4, -104(%rbp)
+	.loc 2 362 7
+	movq	-64(%rbp), %rax
+	addq	$600, %rax
+	.loc 2 362 11
+	movq	8(%rax), %rax
+	.loc 2 362 18
+	movq	40(%rax), %rax
+	.loc 2 362 23
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm5, %xmm5
 	cvtss2sd	%xmm0, %xmm5
-	movsd	%xmm5, -120(%rbp)
-	.loc 2 361 35
-	movl	$22, %edi
-	call	get_level@PLT
+	movsd	%xmm5, -112(%rbp)
+	.loc 2 361 99
+	movq	-64(%rbp), %rax
+	addq	$576, %rax
+	.loc 2 361 103
+	movq	8(%rax), %rax
+	.loc 2 361 110
+	movq	40(%rax), %rax
+	.loc 2 361 115
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
+	.loc 2 347 4
+	pxor	%xmm6, %xmm6
+	cvtss2sd	%xmm0, %xmm6
+	movsd	%xmm6, -120(%rbp)
+	.loc 2 361 76
+	movq	-64(%rbp), %rax
+	addq	$552, %rax
+	.loc 2 361 80
+	movq	8(%rax), %rax
+	.loc 2 361 87
+	movq	40(%rax), %rax
+	.loc 2 361 92
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
+	.loc 2 347 4
+	pxor	%xmm7, %xmm7
+	cvtss2sd	%xmm0, %xmm7
+	movsd	%xmm7, -128(%rbp)
+	.loc 2 361 53
+	movq	-64(%rbp), %rax
+	addq	$528, %rax
+	.loc 2 361 57
+	movq	8(%rax), %rax
+	.loc 2 361 64
+	movq	40(%rax), %rax
+	.loc 2 361 69
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	cvtss2sd	%xmm0, %xmm0
-	movsd	%xmm0, -128(%rbp)
-	.loc 2 361 20
-	movl	$21, %edi
-	call	get_level@PLT
+	movsd	%xmm0, -136(%rbp)
+	.loc 2 361 30
+	movq	-64(%rbp), %rax
+	addq	$504, %rax
+	.loc 2 361 34
+	movq	8(%rax), %rax
+	.loc 2 361 41
+	movq	40(%rax), %rax
+	.loc 2 361 46
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm8, %xmm8
 	cvtss2sd	%xmm0, %xmm8
-	movsd	%xmm8, -136(%rbp)
-	.loc 2 361 5
-	movl	$20, %edi
-	call	get_level@PLT
+	movsd	%xmm8, -144(%rbp)
+	.loc 2 361 7
+	movq	-64(%rbp), %rax
+	addq	$480, %rax
+	.loc 2 361 11
+	movq	8(%rax), %rax
+	.loc 2 361 18
+	movq	40(%rax), %rax
+	.loc 2 361 23
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm9, %xmm9
 	cvtss2sd	%xmm0, %xmm9
-	movsd	%xmm9, -144(%rbp)
-	.loc 2 360 65
-	movl	$19, %edi
-	call	get_level@PLT
+	movsd	%xmm9, -152(%rbp)
+	.loc 2 360 99
+	movq	-64(%rbp), %rax
+	addq	$456, %rax
+	.loc 2 360 103
+	movq	8(%rax), %rax
+	.loc 2 360 110
+	movq	40(%rax), %rax
+	.loc 2 360 115
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm10, %xmm10
 	cvtss2sd	%xmm0, %xmm10
-	movsd	%xmm10, -152(%rbp)
-	.loc 2 360 50
-	movl	$18, %edi
-	call	get_level@PLT
+	movsd	%xmm10, -160(%rbp)
+	.loc 2 360 76
+	movq	-64(%rbp), %rax
+	addq	$432, %rax
+	.loc 2 360 80
+	movq	8(%rax), %rax
+	.loc 2 360 87
+	movq	40(%rax), %rax
+	.loc 2 360 92
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm11, %xmm11
 	cvtss2sd	%xmm0, %xmm11
-	movsd	%xmm11, -160(%rbp)
-	.loc 2 360 35
-	movl	$17, %edi
-	call	get_level@PLT
+	movsd	%xmm11, -168(%rbp)
+	.loc 2 360 53
+	movq	-64(%rbp), %rax
+	addq	$408, %rax
+	.loc 2 360 57
+	movq	8(%rax), %rax
+	.loc 2 360 64
+	movq	40(%rax), %rax
+	.loc 2 360 69
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm12, %xmm12
 	cvtss2sd	%xmm0, %xmm12
-	movsd	%xmm12, -168(%rbp)
-	.loc 2 360 20
-	movl	$16, %edi
-	call	get_level@PLT
+	movsd	%xmm12, -176(%rbp)
+	.loc 2 360 30
+	movq	-64(%rbp), %rax
+	addq	$384, %rax
+	.loc 2 360 34
+	movq	8(%rax), %rax
+	.loc 2 360 41
+	movq	40(%rax), %rax
+	.loc 2 360 46
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm13, %xmm13
 	cvtss2sd	%xmm0, %xmm13
-	movsd	%xmm13, -176(%rbp)
-	.loc 2 360 5
-	movl	$15, %edi
-	call	get_level@PLT
+	movsd	%xmm13, -184(%rbp)
+	.loc 2 360 7
+	movq	-64(%rbp), %rax
+	addq	$360, %rax
+	.loc 2 360 11
+	movq	8(%rax), %rax
+	.loc 2 360 18
+	movq	40(%rax), %rax
+	.loc 2 360 23
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm14, %xmm14
 	cvtss2sd	%xmm0, %xmm14
-	movsd	%xmm14, -184(%rbp)
-	.loc 2 359 65
-	movl	$14, %edi
-	call	get_level@PLT
+	movsd	%xmm14, -192(%rbp)
+	.loc 2 359 99
+	movq	-64(%rbp), %rax
+	addq	$336, %rax
+	.loc 2 359 103
+	movq	8(%rax), %rax
+	.loc 2 359 110
+	movq	40(%rax), %rax
+	.loc 2 359 115
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm15, %xmm15
 	cvtss2sd	%xmm0, %xmm15
-	movsd	%xmm15, -192(%rbp)
-	.loc 2 359 50
-	movl	$13, %edi
-	call	get_level@PLT
-	.loc 2 347 4
-	pxor	%xmm6, %xmm6
-	cvtss2sd	%xmm0, %xmm6
-	movsd	%xmm6, -200(%rbp)
-	.loc 2 359 35
-	movl	$12, %edi
-	call	get_level@PLT
-	.loc 2 347 4
-	pxor	%xmm7, %xmm7
-	cvtss2sd	%xmm0, %xmm7
-	movsd	%xmm7, -208(%rbp)
-	.loc 2 359 20
-	movl	$11, %edi
-	call	get_level@PLT
+	movsd	%xmm15, -200(%rbp)
+	.loc 2 359 76
+	movq	-64(%rbp), %rax
+	addq	$312, %rax
+	.loc 2 359 80
+	movq	8(%rax), %rax
+	.loc 2 359 87
+	movq	40(%rax), %rax
+	.loc 2 359 92
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm1, %xmm1
 	cvtss2sd	%xmm0, %xmm1
-	movsd	%xmm1, -216(%rbp)
-	.loc 2 359 5
-	movl	$10, %edi
-	call	get_level@PLT
+	movsd	%xmm1, -208(%rbp)
+	.loc 2 359 53
+	movq	-64(%rbp), %rax
+	addq	$288, %rax
+	.loc 2 359 57
+	movq	8(%rax), %rax
+	.loc 2 359 64
+	movq	40(%rax), %rax
+	.loc 2 359 69
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm2, %xmm2
 	cvtss2sd	%xmm0, %xmm2
-	movsd	%xmm2, -224(%rbp)
-	.loc 2 358 61
-	movl	$9, %edi
-	call	get_level@PLT
+	movsd	%xmm2, -216(%rbp)
+	.loc 2 359 30
+	movq	-64(%rbp), %rax
+	addq	$264, %rax
+	.loc 2 359 34
+	movq	8(%rax), %rax
+	.loc 2 359 41
+	movq	40(%rax), %rax
+	.loc 2 359 46
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm3, %xmm3
 	cvtss2sd	%xmm0, %xmm3
-	movsd	%xmm3, -232(%rbp)
-	.loc 2 358 47
-	movl	$8, %edi
-	call	get_level@PLT
+	movsd	%xmm3, -224(%rbp)
+	.loc 2 359 7
+	movq	-64(%rbp), %rax
+	addq	$240, %rax
+	.loc 2 359 11
+	movq	8(%rax), %rax
+	.loc 2 359 18
+	movq	40(%rax), %rax
+	.loc 2 359 23
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
-	pxor	%xmm4, %xmm4
-	cvtss2sd	%xmm0, %xmm4
-	movsd	%xmm4, -240(%rbp)
-	.loc 2 358 33
-	movl	$7, %edi
-	call	get_level@PLT
+	pxor	%xmm15, %xmm15
+	cvtss2sd	%xmm0, %xmm15
+	.loc 2 358 95
+	movq	-64(%rbp), %rax
+	addq	$216, %rax
+	.loc 2 358 98
+	movq	8(%rax), %rax
+	.loc 2 358 105
+	movq	40(%rax), %rax
+	.loc 2 358 110
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
-	pxor	%xmm5, %xmm5
-	cvtss2sd	%xmm0, %xmm5
-	movsd	%xmm5, -248(%rbp)
-	.loc 2 358 19
-	movl	$6, %edi
-	call	get_level@PLT
+	pxor	%xmm14, %xmm14
+	cvtss2sd	%xmm0, %xmm14
+	.loc 2 358 73
+	movq	-64(%rbp), %rax
+	addq	$192, %rax
+	.loc 2 358 76
+	movq	8(%rax), %rax
+	.loc 2 358 83
+	movq	40(%rax), %rax
+	.loc 2 358 88
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
-	cvtss2sd	%xmm0, %xmm0
-	movsd	%xmm0, -256(%rbp)
-	.loc 2 358 5
-	movl	$5, %edi
-	call	get_level@PLT
-	.loc 2 347 4
-	pxor	%xmm8, %xmm8
-	cvtss2sd	%xmm0, %xmm8
-	movsd	%xmm8, -264(%rbp)
-	.loc 2 357 61
-	movl	$4, %edi
-	call	get_level@PLT
-	.loc 2 347 4
-	pxor	%xmm9, %xmm9
-	cvtss2sd	%xmm0, %xmm9
-	movsd	%xmm9, -272(%rbp)
-	.loc 2 357 47
-	movl	$3, %edi
-	call	get_level@PLT
-	.loc 2 347 4
-	pxor	%xmm10, %xmm10
-	cvtss2sd	%xmm0, %xmm10
-	movsd	%xmm10, -280(%rbp)
-	.loc 2 357 33
-	movl	$2, %edi
-	call	get_level@PLT
-	.loc 2 347 4
-	pxor	%xmm11, %xmm11
-	cvtss2sd	%xmm0, %xmm11
-	movsd	%xmm11, -288(%rbp)
-	.loc 2 357 19
-	movl	$1, %edi
-	call	get_level@PLT
+	pxor	%xmm13, %xmm13
+	cvtss2sd	%xmm0, %xmm13
+	.loc 2 358 51
+	movq	-64(%rbp), %rax
+	addq	$168, %rax
+	.loc 2 358 54
+	movq	8(%rax), %rax
+	.loc 2 358 61
+	movq	40(%rax), %rax
+	.loc 2 358 66
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm12, %xmm12
 	cvtss2sd	%xmm0, %xmm12
-	movsd	%xmm12, -296(%rbp)
-	.loc 2 357 5
-	movl	$0, %edi
-	call	get_level@PLT
+	.loc 2 358 29
+	movq	-64(%rbp), %rax
+	addq	$144, %rax
+	.loc 2 358 32
+	movq	8(%rax), %rax
+	.loc 2 358 39
+	movq	40(%rax), %rax
+	.loc 2 358 44
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
+	.loc 2 347 4
+	pxor	%xmm11, %xmm11
+	cvtss2sd	%xmm0, %xmm11
+	.loc 2 358 7
+	movq	-64(%rbp), %rax
+	addq	$120, %rax
+	.loc 2 358 10
+	movq	8(%rax), %rax
+	.loc 2 358 17
+	movq	40(%rax), %rax
+	.loc 2 358 22
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
+	.loc 2 347 4
+	pxor	%xmm10, %xmm10
+	cvtss2sd	%xmm0, %xmm10
+	.loc 2 357 95
+	movq	-64(%rbp), %rax
+	addq	$96, %rax
+	.loc 2 357 98
+	movq	8(%rax), %rax
+	.loc 2 357 105
+	movq	40(%rax), %rax
+	.loc 2 357 110
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
+	.loc 2 347 4
+	pxor	%xmm9, %xmm9
+	cvtss2sd	%xmm0, %xmm9
+	.loc 2 357 73
+	movq	-64(%rbp), %rax
+	addq	$72, %rax
+	.loc 2 357 76
+	movq	8(%rax), %rax
+	.loc 2 357 83
+	movq	40(%rax), %rax
+	.loc 2 357 88
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
+	.loc 2 347 4
+	pxor	%xmm8, %xmm8
+	cvtss2sd	%xmm0, %xmm8
+	.loc 2 357 51
+	movq	-64(%rbp), %rax
+	addq	$48, %rax
+	.loc 2 357 54
+	movq	8(%rax), %rax
+	.loc 2 357 61
+	movq	40(%rax), %rax
+	.loc 2 357 66
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
+	.loc 2 347 4
+	pxor	%xmm7, %xmm7
+	cvtss2sd	%xmm0, %xmm7
+	.loc 2 357 29
+	movq	-64(%rbp), %rax
+	addq	$24, %rax
+	.loc 2 357 32
+	movq	8(%rax), %rax
+	.loc 2 357 39
+	movq	40(%rax), %rax
+	.loc 2 357 44
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
+	.loc 2 347 4
+	pxor	%xmm6, %xmm6
+	cvtss2sd	%xmm0, %xmm6
+	.loc 2 357 10
+	movq	-64(%rbp), %rax
+	movq	8(%rax), %rax
+	.loc 2 357 17
+	movq	40(%rax), %rax
+	.loc 2 357 22
+	movl	-48(%rbp), %edx
+	salq	$2, %rdx
+	addq	%rdx, %rax
+	movss	(%rax), %xmm0
 	.loc 2 347 4
 	pxor	%xmm5, %xmm5
 	cvtss2sd	%xmm0, %xmm5
@@ -1664,12 +1924,10 @@ output_record:
 	addq	%rdx, %rax
 	movss	(%rax), %xmm0
 	.loc 2 347 4
-	pxor	%xmm13, %xmm13
-	cvtss2sd	%xmm0, %xmm13
-	movq	%xmm13, %rdx
+	cvtss2sd	%xmm0, %xmm0
+	movq	%xmm0, %rdx
 	movq	data_output_fd(%rip), %rax
 	subq	$8, %rsp
-	pushq	-72(%rbp)
 	pushq	-80(%rbp)
 	pushq	-88(%rbp)
 	pushq	-96(%rbp)
@@ -1689,15 +1947,22 @@ output_record:
 	pushq	-208(%rbp)
 	pushq	-216(%rbp)
 	pushq	-224(%rbp)
-	pushq	-232(%rbp)
-	pushq	-240(%rbp)
-	pushq	-248(%rbp)
-	pushq	-256(%rbp)
-	pushq	-264(%rbp)
-	pushq	-272(%rbp)
-	pushq	-280(%rbp)
-	movsd	-288(%rbp), %xmm7
-	movsd	-296(%rbp), %xmm6
+	leaq	-8(%rsp), %rsp
+	movsd	%xmm15, (%rsp)
+	leaq	-8(%rsp), %rsp
+	movsd	%xmm14, (%rsp)
+	leaq	-8(%rsp), %rsp
+	movsd	%xmm13, (%rsp)
+	leaq	-8(%rsp), %rsp
+	movsd	%xmm12, (%rsp)
+	leaq	-8(%rsp), %rsp
+	movsd	%xmm11, (%rsp)
+	leaq	-8(%rsp), %rsp
+	movsd	%xmm10, (%rsp)
+	leaq	-8(%rsp), %rsp
+	movsd	%xmm9, (%rsp)
+	leaq	-8(%rsp), %rsp
+	movsd	%xmm8, (%rsp)
 	movq	%rdx, %xmm0
 	leaq	.LC33(%rip), %rdx
 	movq	%rdx, %rsi
@@ -1758,9 +2023,9 @@ output_record:
 	addq	%rdx, %rax
 	movss	(%rax), %xmm0
 	.loc 2 369 26
-	pxor	%xmm6, %xmm6
-	cvtss2sd	%xmm0, %xmm6
-	movq	%xmm6, %rax
+	pxor	%xmm4, %xmm4
+	cvtss2sd	%xmm0, %xmm4
+	movq	%xmm4, %rax
 	movq	%rax, %xmm0
 	call	json_real@PLT
 	movq	%rax, -40(%rbp)
@@ -1809,9 +2074,9 @@ output_record:
 	addq	%rdx, %rax
 	movss	(%rax), %xmm0
 	.loc 2 370 26
-	pxor	%xmm7, %xmm7
-	cvtss2sd	%xmm0, %xmm7
-	movq	%xmm7, %rax
+	pxor	%xmm5, %xmm5
+	cvtss2sd	%xmm0, %xmm5
+	movq	%xmm5, %rax
 	movq	%rax, %xmm0
 	call	json_real@PLT
 	movq	%rax, -32(%rbp)
@@ -1860,9 +2125,9 @@ output_record:
 	addq	%rdx, %rax
 	movss	(%rax), %xmm0
 	.loc 2 371 26
-	pxor	%xmm1, %xmm1
-	cvtss2sd	%xmm0, %xmm1
-	movq	%xmm1, %rax
+	pxor	%xmm6, %xmm6
+	cvtss2sd	%xmm0, %xmm6
+	movq	%xmm6, %rax
 	movq	%rax, %xmm0
 	call	json_real@PLT
 	movq	%rax, -24(%rbp)
@@ -1911,9 +2176,9 @@ output_record:
 	addq	%rdx, %rax
 	movss	(%rax), %xmm0
 	.loc 2 372 26
-	pxor	%xmm2, %xmm2
-	cvtss2sd	%xmm0, %xmm2
-	movq	%xmm2, %rax
+	pxor	%xmm7, %xmm7
+	cvtss2sd	%xmm0, %xmm7
+	movq	%xmm7, %rax
 	movq	%rax, %xmm0
 	call	json_real@PLT
 	movq	%rax, -16(%rbp)
@@ -1962,9 +2227,9 @@ output_record:
 	addq	%rdx, %rax
 	movss	(%rax), %xmm0
 	.loc 2 373 26
-	pxor	%xmm3, %xmm3
-	cvtss2sd	%xmm0, %xmm3
-	movq	%xmm3, %rax
+	pxor	%xmm1, %xmm1
+	cvtss2sd	%xmm0, %xmm1
+	movq	%xmm1, %rax
 	movq	%rax, %xmm0
 	call	json_real@PLT
 	movq	%rax, -8(%rbp)
@@ -2047,7 +2312,7 @@ output_record:
 	call	fsync@PLT
 .L74:
 	.loc 2 382 5 is_stmt 1
-	cmpb	$0, -60(%rbp)
+	cmpb	$0, -68(%rbp)
 	je	.L56
 	.loc 2 382 50 discriminator 1
 	movq	config_struct(%rip), %rax
@@ -3173,13 +3438,13 @@ __PRETTY_FUNCTION__.0:
 	.file 17 "src/storage.h"
 	.file 18 "src/record.h"
 	.file 19 "src/process.h"
-	.file 20 "/usr/include/glib-2.0/glib/gtypes.h"
-	.file 21 "/usr/include/glib-2.0/glib/garray.h"
-	.file 22 "/usr/local/include/wave.h"
-	.file 23 "src/in_out.h"
-	.file 24 "/usr/include/string.h"
-	.file 25 "/usr/include/unistd.h"
-	.file 26 "src/filter.h"
+	.file 20 "src/filter.h"
+	.file 21 "/usr/include/glib-2.0/glib/gtypes.h"
+	.file 22 "/usr/include/glib-2.0/glib/garray.h"
+	.file 23 "/usr/local/include/wave.h"
+	.file 24 "src/in_out.h"
+	.file 25 "/usr/include/string.h"
+	.file 26 "/usr/include/unistd.h"
 	.file 27 "/usr/include/stdlib.h"
 	.file 28 "/usr/include/errno.h"
 	.file 29 "/usr/include/time.h"
@@ -3187,13 +3452,13 @@ __PRETTY_FUNCTION__.0:
 	.file 31 "/usr/include/alsa/error.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.long	0x22c8
+	.long	0x2353
 	.value	0x5
 	.byte	0x1
 	.byte	0x8
 	.long	.Ldebug_abbrev0
 	.uleb128 0x2b
-	.long	.LASF463
+	.long	.LASF468
 	.byte	0x1d
 	.long	.LASF0
 	.long	.LASF1
@@ -3278,13 +3543,13 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x8
 	.uleb128 0x5
 	.long	0xc6
-	.uleb128 0x1a
+	.uleb128 0x1b
 	.long	0xbc
 	.uleb128 0xc
 	.byte	0x1
 	.byte	0x6
 	.long	.LASF16
-	.uleb128 0x15
+	.uleb128 0x14
 	.long	0xc6
 	.uleb128 0x4
 	.long	.LASF17
@@ -3296,7 +3561,7 @@ __PRETTY_FUNCTION__.0:
 	.long	0xd2
 	.uleb128 0x5
 	.long	0xbc
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	0xc6
 	.long	0xf8
 	.uleb128 0x17
@@ -3521,17 +3786,17 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x19
 	.long	0xf8
 	.uleb128 0x2f
-	.long	.LASF464
+	.long	.LASF469
 	.byte	0x5
 	.byte	0x2b
 	.byte	0xe
-	.uleb128 0x1b
+	.uleb128 0x18
 	.long	.LASF48
 	.uleb128 0x5
 	.long	0x293
 	.uleb128 0x5
 	.long	0xf8
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	0xc6
 	.long	0x2b2
 	.uleb128 0x17
@@ -3540,15 +3805,15 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.uleb128 0x5
 	.long	0x28b
-	.uleb128 0x1b
+	.uleb128 0x18
 	.long	.LASF49
 	.uleb128 0x5
 	.long	0x2b7
-	.uleb128 0x1b
+	.uleb128 0x18
 	.long	.LASF50
 	.uleb128 0x5
 	.long	0x2c1
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	0xc6
 	.long	0x2db
 	.uleb128 0x17
@@ -3557,11 +3822,11 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.uleb128 0x5
 	.long	0xcd
-	.uleb128 0x1a
+	.uleb128 0x1b
 	.long	0x2db
 	.uleb128 0x5
 	.long	0x27f
-	.uleb128 0x1a
+	.uleb128 0x1b
 	.long	0x2e5
 	.uleb128 0x1e
 	.long	.LASF200
@@ -3579,7 +3844,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xa
 	.byte	0x12
 	.long	0xae
-	.uleb128 0x15
+	.uleb128 0x14
 	.long	0x302
 	.uleb128 0x4
 	.long	.LASF53
@@ -3685,7 +3950,7 @@ __PRETTY_FUNCTION__.0:
 	.long	0x2db
 	.byte	0x30
 	.byte	0
-	.uleb128 0x15
+	.uleb128 0x14
 	.long	0x338
 	.uleb128 0x4
 	.long	.LASF68
@@ -3971,11 +4236,11 @@ __PRETTY_FUNCTION__.0:
 	.value	0x1a2
 	.byte	0x19
 	.long	0x61f
-	.uleb128 0x1b
+	.uleb128 0x18
 	.long	.LASF152
 	.uleb128 0x5
 	.long	0x613
-	.uleb128 0x22
+	.uleb128 0x23
 	.long	0x3c
 	.byte	0x1
 	.byte	0x32
@@ -4040,7 +4305,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x40
 	.byte	0x3
 	.long	0x672
-	.uleb128 0x15
+	.uleb128 0x14
 	.long	0x69a
 	.uleb128 0x4
 	.long	.LASF165
@@ -4281,12 +4546,14 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x4
 	.byte	0x4
 	.long	.LASF199
+	.uleb128 0x14
+	.long	0x85f
 	.uleb128 0x1e
 	.long	.LASF201
 	.byte	0xc
 	.byte	0x7f
 	.byte	0x17
-	.long	0x872
+	.long	0x877
 	.uleb128 0x5
 	.long	0x6b7
 	.uleb128 0xc
@@ -4299,11 +4566,11 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x17
 	.byte	0x11
 	.long	0x31f
-	.uleb128 0x11
+	.uleb128 0x10
 	.byte	0x28
 	.byte	0xf
 	.byte	0x1f
-	.long	0x8d4
+	.long	0x8d9
 	.uleb128 0x1
 	.long	.LASF204
 	.byte	0xf
@@ -4323,14 +4590,14 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x23
 	.byte	0x12
-	.long	0x8d4
+	.long	0x8d9
 	.byte	0x10
 	.uleb128 0xa
 	.string	"ptr"
 	.byte	0xf
 	.byte	0x24
 	.byte	0x12
-	.long	0x8d4
+	.long	0x8d9
 	.byte	0x18
 	.uleb128 0x1
 	.long	.LASF207
@@ -4347,18 +4614,18 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x26
 	.byte	0x3
-	.long	0x88a
-	.uleb128 0x11
+	.long	0x88f
+	.uleb128 0x10
 	.byte	0x20
 	.byte	0xf
 	.byte	0x2a
-	.long	0x922
+	.long	0x927
 	.uleb128 0x1
 	.long	.LASF209
 	.byte	0xf
 	.byte	0x2b
 	.byte	0x12
-	.long	0x8d4
+	.long	0x8d9
 	.byte	0
 	.uleb128 0x1
 	.long	.LASF210
@@ -4372,7 +4639,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x2d
 	.byte	0x12
-	.long	0x8d4
+	.long	0x8d9
 	.byte	0x10
 	.uleb128 0x1
 	.long	.LASF212
@@ -4387,18 +4654,18 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x2f
 	.byte	0x3
-	.long	0x8e5
-	.uleb128 0x23
+	.long	0x8ea
+	.uleb128 0x24
 	.value	0x198
 	.byte	0xf
 	.byte	0x34
-	.long	0xa29
+	.long	0xa2e
 	.uleb128 0x1
 	.long	.LASF214
 	.byte	0xf
 	.byte	0x35
 	.byte	0x12
-	.long	0x8d4
+	.long	0x8d9
 	.byte	0
 	.uleb128 0x1
 	.long	.LASF215
@@ -4426,14 +4693,14 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x3b
 	.byte	0x8
-	.long	0xa29
+	.long	0xa2e
 	.byte	0x20
 	.uleb128 0x1
 	.long	.LASF219
 	.byte	0xf
 	.byte	0x3c
 	.byte	0x10
-	.long	0xa2e
+	.long	0xa33
 	.byte	0x28
 	.uleb128 0x1
 	.long	.LASF220
@@ -4468,7 +4735,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x44
 	.byte	0x11
-	.long	0xa33
+	.long	0xa38
 	.byte	0x50
 	.uleb128 0xd
 	.long	.LASF224
@@ -4510,23 +4777,23 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x4d
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.value	0x188
 	.uleb128 0xd
 	.long	.LASF230
 	.byte	0xf
 	.byte	0x52
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.value	0x190
 	.byte	0
 	.uleb128 0x5
 	.long	0x70
 	.uleb128 0x5
-	.long	0x87e
-	.uleb128 0x14
+	.long	0x883
+	.uleb128 0x15
 	.long	0x2e
-	.long	0xa44
+	.long	0xa49
 	.uleb128 0x33
 	.long	0x43
 	.value	0x119
@@ -4536,18 +4803,18 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x54
 	.byte	0x3
-	.long	0x92e
-	.uleb128 0x11
+	.long	0x933
+	.uleb128 0x10
 	.byte	0x30
 	.byte	0xf
 	.byte	0x59
-	.long	0xaa7
+	.long	0xaac
 	.uleb128 0x1
 	.long	.LASF232
 	.byte	0xf
 	.byte	0x5a
 	.byte	0x12
-	.long	0x8d4
+	.long	0x8d9
 	.byte	0
 	.uleb128 0x1
 	.long	.LASF233
@@ -4575,14 +4842,14 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x5f
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x20
 	.uleb128 0x1
 	.long	.LASF229
 	.byte	0xf
 	.byte	0x61
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x28
 	.byte	0
 	.uleb128 0x4
@@ -4590,14 +4857,14 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xf
 	.byte	0x66
 	.byte	0x3
-	.long	0xa50
+	.long	0xa55
 	.uleb128 0xe
 	.long	.LASF235
 	.byte	0x38
 	.byte	0x10
 	.byte	0x1b
 	.byte	0x10
-	.long	0xb29
+	.long	0xb2e
 	.uleb128 0x1
 	.long	.LASF236
 	.byte	0x10
@@ -4660,14 +4927,14 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x10
 	.byte	0x35
 	.byte	0x3
-	.long	0xab3
+	.long	0xab8
 	.uleb128 0xe
 	.long	.LASF243
 	.byte	0x90
 	.byte	0x10
 	.byte	0x3a
 	.byte	0x10
-	.long	0xc42
+	.long	0xc47
 	.uleb128 0x1
 	.long	.LASF244
 	.byte	0x10
@@ -4680,21 +4947,21 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x10
 	.byte	0x3c
 	.byte	0x10
-	.long	0xc42
+	.long	0xc47
 	.byte	0x8
 	.uleb128 0xa
 	.string	"pcm"
 	.byte	0x10
 	.byte	0x3e
 	.byte	0xb
-	.long	0xc47
+	.long	0xc4c
 	.byte	0x10
 	.uleb128 0x1
 	.long	.LASF245
 	.byte	0x10
 	.byte	0x3f
 	.byte	0xb
-	.long	0xc47
+	.long	0xc4c
 	.byte	0x18
 	.uleb128 0x1
 	.long	.LASF246
@@ -4764,42 +5031,42 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x10
 	.byte	0x4c
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x58
 	.uleb128 0x1
 	.long	.LASF252
 	.byte	0x10
 	.byte	0x4d
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x60
 	.uleb128 0x1
 	.long	.LASF253
 	.byte	0x10
 	.byte	0x4f
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x68
 	.uleb128 0x1
 	.long	.LASF254
 	.byte	0x10
 	.byte	0x50
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x70
 	.uleb128 0x1
 	.long	.LASF255
 	.byte	0x10
 	.byte	0x51
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x78
 	.uleb128 0x1
 	.long	.LASF256
 	.byte	0x10
 	.byte	0x52
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x80
 	.uleb128 0x1
 	.long	.LASF257
@@ -4810,9 +5077,9 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x88
 	.byte	0
 	.uleb128 0x5
-	.long	0xb29
+	.long	0xb2e
 	.uleb128 0x5
-	.long	0xc4c
+	.long	0xc51
 	.uleb128 0x5
 	.long	0x85f
 	.uleb128 0x4
@@ -4820,27 +5087,27 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x10
 	.byte	0x55
 	.byte	0x3
-	.long	0xb35
+	.long	0xb3a
 	.uleb128 0xe
 	.long	.LASF258
 	.byte	0xc0
 	.byte	0x10
 	.byte	0x57
 	.byte	0x10
-	.long	0xd77
+	.long	0xd7c
 	.uleb128 0xa
 	.string	"pcm"
 	.byte	0x10
 	.byte	0x59
 	.byte	0xb
-	.long	0xc47
+	.long	0xc4c
 	.byte	0
 	.uleb128 0xa
 	.string	"opb"
 	.byte	0x10
 	.byte	0x5a
 	.byte	0x12
-	.long	0x8d9
+	.long	0x8de
 	.byte	0x8
 	.uleb128 0xa
 	.string	"lW"
@@ -4889,21 +5156,21 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x10
 	.byte	0x63
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x58
 	.uleb128 0x1
 	.long	.LASF252
 	.byte	0x10
 	.byte	0x64
 	.byte	0xf
-	.long	0x87e
+	.long	0x883
 	.byte	0x60
 	.uleb128 0xa
 	.string	"vd"
 	.byte	0x10
 	.byte	0x65
 	.byte	0x15
-	.long	0xd77
+	.long	0xd7c
 	.byte	0x68
 	.uleb128 0x1
 	.long	.LASF261
@@ -4938,7 +5205,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x10
 	.byte	0x6d
 	.byte	0x17
-	.long	0xda4
+	.long	0xda9
 	.byte	0x90
 	.uleb128 0x1
 	.long	.LASF253
@@ -4977,14 +5244,14 @@ __PRETTY_FUNCTION__.0:
 	.byte	0xb8
 	.byte	0
 	.uleb128 0x5
-	.long	0xc51
+	.long	0xc56
 	.uleb128 0xe
 	.long	.LASF267
 	.byte	0x10
 	.byte	0x10
 	.byte	0x7e
 	.byte	0x8
-	.long	0xda4
+	.long	0xda9
 	.uleb128 0xa
 	.string	"ptr"
 	.byte	0x10
@@ -4997,24 +5264,24 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x10
 	.byte	0x80
 	.byte	0x17
-	.long	0xda4
+	.long	0xda9
 	.byte	0x8
 	.byte	0
 	.uleb128 0x5
-	.long	0xd7c
+	.long	0xd81
 	.uleb128 0x4
 	.long	.LASF258
 	.byte	0x10
 	.byte	0x77
 	.byte	0x3
-	.long	0xc5d
+	.long	0xc62
 	.uleb128 0xe
 	.long	.LASF269
 	.byte	0x20
 	.byte	0x10
 	.byte	0x8b
 	.byte	0x10
-	.long	0xdf7
+	.long	0xdfc
 	.uleb128 0x1
 	.long	.LASF270
 	.byte	0x10
@@ -5027,7 +5294,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x10
 	.byte	0x8f
 	.byte	0x8
-	.long	0xa29
+	.long	0xa2e
 	.byte	0x8
 	.uleb128 0x1
 	.long	.LASF272
@@ -5049,16 +5316,16 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x10
 	.byte	0x93
 	.byte	0x3
-	.long	0xdb5
+	.long	0xdba
 	.uleb128 0xc
 	.byte	0x8
 	.byte	0x4
 	.long	.LASF274
-	.uleb128 0x11
+	.uleb128 0x10
 	.byte	0x28
 	.byte	0x11
 	.byte	0x5
-	.long	0xe6e
+	.long	0xe73
 	.uleb128 0x1
 	.long	.LASF207
 	.byte	0x11
@@ -5114,12 +5381,12 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x11
 	.byte	0xd
 	.byte	0x2
-	.long	0xe0a
-	.uleb128 0x23
+	.long	0xe0f
+	.uleb128 0x24
 	.value	0x3d8
 	.byte	0x12
 	.byte	0x13
-	.long	0xf61
+	.long	0xf66
 	.uleb128 0x1
 	.long	.LASF282
 	.byte	0x12
@@ -5132,43 +5399,43 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x12
 	.byte	0x15
 	.byte	0x14
-	.long	0xa44
+	.long	0xa49
 	.byte	0x8
 	.uleb128 0x12
 	.string	"og"
 	.byte	0x17
 	.byte	0xc
-	.long	0x922
+	.long	0x927
 	.value	0x1a0
 	.uleb128 0x12
 	.string	"op"
 	.byte	0x19
 	.byte	0xe
-	.long	0xaa7
+	.long	0xaac
 	.value	0x1c0
 	.uleb128 0x12
 	.string	"vi"
 	.byte	0x1b
 	.byte	0xf
-	.long	0xb29
+	.long	0xb2e
 	.value	0x1f0
 	.uleb128 0x12
 	.string	"vc"
 	.byte	0x1d
 	.byte	0x12
-	.long	0xdf7
+	.long	0xdfc
 	.value	0x228
 	.uleb128 0x12
 	.string	"vd"
 	.byte	0x1f
 	.byte	0x14
-	.long	0xc51
+	.long	0xc56
 	.value	0x248
 	.uleb128 0x12
 	.string	"vb"
 	.byte	0x20
 	.byte	0x10
-	.long	0xda9
+	.long	0xdae
 	.value	0x2d8
 	.uleb128 0x12
 	.string	"eos"
@@ -5187,7 +5454,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x12
 	.byte	0x24
 	.byte	0xc
-	.long	0xc47
+	.long	0xc4c
 	.value	0x3a0
 	.uleb128 0xd
 	.long	.LASF283
@@ -5208,14 +5475,14 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x12
 	.byte	0x28
 	.byte	0x12
-	.long	0xf61
+	.long	0xf66
 	.value	0x3b8
 	.uleb128 0xd
 	.long	.LASF286
 	.byte	0x12
 	.byte	0x29
 	.byte	0x12
-	.long	0xf61
+	.long	0xf66
 	.value	0x3c0
 	.uleb128 0xd
 	.long	.LASF287
@@ -5233,26 +5500,26 @@ __PRETTY_FUNCTION__.0:
 	.value	0x3d0
 	.byte	0
 	.uleb128 0x5
-	.long	0xe6e
+	.long	0xe73
 	.uleb128 0x4
 	.long	.LASF289
 	.byte	0x12
 	.byte	0x2d
 	.byte	0x2
-	.long	0xe7a
+	.long	0xe7f
 	.uleb128 0x1e
 	.long	.LASF290
 	.byte	0x12
 	.byte	0x33
 	.byte	0x16
-	.long	0xf7e
+	.long	0xf83
 	.uleb128 0x5
-	.long	0xf66
-	.uleb128 0x11
+	.long	0xf6b
+	.uleb128 0x10
 	.byte	0x40
 	.byte	0x13
 	.byte	0x32
-	.long	0x1001
+	.long	0x1006
 	.uleb128 0x1
 	.long	.LASF291
 	.byte	0x13
@@ -5265,42 +5532,42 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x13
 	.byte	0x34
 	.byte	0x9
-	.long	0xc4c
+	.long	0xc51
 	.byte	0x8
 	.uleb128 0x1
 	.long	.LASF293
 	.byte	0x13
 	.byte	0x35
 	.byte	0x9
-	.long	0xc4c
+	.long	0xc51
 	.byte	0x10
 	.uleb128 0x1
 	.long	.LASF294
 	.byte	0x13
 	.byte	0x36
 	.byte	0x9
-	.long	0xc4c
+	.long	0xc51
 	.byte	0x18
 	.uleb128 0x1
 	.long	.LASF295
 	.byte	0x13
 	.byte	0x37
 	.byte	0x9
-	.long	0xc4c
+	.long	0xc51
 	.byte	0x20
 	.uleb128 0xa
 	.string	"LAE"
 	.byte	0x13
 	.byte	0x38
 	.byte	0x9
-	.long	0xc4c
+	.long	0xc51
 	.byte	0x28
 	.uleb128 0x1
 	.long	.LASF296
 	.byte	0x13
 	.byte	0x39
 	.byte	0x9
-	.long	0xe03
+	.long	0xe08
 	.byte	0x30
 	.uleb128 0x1
 	.long	.LASF297
@@ -5322,342 +5589,416 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x13
 	.byte	0x3c
 	.byte	0x3
-	.long	0xf83
+	.long	0xf88
 	.uleb128 0x5
-	.long	0x1001
-	.uleb128 0x4
+	.long	0x866
+	.uleb128 0x10
+	.byte	0x18
+	.byte	0x14
+	.byte	0x4e
+	.long	0x1043
+	.uleb128 0xa
+	.string	"u"
+	.byte	0x14
+	.byte	0x4f
+	.byte	0xc
+	.long	0xc51
+	.byte	0
+	.uleb128 0xa
+	.string	"N"
+	.byte	0x14
+	.byte	0x50
+	.byte	0x9
+	.long	0x70
+	.byte	0x8
+	.uleb128 0x1
 	.long	.LASF300
 	.byte	0x14
+	.byte	0x51
+	.byte	0x12
+	.long	0x1012
+	.byte	0x10
+	.byte	0
+	.uleb128 0x4
+	.long	.LASF301
+	.byte	0x14
+	.byte	0x52
+	.byte	0x3
+	.long	0x1017
+	.uleb128 0x10
+	.byte	0x18
+	.byte	0x14
+	.byte	0x54
+	.long	0x107f
+	.uleb128 0x1
+	.long	.LASF302
+	.byte	0x14
+	.byte	0x55
+	.byte	0x15
+	.long	0x107f
+	.byte	0
+	.uleb128 0x1
+	.long	.LASF303
+	.byte	0x14
+	.byte	0x56
+	.byte	0xa
+	.long	0x1084
+	.byte	0x8
+	.uleb128 0x1
+	.long	.LASF304
+	.byte	0x14
+	.byte	0x57
+	.byte	0x12
+	.long	0x108e
+	.byte	0x10
+	.byte	0
+	.uleb128 0x5
+	.long	0x1043
+	.uleb128 0x5
+	.long	0x1006
+	.uleb128 0x18
+	.long	.LASF305
+	.uleb128 0x5
+	.long	0x1089
+	.uleb128 0x4
+	.long	.LASF306
+	.byte	0x14
+	.byte	0x58
+	.byte	0x2
+	.long	0x104f
+	.uleb128 0x4
+	.long	.LASF307
+	.byte	0x15
 	.byte	0x34
 	.byte	0xe
 	.long	0xc6
 	.uleb128 0x4
-	.long	.LASF301
-	.byte	0x14
+	.long	.LASF308
+	.byte	0x15
 	.byte	0x3d
 	.byte	0x16
 	.long	0x3c
 	.uleb128 0x4
-	.long	.LASF302
-	.byte	0x15
+	.long	.LASF309
+	.byte	0x16
 	.byte	0x27
 	.byte	0x18
-	.long	0x1036
+	.long	0x10c3
 	.uleb128 0xe
-	.long	.LASF303
+	.long	.LASF310
 	.byte	0x10
-	.byte	0x15
+	.byte	0x16
 	.byte	0x2b
 	.byte	0x8
-	.long	0x105e
+	.long	0x10eb
 	.uleb128 0x1
-	.long	.LASF304
-	.byte	0x15
+	.long	.LASF311
+	.byte	0x16
 	.byte	0x2d
 	.byte	0xa
-	.long	0x105e
+	.long	0x10eb
 	.byte	0
 	.uleb128 0xa
 	.string	"len"
-	.byte	0x15
+	.byte	0x16
 	.byte	0x2e
 	.byte	0x9
-	.long	0x101e
+	.long	0x10ab
 	.byte	0x8
 	.byte	0
 	.uleb128 0x5
-	.long	0x1012
+	.long	0x109f
 	.uleb128 0x5
-	.long	0x102a
-	.uleb128 0x11
+	.long	0x10b7
+	.uleb128 0x10
 	.byte	0x8
-	.byte	0x16
+	.byte	0x17
 	.byte	0x1e
-	.long	0x108b
+	.long	0x1118
 	.uleb128 0x1
-	.long	.LASF305
-	.byte	0x16
+	.long	.LASF312
+	.byte	0x17
 	.byte	0x1f
 	.byte	0x7
 	.long	0xe8
 	.byte	0
 	.uleb128 0x1
-	.long	.LASF306
-	.byte	0x16
+	.long	.LASF313
+	.byte	0x17
 	.byte	0x20
 	.byte	0xb
 	.long	0x3e5
 	.byte	0x4
 	.byte	0
 	.uleb128 0x4
-	.long	.LASF307
-	.byte	0x16
+	.long	.LASF314
+	.byte	0x17
 	.byte	0x21
 	.byte	0x3
-	.long	0x1068
-	.uleb128 0x11
+	.long	0x10f5
+	.uleb128 0x10
 	.byte	0xc
-	.byte	0x16
+	.byte	0x17
 	.byte	0x23
-	.long	0x10ba
+	.long	0x1147
 	.uleb128 0x1
 	.long	.LASF209
-	.byte	0x16
+	.byte	0x17
 	.byte	0x24
 	.byte	0xe
-	.long	0x108b
+	.long	0x1118
 	.byte	0
 	.uleb128 0x1
-	.long	.LASF308
-	.byte	0x16
+	.long	.LASF315
+	.byte	0x17
 	.byte	0x25
 	.byte	0x7
 	.long	0xe8
 	.byte	0x8
 	.byte	0
 	.uleb128 0x4
-	.long	.LASF309
-	.byte	0x16
+	.long	.LASF316
+	.byte	0x17
 	.byte	0x26
 	.byte	0x3
-	.long	0x1097
-	.uleb128 0x11
+	.long	0x1124
+	.uleb128 0x10
 	.byte	0x18
-	.byte	0x16
+	.byte	0x17
 	.byte	0x28
-	.long	0x112a
+	.long	0x11b7
 	.uleb128 0x1
 	.long	.LASF209
-	.byte	0x16
+	.byte	0x17
 	.byte	0x29
 	.byte	0xe
-	.long	0x108b
+	.long	0x1118
 	.byte	0
 	.uleb128 0x1
-	.long	.LASF310
-	.byte	0x16
+	.long	.LASF317
+	.byte	0x17
 	.byte	0x2a
 	.byte	0xb
 	.long	0x3d9
 	.byte	0x8
 	.uleb128 0x1
-	.long	.LASF311
-	.byte	0x16
+	.long	.LASF318
+	.byte	0x17
 	.byte	0x2b
 	.byte	0xb
 	.long	0x3d9
 	.byte	0xa
 	.uleb128 0x1
-	.long	.LASF312
-	.byte	0x16
+	.long	.LASF319
+	.byte	0x17
 	.byte	0x2c
 	.byte	0xb
 	.long	0x3e5
 	.byte	0xc
 	.uleb128 0x1
-	.long	.LASF313
-	.byte	0x16
+	.long	.LASF320
+	.byte	0x17
 	.byte	0x2d
 	.byte	0xb
 	.long	0x3e5
 	.byte	0x10
 	.uleb128 0x1
-	.long	.LASF314
-	.byte	0x16
+	.long	.LASF321
+	.byte	0x17
 	.byte	0x2e
 	.byte	0xb
 	.long	0x3d9
 	.byte	0x14
 	.uleb128 0x1
-	.long	.LASF315
-	.byte	0x16
+	.long	.LASF322
+	.byte	0x17
 	.byte	0x2f
 	.byte	0xb
 	.long	0x3d9
 	.byte	0x16
 	.byte	0
 	.uleb128 0x4
-	.long	.LASF316
-	.byte	0x16
+	.long	.LASF323
+	.byte	0x17
 	.byte	0x30
 	.byte	0x3
-	.long	0x10c6
-	.uleb128 0x11
+	.long	0x1153
+	.uleb128 0x10
 	.byte	0x8
-	.byte	0x16
+	.byte	0x17
 	.byte	0x32
-	.long	0x114c
+	.long	0x11d9
 	.uleb128 0x1
 	.long	.LASF209
-	.byte	0x16
+	.byte	0x17
 	.byte	0x33
 	.byte	0xe
-	.long	0x108b
+	.long	0x1118
 	.byte	0
 	.byte	0
 	.uleb128 0x4
-	.long	.LASF317
-	.byte	0x16
+	.long	.LASF324
+	.byte	0x17
 	.byte	0x34
 	.byte	0x3
-	.long	0x1136
+	.long	0x11c3
 	.uleb128 0xe
-	.long	.LASF318
+	.long	.LASF325
 	.byte	0x50
-	.byte	0x16
+	.byte	0x17
 	.byte	0x36
 	.byte	0x10
-	.long	0x11c0
+	.long	0x124d
 	.uleb128 0xa
 	.string	"fd"
-	.byte	0x16
+	.byte	0x17
 	.byte	0x37
 	.byte	0x8
 	.long	0x2e5
 	.byte	0
 	.uleb128 0x1
-	.long	.LASF319
-	.byte	0x16
+	.long	.LASF326
+	.byte	0x17
 	.byte	0x38
 	.byte	0xc
-	.long	0x10ba
+	.long	0x1147
 	.byte	0x8
 	.uleb128 0x1
-	.long	.LASF320
-	.byte	0x16
+	.long	.LASF327
+	.byte	0x17
 	.byte	0x39
 	.byte	0xe
-	.long	0x112a
+	.long	0x11b7
 	.byte	0x14
 	.uleb128 0x1
-	.long	.LASF321
-	.byte	0x16
+	.long	.LASF328
+	.byte	0x17
 	.byte	0x3a
 	.byte	0xf
-	.long	0x114c
+	.long	0x11d9
 	.byte	0x2c
 	.uleb128 0x1
-	.long	.LASF322
-	.byte	0x16
+	.long	.LASF329
+	.byte	0x17
 	.byte	0x3b
 	.byte	0x7
 	.long	0x8f
 	.byte	0x38
 	.uleb128 0x1
-	.long	.LASF323
-	.byte	0x16
+	.long	.LASF330
+	.byte	0x17
 	.byte	0x3c
 	.byte	0xa
-	.long	0x1063
+	.long	0x10f0
 	.byte	0x40
 	.uleb128 0x1
-	.long	.LASF324
-	.byte	0x16
+	.long	.LASF331
+	.byte	0x17
 	.byte	0x3d
 	.byte	0x9
 	.long	0xd2
 	.byte	0x48
 	.byte	0
 	.uleb128 0x4
-	.long	.LASF325
-	.byte	0x16
+	.long	.LASF332
+	.byte	0x17
 	.byte	0x3e
 	.byte	0x3
-	.long	0x1158
-	.uleb128 0x22
+	.long	0x11e5
+	.uleb128 0x23
 	.long	0x3c
-	.byte	0x17
+	.byte	0x18
 	.byte	0x1b
 	.byte	0x7
-	.long	0x11e5
+	.long	0x1272
 	.uleb128 0x3
-	.long	.LASF326
+	.long	.LASF333
 	.byte	0
 	.uleb128 0x3
-	.long	.LASF327
+	.long	.LASF334
 	.byte	0x1
 	.byte	0
 	.uleb128 0x34
 	.byte	0x8
-	.byte	0x17
+	.byte	0x18
 	.byte	0x1c
 	.byte	0x2
-	.long	0x1205
-	.uleb128 0x24
-	.long	.LASF318
+	.long	0x1292
+	.uleb128 0x25
+	.long	.LASF325
 	.byte	0x1d
 	.byte	0x9
-	.long	0x1205
-	.uleb128 0x24
-	.long	.LASF328
+	.long	0x1292
+	.uleb128 0x25
+	.long	.LASF335
 	.byte	0x1e
 	.byte	0xe
 	.long	0x624
 	.byte	0
 	.uleb128 0x5
-	.long	0x11c0
+	.long	0x124d
 	.uleb128 0xe
 	.long	.LASF168
 	.byte	0x10
-	.byte	0x17
+	.byte	0x18
 	.byte	0x1a
 	.byte	0x10
-	.long	0x122b
+	.long	0x12b8
 	.uleb128 0x1
-	.long	.LASF329
-	.byte	0x17
+	.long	.LASF336
+	.byte	0x18
 	.byte	0x1b
 	.byte	0x28
-	.long	0x11cc
+	.long	0x1259
 	.byte	0
 	.uleb128 0x35
-	.long	0x11e5
+	.long	0x1272
 	.byte	0x8
 	.byte	0
 	.uleb128 0x4
-	.long	.LASF330
-	.byte	0x17
+	.long	.LASF337
+	.byte	0x18
 	.byte	0x20
 	.byte	0x3
-	.long	0x120a
+	.long	0x1297
 	.uleb128 0xe
-	.long	.LASF331
+	.long	.LASF338
 	.byte	0x10
-	.byte	0x17
+	.byte	0x18
 	.byte	0x32
 	.byte	0x10
-	.long	0x125e
+	.long	0x12eb
 	.uleb128 0xa
 	.string	"id"
-	.byte	0x17
+	.byte	0x18
 	.byte	0x33
 	.byte	0x8
 	.long	0xbc
 	.byte	0
 	.uleb128 0x1
-	.long	.LASF318
-	.byte	0x17
+	.long	.LASF325
+	.byte	0x18
 	.byte	0x34
 	.byte	0x8
-	.long	0x1205
+	.long	0x1292
 	.byte	0x8
 	.byte	0
 	.uleb128 0x4
-	.long	.LASF332
-	.byte	0x17
+	.long	.LASF339
+	.byte	0x18
 	.byte	0x35
 	.byte	0x3
-	.long	0x1237
+	.long	0x12c4
 	.uleb128 0x8
-	.long	.LASF329
+	.long	.LASF336
 	.byte	0x19
 	.byte	0x15
-	.long	0x122b
+	.long	0x12b8
 	.uleb128 0x9
 	.byte	0x3
 	.quad	device
 	.uleb128 0x8
-	.long	.LASF333
+	.long	.LASF340
 	.byte	0x92
 	.byte	0xe
 	.long	0xbc
@@ -5665,7 +6006,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x3
 	.quad	current_format
 	.uleb128 0x8
-	.long	.LASF334
+	.long	.LASF341
 	.byte	0x94
 	.byte	0xe
 	.long	0xbc
@@ -5673,7 +6014,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x3
 	.quad	data_output_filepath
 	.uleb128 0x8
-	.long	.LASF335
+	.long	.LASF342
 	.byte	0x96
 	.byte	0xe
 	.long	0x2e5
@@ -5681,7 +6022,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x3
 	.quad	data_output_fd
 	.uleb128 0x8
-	.long	.LASF336
+	.long	.LASF343
 	.byte	0x98
 	.byte	0xe
 	.long	0xbc
@@ -5689,17 +6030,17 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x3
 	.quad	audio_output_filepath
 	.uleb128 0x8
-	.long	.LASF337
+	.long	.LASF344
 	.byte	0x9a
 	.byte	0x10
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x9
 	.byte	0x3
 	.quad	output_json
 	.uleb128 0x5
 	.long	0x69a
 	.uleb128 0x8
-	.long	.LASF338
+	.long	.LASF345
 	.byte	0x9c
 	.byte	0xc
 	.long	0x70
@@ -5715,7 +6056,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x3
 	.quad	sample_count
 	.uleb128 0x8
-	.long	.LASF339
+	.long	.LASF346
 	.byte	0x9f
 	.byte	0xf
 	.long	0x302
@@ -5723,7 +6064,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x3
 	.quad	calendar
 	.uleb128 0x8
-	.long	.LASF340
+	.long	.LASF347
 	.byte	0xa0
 	.byte	0x11
 	.long	0x3c
@@ -5731,118 +6072,118 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x3
 	.quad	output_time
 	.uleb128 0x8
-	.long	.LASF341
+	.long	.LASF348
 	.byte	0xde
 	.byte	0x10
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x9
 	.byte	0x3
 	.quad	LAeq_json
 	.uleb128 0x8
-	.long	.LASF342
+	.long	.LASF349
 	.byte	0xdf
 	.byte	0x10
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x9
 	.byte	0x3
 	.quad	LAE_json
 	.uleb128 0x8
-	.long	.LASF343
+	.long	.LASF350
 	.byte	0xe0
 	.byte	0x10
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x9
 	.byte	0x3
 	.quad	LAFmin_json
 	.uleb128 0x8
-	.long	.LASF344
+	.long	.LASF351
 	.byte	0xe1
 	.byte	0x10
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x9
 	.byte	0x3
 	.quad	LAFmax_json
 	.uleb128 0x8
-	.long	.LASF345
+	.long	.LASF352
 	.byte	0xe2
 	.byte	0x10
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x9
 	.byte	0x3
 	.quad	LApeak_json
-	.uleb128 0x6
-	.long	.LASF346
-	.byte	0x16
+	.uleb128 0x7
+	.long	.LASF353
+	.byte	0x17
 	.byte	0x43
 	.byte	0x5
 	.long	0x70
-	.long	0x13c5
+	.long	0x1452
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.uleb128 0x2
 	.long	0x2db
 	.byte	0
-	.uleb128 0x18
-	.long	.LASF348
-	.byte	0x16
+	.uleb128 0x19
+	.long	.LASF355
+	.byte	0x17
 	.byte	0x59
-	.long	0x13d6
+	.long	0x1463
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF347
-	.byte	0x16
+	.uleb128 0x7
+	.long	.LASF354
+	.byte	0x17
 	.byte	0x57
 	.byte	0x8
 	.long	0xd2
-	.long	0x13f6
+	.long	0x1483
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.uleb128 0x2
 	.long	0xbc
 	.uleb128 0x2
 	.long	0xd2
 	.byte	0
-	.uleb128 0x18
-	.long	.LASF349
-	.byte	0x16
+	.uleb128 0x19
+	.long	.LASF356
+	.byte	0x17
 	.byte	0x4b
-	.long	0x140c
+	.long	0x1499
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.uleb128 0x2
 	.long	0x70
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF350
-	.byte	0x16
+	.uleb128 0x7
+	.long	.LASF357
+	.byte	0x17
 	.byte	0x40
 	.byte	0x7
-	.long	0x1205
-	.long	0x1427
+	.long	0x1292
+	.long	0x14b4
 	.uleb128 0x2
 	.long	0x70
 	.uleb128 0x2
 	.long	0x70
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF351
-	.byte	0x18
+	.uleb128 0x7
+	.long	.LASF358
+	.byte	0x19
 	.byte	0xbb
 	.byte	0xe
 	.long	0xbc
-	.long	0x143d
+	.long	0x14ca
 	.uleb128 0x2
 	.long	0x2db
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF352
-	.byte	0x18
+	.uleb128 0x7
+	.long	.LASF359
+	.byte	0x19
 	.byte	0x2b
 	.byte	0xe
 	.long	0xba
-	.long	0x145d
+	.long	0x14ea
 	.uleb128 0x2
 	.long	0xba
 	.uleb128 0x2
@@ -5850,13 +6191,13 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x2
 	.long	0xd2
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF353
-	.byte	0x18
+	.uleb128 0x7
+	.long	.LASF360
+	.byte	0x19
 	.byte	0x90
 	.byte	0xe
 	.long	0xbc
-	.long	0x147d
+	.long	0x150a
 	.uleb128 0x2
 	.long	0xbc
 	.uleb128 0x2
@@ -5865,183 +6206,173 @@ __PRETTY_FUNCTION__.0:
 	.long	0xd2
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF354
-	.byte	0x18
+	.long	.LASF361
+	.byte	0x19
 	.value	0x111
 	.byte	0xe
 	.long	0xbc
-	.long	0x1499
+	.long	0x1526
 	.uleb128 0x2
 	.long	0x2db
 	.uleb128 0x2
 	.long	0x70
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF355
-	.byte	0x19
+	.long	.LASF362
+	.byte	0x1a
 	.value	0x3dd
 	.byte	0xc
 	.long	0x70
-	.long	0x14b0
+	.long	0x153d
 	.uleb128 0x2
 	.long	0x70
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF356
+	.long	.LASF363
 	.byte	0xd
 	.value	0x373
 	.byte	0xc
 	.long	0x70
-	.long	0x14c7
+	.long	0x1554
 	.uleb128 0x2
 	.long	0x2e5
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF357
+	.uleb128 0x7
+	.long	.LASF364
 	.byte	0xd
 	.byte	0xec
 	.byte	0xc
 	.long	0x70
-	.long	0x14dd
+	.long	0x156a
 	.uleb128 0x2
 	.long	0x2e5
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF358
+	.long	.LASF365
 	.byte	0x1
 	.value	0x125
 	.byte	0x5
 	.long	0x70
-	.long	0x14f9
+	.long	0x1586
 	.uleb128 0x2
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
-	.long	0x12e8
+	.long	0x1375
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF359
+	.uleb128 0x7
+	.long	.LASF366
 	.byte	0x1
 	.byte	0x66
 	.byte	0x9
-	.long	0x12e8
-	.long	0x150f
+	.long	0x1375
+	.long	0x159c
 	.uleb128 0x2
-	.long	0xe03
-	.byte	0
-	.uleb128 0x6
-	.long	.LASF360
-	.byte	0x1a
-	.byte	0x58
-	.byte	0x7
-	.long	0x85f
-	.long	0x1525
-	.uleb128 0x2
-	.long	0x70
+	.long	0xe08
 	.byte	0
 	.uleb128 0x20
-	.long	.LASF363
+	.long	.LASF369
 	.byte	0x1
 	.byte	0x60
 	.byte	0x9
-	.long	0x12e8
-	.uleb128 0x6
-	.long	.LASF361
+	.long	0x1375
+	.uleb128 0x7
+	.long	.LASF367
 	.byte	0x1
 	.byte	0xc1
 	.byte	0x5
 	.long	0x70
-	.long	0x1551
+	.long	0x15c8
 	.uleb128 0x2
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
 	.long	0x2db
 	.uleb128 0x2
-	.long	0x12e8
+	.long	0x1375
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF362
+	.uleb128 0x7
+	.long	.LASF368
 	.byte	0x1
 	.byte	0x65
 	.byte	0x9
-	.long	0x12e8
-	.long	0x1567
+	.long	0x1375
+	.long	0x15de
 	.uleb128 0x2
 	.long	0x6ab
 	.byte	0
 	.uleb128 0x20
-	.long	.LASF364
+	.long	.LASF370
 	.byte	0x1
 	.byte	0x5f
 	.byte	0x9
-	.long	0x12e8
-	.uleb128 0x6
-	.long	.LASF365
+	.long	0x1375
+	.uleb128 0x7
+	.long	.LASF371
 	.byte	0x11
 	.byte	0x16
 	.byte	0x5
 	.long	0x70
-	.long	0x158e
+	.long	0x1605
 	.uleb128 0x2
-	.long	0xf61
+	.long	0xf66
 	.uleb128 0x2
 	.long	0xbc
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF366
-	.byte	0x18
+	.uleb128 0x7
+	.long	.LASF372
+	.byte	0x19
 	.byte	0xf6
 	.byte	0xe
 	.long	0xbc
-	.long	0x15a9
+	.long	0x1620
 	.uleb128 0x2
 	.long	0x2db
 	.uleb128 0x2
 	.long	0x70
 	.byte	0
 	.uleb128 0x36
-	.long	.LASF367
+	.long	.LASF373
 	.byte	0x1b
 	.value	0x2f4
 	.byte	0xd
-	.long	0x15bc
+	.long	0x1633
 	.uleb128 0x2
 	.long	0x70
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF368
-	.byte	0x18
+	.long	.LASF374
+	.byte	0x19
 	.value	0x1a3
 	.byte	0xe
 	.long	0xbc
-	.long	0x15d3
+	.long	0x164a
 	.uleb128 0x2
 	.long	0x70
 	.byte	0
 	.uleb128 0x20
-	.long	.LASF369
+	.long	.LASF375
 	.byte	0x1c
 	.byte	0x25
 	.byte	0xd
-	.long	0xa29
+	.long	0xa2e
 	.uleb128 0xb
-	.long	.LASF370
+	.long	.LASF376
 	.byte	0xd
 	.value	0x108
 	.byte	0xe
 	.long	0x2e5
-	.long	0x15fb
+	.long	0x1672
 	.uleb128 0x2
 	.long	0x2e0
 	.uleb128 0x2
 	.long	0x2e0
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF371
+	.uleb128 0x7
+	.long	.LASF377
 	.byte	0x1d
 	.byte	0x64
 	.byte	0xf
 	.long	0xd2
-	.long	0x1620
+	.long	0x1697
 	.uleb128 0x2
 	.long	0xc1
 	.uleb128 0x2
@@ -6049,87 +6380,87 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x2
 	.long	0x2e0
 	.uleb128 0x2
-	.long	0x1625
+	.long	0x169c
 	.byte	0
 	.uleb128 0x5
 	.long	0x3d4
-	.uleb128 0x1a
-	.long	0x1620
-	.uleb128 0x6
-	.long	.LASF372
+	.uleb128 0x1b
+	.long	0x1697
+	.uleb128 0x7
+	.long	.LASF378
 	.byte	0x1d
 	.byte	0x89
 	.byte	0x13
-	.long	0x1640
-	.long	0x1640
+	.long	0x16b7
+	.long	0x16b7
 	.uleb128 0x2
-	.long	0x1645
+	.long	0x16bc
 	.byte	0
 	.uleb128 0x5
 	.long	0x338
 	.uleb128 0x5
 	.long	0x30e
-	.uleb128 0x6
-	.long	.LASF373
-	.byte	0x18
+	.uleb128 0x7
+	.long	.LASF379
+	.byte	0x19
 	.byte	0x95
 	.byte	0xe
 	.long	0xbc
-	.long	0x1665
+	.long	0x16dc
 	.uleb128 0x2
 	.long	0xbc
 	.uleb128 0x2
 	.long	0x2db
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF374
-	.byte	0x18
+	.uleb128 0x7
+	.long	.LASF380
+	.byte	0x19
 	.byte	0x8d
 	.byte	0xe
 	.long	0xbc
-	.long	0x1680
+	.long	0x16f7
 	.uleb128 0x2
 	.long	0xbc
 	.uleb128 0x2
 	.long	0x2db
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF375
-	.byte	0x18
+	.long	.LASF381
+	.byte	0x19
 	.value	0x197
 	.byte	0xf
 	.long	0xd2
-	.long	0x1697
+	.long	0x170e
 	.uleb128 0x2
 	.long	0x2db
 	.byte	0
-	.uleb128 0x18
-	.long	.LASF376
+	.uleb128 0x19
+	.long	.LASF382
 	.byte	0x1
 	.byte	0x81
-	.long	0x16a8
+	.long	0x171f
 	.uleb128 0x2
-	.long	0x12e8
+	.long	0x1375
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF377
+	.uleb128 0x7
+	.long	.LASF383
 	.byte	0xd
 	.byte	0xb8
 	.byte	0xc
 	.long	0x70
-	.long	0x16be
+	.long	0x1735
 	.uleb128 0x2
 	.long	0x2e5
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF378
+	.long	.LASF384
 	.byte	0x1
 	.value	0x18c
 	.byte	0x5
 	.long	0x70
-	.long	0x16df
+	.long	0x1756
 	.uleb128 0x2
-	.long	0x16df
+	.long	0x1756
 	.uleb128 0x2
 	.long	0x2e5
 	.uleb128 0x2
@@ -6137,85 +6468,85 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.uleb128 0x5
 	.long	0x6a6
-	.uleb128 0x6
-	.long	.LASF379
-	.byte	0x18
+	.uleb128 0x7
+	.long	.LASF385
+	.byte	0x19
 	.byte	0x9c
 	.byte	0xc
 	.long	0x70
-	.long	0x16ff
+	.long	0x1776
 	.uleb128 0x2
 	.long	0x2db
 	.uleb128 0x2
 	.long	0x2db
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF380
+	.uleb128 0x7
+	.long	.LASF386
 	.byte	0x1d
 	.byte	0x4c
 	.byte	0xf
 	.long	0x302
-	.long	0x1715
+	.long	0x178c
 	.uleb128 0x2
-	.long	0x1715
+	.long	0x178c
 	.byte	0
 	.uleb128 0x5
 	.long	0x302
-	.uleb128 0x18
-	.long	.LASF381
-	.byte	0x16
+	.uleb128 0x19
+	.long	.LASF387
+	.byte	0x17
 	.byte	0x41
-	.long	0x172b
+	.long	0x17a2
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF382
+	.long	.LASF388
 	.byte	0xb
 	.value	0x212
 	.byte	0x5
 	.long	0x70
-	.long	0x1742
+	.long	0x17b9
 	.uleb128 0x2
 	.long	0x624
 	.byte	0
 	.uleb128 0x37
-	.long	.LASF383
+	.long	.LASF389
 	.byte	0x1b
 	.value	0x2af
 	.byte	0xd
-	.long	0x1755
+	.long	0x17cc
 	.uleb128 0x2
 	.long	0xba
 	.byte	0
-	.uleb128 0x18
-	.long	.LASF384
-	.byte	0x1a
-	.byte	0x62
-	.long	0x176b
+	.uleb128 0x19
+	.long	.LASF390
+	.byte	0x14
+	.byte	0x64
+	.long	0x17e2
 	.uleb128 0x2
-	.long	0xc4c
+	.long	0xc51
 	.uleb128 0x2
 	.long	0x3c
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF385
+	.uleb128 0x7
+	.long	.LASF391
 	.byte	0x12
 	.byte	0x30
 	.byte	0x5
 	.long	0x70
-	.long	0x1786
+	.long	0x17fd
 	.uleb128 0x2
-	.long	0xc4c
+	.long	0xc51
 	.uleb128 0x2
 	.long	0xd2
 	.byte	0
 	.uleb128 0x38
-	.long	.LASF386
+	.long	.LASF392
 	.byte	0x1e
 	.byte	0x45
 	.byte	0xd
-	.long	0x17a7
+	.long	0x181e
 	.uleb128 0x2
 	.long	0x2db
 	.uleb128 0x2
@@ -6225,27 +6556,27 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x2
 	.long	0x2db
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF387
-	.byte	0x16
+	.uleb128 0x7
+	.long	.LASF393
+	.byte	0x17
 	.byte	0x53
 	.byte	0x8
 	.long	0xd2
-	.long	0x17c7
+	.long	0x183e
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.uleb128 0x2
 	.long	0xbc
 	.uleb128 0x2
 	.long	0xd2
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF388
+	.long	.LASF394
 	.byte	0xb
 	.value	0x238
 	.byte	0x13
 	.long	0x607
-	.long	0x17e8
+	.long	0x185f
 	.uleb128 0x2
 	.long	0x624
 	.uleb128 0x2
@@ -6254,92 +6585,92 @@ __PRETTY_FUNCTION__.0:
 	.long	0x5fb
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF389
+	.long	.LASF395
 	.byte	0x1b
 	.value	0x2a0
 	.byte	0xe
 	.long	0xba
-	.long	0x17ff
+	.long	0x1876
 	.uleb128 0x2
 	.long	0xd2
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF390
-	.byte	0x16
+	.uleb128 0x7
+	.long	.LASF396
+	.byte	0x17
 	.byte	0x5b
 	.byte	0x8
 	.long	0xd2
-	.long	0x1815
+	.long	0x188c
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF391
-	.byte	0x16
+	.uleb128 0x7
+	.long	.LASF397
+	.byte	0x17
 	.byte	0x46
 	.byte	0x5
 	.long	0x70
-	.long	0x182b
+	.long	0x18a2
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF392
-	.byte	0x16
+	.uleb128 0x7
+	.long	.LASF398
+	.byte	0x17
 	.byte	0x47
 	.byte	0x5
 	.long	0x70
-	.long	0x1841
+	.long	0x18b8
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF393
-	.byte	0x16
+	.uleb128 0x7
+	.long	.LASF399
+	.byte	0x17
 	.byte	0x48
 	.byte	0x5
 	.long	0x70
-	.long	0x1857
+	.long	0x18ce
 	.uleb128 0x2
-	.long	0x1205
+	.long	0x1292
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF394
-	.byte	0x16
+	.uleb128 0x7
+	.long	.LASF400
+	.byte	0x17
 	.byte	0x42
 	.byte	0x7
-	.long	0x1205
-	.long	0x186d
+	.long	0x1292
+	.long	0x18e4
 	.uleb128 0x2
 	.long	0x2db
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF395
+	.long	.LASF401
 	.byte	0xb
 	.value	0x227
 	.byte	0x5
 	.long	0x70
-	.long	0x1884
+	.long	0x18fb
 	.uleb128 0x2
 	.long	0x624
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF396
+	.long	.LASF402
 	.byte	0xb
 	.value	0x224
 	.byte	0x5
 	.long	0x70
-	.long	0x189b
+	.long	0x1912
 	.uleb128 0x2
 	.long	0x624
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF397
+	.long	.LASF403
 	.byte	0xb
 	.value	0x2a2
 	.byte	0x5
 	.long	0x70
-	.long	0x18d0
+	.long	0x1947
 	.uleb128 0x2
 	.long	0x624
 	.uleb128 0x2
@@ -6356,37 +6687,37 @@ __PRETTY_FUNCTION__.0:
 	.long	0x3c
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF398
+	.long	.LASF404
 	.byte	0xd
 	.value	0x165
 	.byte	0xc
 	.long	0x70
-	.long	0x18ed
+	.long	0x1964
 	.uleb128 0x2
 	.long	0x2ea
 	.uleb128 0x2
 	.long	0x2e0
 	.uleb128 0x39
 	.byte	0
-	.uleb128 0x6
-	.long	.LASF399
+	.uleb128 0x7
+	.long	.LASF405
 	.byte	0x1f
 	.byte	0x2d
 	.byte	0xd
 	.long	0x2db
-	.long	0x1903
+	.long	0x197a
 	.uleb128 0x2
 	.long	0x70
 	.byte	0
 	.uleb128 0xb
-	.long	.LASF400
+	.long	.LASF406
 	.byte	0xb
 	.value	0x209
 	.byte	0x5
 	.long	0x70
-	.long	0x1929
+	.long	0x19a0
 	.uleb128 0x2
-	.long	0x1929
+	.long	0x19a0
 	.uleb128 0x2
 	.long	0x2db
 	.uleb128 0x2
@@ -6397,7 +6728,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x5
 	.long	0x624
 	.uleb128 0x3a
-	.long	.LASF404
+	.long	.LASF410
 	.byte	0x2
 	.value	0x23a
 	.byte	0x6
@@ -6405,25 +6736,25 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE346-.LFB346
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x19c6
+	.long	0x1a3d
 	.uleb128 0x9
-	.long	.LASF401
+	.long	.LASF407
 	.value	0x23a
 	.byte	0x24
-	.long	0xc4c
+	.long	0xc51
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x9
-	.long	.LASF402
+	.long	.LASF408
 	.value	0x23a
 	.byte	0x3c
-	.long	0x19c6
+	.long	0x1a3d
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
 	.uleb128 0x9
-	.long	.LASF403
+	.long	.LASF409
 	.value	0x23a
 	.byte	0x54
 	.long	0x3c
@@ -6433,7 +6764,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0xf
 	.quad	.LBB19
 	.quad	.LBE19-.LBB19
-	.uleb128 0x10
+	.uleb128 0x11
 	.string	"i"
 	.value	0x23c
 	.byte	0x10
@@ -6444,7 +6775,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0xf
 	.quad	.LBB20
 	.quad	.LBE20-.LBB20
-	.uleb128 0x10
+	.uleb128 0x11
 	.string	"a"
 	.value	0x23e
 	.byte	0x9
@@ -6452,7 +6783,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -20
-	.uleb128 0x10
+	.uleb128 0x11
 	.string	"b"
 	.value	0x23f
 	.byte	0xc
@@ -6466,47 +6797,47 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x5
 	.long	0x313
 	.uleb128 0x1d
-	.long	.LASF405
+	.long	.LASF411
 	.value	0x22b
 	.quad	.LFB345
 	.quad	.LFE345-.LFB345
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1a98
+	.long	0x1b0f
 	.uleb128 0x9
-	.long	.LASF402
+	.long	.LASF408
 	.value	0x22b
 	.byte	0x26
-	.long	0x19c6
+	.long	0x1a3d
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x9
-	.long	.LASF401
+	.long	.LASF407
 	.value	0x22b
 	.byte	0x3c
-	.long	0xc4c
+	.long	0xc51
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
 	.uleb128 0x9
-	.long	.LASF403
+	.long	.LASF409
 	.value	0x22b
 	.byte	0x54
 	.long	0x3c
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -68
-	.uleb128 0x25
-	.long	.LASF459
-	.long	0x1aa8
+	.uleb128 0x26
+	.long	.LASF464
+	.long	0x1b1f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	__PRETTY_FUNCTION__.0
 	.uleb128 0xf
 	.quad	.LBB16
 	.quad	.LBE16-.LBB16
-	.uleb128 0x10
+	.uleb128 0x11
 	.string	"c"
 	.value	0x22d
 	.byte	0x10
@@ -6517,26 +6848,26 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0xf
 	.quad	.LBB17
 	.quad	.LBE17-.LBB17
-	.uleb128 0x7
-	.long	.LASF406
+	.uleb128 0x6
+	.long	.LASF412
 	.value	0x22e
 	.byte	0xa
-	.long	0xc4c
+	.long	0xc51
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
-	.uleb128 0x7
-	.long	.LASF407
+	.uleb128 0x6
+	.long	.LASF413
 	.value	0x22f
 	.byte	0xc
-	.long	0x19c6
+	.long	0x1a3d
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0xf
 	.quad	.LBB18
 	.quad	.LBE18-.LBB18
-	.uleb128 0x10
+	.uleb128 0x11
 	.string	"i"
 	.value	0x230
 	.byte	0x11
@@ -6548,33 +6879,33 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.byte	0
 	.byte	0
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	0xcd
-	.long	0x1aa8
+	.long	0x1b1f
 	.uleb128 0x17
 	.long	0x43
 	.byte	0x16
 	.byte	0
-	.uleb128 0x15
-	.long	0x1a98
+	.uleb128 0x14
+	.long	0x1b0f
 	.uleb128 0x1d
-	.long	.LASF408
+	.long	.LASF414
 	.value	0x21b
 	.quad	.LFB344
 	.quad	.LFE344-.LFB344
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1ae9
+	.long	0x1b60
 	.uleb128 0x9
-	.long	.LASF331
+	.long	.LASF338
 	.value	0x21b
 	.byte	0x1b
-	.long	0x1ae9
+	.long	0x1b60
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
-	.uleb128 0x7
-	.long	.LASF409
+	.uleb128 0x6
+	.long	.LASF415
 	.value	0x21e
 	.byte	0x8
 	.long	0xbc
@@ -6583,9 +6914,9 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x5
-	.long	0x125e
-	.uleb128 0x26
-	.long	.LASF416
+	.long	0x12eb
+	.uleb128 0x27
+	.long	.LASF422
 	.value	0x210
 	.byte	0x5
 	.long	0x70
@@ -6593,41 +6924,41 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE343-.LFB343
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1b5c
+	.long	0x1bd3
 	.uleb128 0x9
-	.long	.LASF331
+	.long	.LASF338
 	.value	0x210
 	.byte	0x21
-	.long	0x1ae9
+	.long	0x1b60
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x9
-	.long	.LASF304
+	.long	.LASF311
 	.value	0x210
 	.byte	0x2f
-	.long	0xc4c
+	.long	0xc51
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
 	.uleb128 0x9
-	.long	.LASF410
+	.long	.LASF416
 	.value	0x210
 	.byte	0x3e
 	.long	0x3c
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -52
-	.uleb128 0x7
+	.uleb128 0x6
 	.long	.LASF206
 	.value	0x212
 	.byte	0xb
-	.long	0x19c6
+	.long	0x1a3d
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
-	.uleb128 0x7
-	.long	.LASF411
+	.uleb128 0x6
+	.long	.LASF417
 	.value	0x216
 	.byte	0x9
 	.long	0xd2
@@ -6636,7 +6967,7 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x16
-	.long	.LASF424
+	.long	.LASF430
 	.value	0x1fa
 	.byte	0xe
 	.long	0xbc
@@ -6644,16 +6975,16 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE342-.LFB342
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1bda
+	.long	0x1c51
 	.uleb128 0x9
 	.long	.LASF166
 	.value	0x1fa
 	.byte	0x31
-	.long	0x872
+	.long	0x877
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -72
-	.uleb128 0x27
+	.uleb128 0x21
 	.string	"id"
 	.value	0x1fa
 	.byte	0x3f
@@ -6661,32 +6992,32 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -80
-	.uleb128 0x7
-	.long	.LASF412
+	.uleb128 0x6
+	.long	.LASF418
 	.value	0x1fc
 	.byte	0xe
 	.long	0x2db
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
-	.uleb128 0x7
-	.long	.LASF413
+	.uleb128 0x6
+	.long	.LASF419
 	.value	0x1fd
 	.byte	0x8
 	.long	0xbc
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0x7
-	.long	.LASF414
+	.uleb128 0x6
+	.long	.LASF420
 	.value	0x200
 	.byte	0x9
 	.long	0xd2
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
-	.uleb128 0x7
-	.long	.LASF415
+	.uleb128 0x6
+	.long	.LASF421
 	.value	0x201
 	.byte	0x8
 	.long	0xbc
@@ -6694,17 +7025,17 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -40
 	.byte	0
-	.uleb128 0x26
-	.long	.LASF417
+	.uleb128 0x27
+	.long	.LASF423
 	.value	0x1ef
 	.byte	0x8
-	.long	0x1ae9
+	.long	0x1b60
 	.quad	.LFB341
 	.quad	.LFE341-.LFB341
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1c1a
-	.uleb128 0x27
+	.long	0x1c91
+	.uleb128 0x21
 	.string	"id"
 	.value	0x1ef
 	.byte	0x1b
@@ -6712,17 +7043,17 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
-	.uleb128 0x7
-	.long	.LASF331
+	.uleb128 0x6
+	.long	.LASF338
 	.value	0x1f1
 	.byte	0x9
-	.long	0x1ae9
+	.long	0x1b60
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x28
-	.long	.LASF418
+	.long	.LASF424
 	.value	0x1e8
 	.long	0xbc
 	.quad	.LFB340
@@ -6730,7 +7061,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x1
 	.byte	0x9c
 	.uleb128 0x28
-	.long	.LASF419
+	.long	.LASF425
 	.value	0x1e3
 	.long	0xbc
 	.quad	.LFB339
@@ -6738,15 +7069,15 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x1
 	.byte	0x9c
 	.uleb128 0x1d
-	.long	.LASF420
+	.long	.LASF426
 	.value	0x1c8
 	.quad	.LFB338
 	.quad	.LFE338-.LFB338
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1cca
+	.long	0x1d41
 	.uleb128 0x9
-	.long	.LASF421
+	.long	.LASF427
 	.value	0x1c8
 	.byte	0x26
 	.long	0x2db
@@ -6754,7 +7085,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x9
-	.long	.LASF422
+	.long	.LASF428
 	.value	0x1c8
 	.byte	0x4a
 	.long	0x2db
@@ -6763,9 +7094,9 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -48
 	.uleb128 0x3b
 	.long	.LLRL0
-	.long	0x1ca8
-	.uleb128 0x7
-	.long	.LASF423
+	.long	0x1d1f
+	.uleb128 0x6
+	.long	.LASF429
 	.value	0x1cb
 	.byte	0x8
 	.long	0xc6
@@ -6776,8 +7107,8 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0xf
 	.quad	.LBB15
 	.quad	.LBE15-.LBB15
-	.uleb128 0x7
-	.long	.LASF409
+	.uleb128 0x6
+	.long	.LASF415
 	.value	0x1d2
 	.byte	0x9
 	.long	0xbc
@@ -6787,7 +7118,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.byte	0
 	.uleb128 0x16
-	.long	.LASF425
+	.long	.LASF431
 	.value	0x1bc
 	.byte	0xe
 	.long	0xbc
@@ -6795,9 +7126,9 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE337-.LFB337
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1d2a
+	.long	0x1da1
 	.uleb128 0x9
-	.long	.LASF426
+	.long	.LASF432
 	.value	0x1bc
 	.byte	0x22
 	.long	0x2db
@@ -6805,7 +7136,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x9
-	.long	.LASF409
+	.long	.LASF415
 	.value	0x1bc
 	.byte	0x34
 	.long	0x2db
@@ -6813,15 +7144,15 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -64
 	.uleb128 0x9
-	.long	.LASF412
+	.long	.LASF418
 	.value	0x1bc
 	.byte	0x4a
 	.long	0x2db
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -72
-	.uleb128 0x7
-	.long	.LASF415
+	.uleb128 0x6
+	.long	.LASF421
 	.value	0x1bd
 	.byte	0x8
 	.long	0xbc
@@ -6830,7 +7161,7 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -40
 	.byte	0
 	.uleb128 0x16
-	.long	.LASF427
+	.long	.LASF433
 	.value	0x1b1
 	.byte	0xe
 	.long	0xbc
@@ -6838,9 +7169,9 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE336-.LFB336
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1d7a
+	.long	0x1df1
 	.uleb128 0x9
-	.long	.LASF426
+	.long	.LASF432
 	.value	0x1b1
 	.byte	0x22
 	.long	0x2db
@@ -6848,15 +7179,15 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x9
-	.long	.LASF409
+	.long	.LASF415
 	.value	0x1b1
 	.byte	0x34
 	.long	0x2db
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -64
-	.uleb128 0x7
-	.long	.LASF415
+	.uleb128 0x6
+	.long	.LASF421
 	.value	0x1b2
 	.byte	0x8
 	.long	0xbc
@@ -6865,7 +7196,7 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -40
 	.byte	0
 	.uleb128 0x16
-	.long	.LASF428
+	.long	.LASF434
 	.value	0x19d
 	.byte	0xe
 	.long	0xbc
@@ -6873,41 +7204,41 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE335-.LFB335
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1de8
+	.long	0x1e5f
 	.uleb128 0x9
-	.long	.LASF429
+	.long	.LASF435
 	.value	0x19d
 	.byte	0x23
 	.long	0x2db
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0x7
-	.long	.LASF430
+	.uleb128 0x6
+	.long	.LASF436
 	.value	0x19f
 	.byte	0xe
 	.long	0x2db
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
-	.uleb128 0x7
-	.long	.LASF431
+	.uleb128 0x6
+	.long	.LASF437
 	.value	0x1a2
 	.byte	0xe
 	.long	0x2db
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
-	.uleb128 0x7
-	.long	.LASF432
+	.uleb128 0x6
+	.long	.LASF438
 	.value	0x1a7
 	.byte	0x9
 	.long	0xd2
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
-	.uleb128 0x7
-	.long	.LASF413
+	.uleb128 0x6
+	.long	.LASF419
 	.value	0x1a9
 	.byte	0x8
 	.long	0xbc
@@ -6916,7 +7247,7 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x16
-	.long	.LASF433
+	.long	.LASF439
 	.value	0x197
 	.byte	0x14
 	.long	0x2db
@@ -6924,16 +7255,16 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE334-.LFB334
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1e29
+	.long	0x1ea0
 	.uleb128 0x9
-	.long	.LASF409
+	.long	.LASF415
 	.value	0x197
 	.byte	0x2e
 	.long	0x2db
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
-	.uleb128 0x10
+	.uleb128 0x11
 	.string	"ptr"
 	.value	0x199
 	.byte	0xe
@@ -6943,7 +7274,7 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x16
-	.long	.LASF434
+	.long	.LASF440
 	.value	0x187
 	.byte	0xe
 	.long	0xbc
@@ -6951,32 +7282,32 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE333-.LFB333
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1ea7
+	.long	0x1f1e
 	.uleb128 0x9
-	.long	.LASF409
+	.long	.LASF415
 	.value	0x187
 	.byte	0x27
 	.long	0x2db
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -72
-	.uleb128 0x7
-	.long	.LASF435
+	.uleb128 0x6
+	.long	.LASF441
 	.value	0x188
 	.byte	0x11
 	.long	0x2db
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
-	.uleb128 0x7
-	.long	.LASF436
+	.uleb128 0x6
+	.long	.LASF442
 	.value	0x189
 	.byte	0x11
 	.long	0x2db
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
-	.uleb128 0x10
+	.uleb128 0x11
 	.string	"ext"
 	.value	0x18b
 	.byte	0x11
@@ -6984,15 +7315,15 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
-	.uleb128 0x7
-	.long	.LASF437
+	.uleb128 0x6
+	.long	.LASF443
 	.value	0x18c
 	.byte	0xc
 	.long	0xd2
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
-	.uleb128 0x10
+	.uleb128 0x11
 	.string	"ptr"
 	.value	0x18e
 	.byte	0xb
@@ -7002,34 +7333,42 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x1d
-	.long	.LASF438
+	.long	.LASF444
 	.value	0x157
 	.quad	.LFB332
 	.quad	.LFE332-.LFB332
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x1fdc
+	.long	0x2062
 	.uleb128 0x9
-	.long	.LASF439
+	.long	.LASF303
 	.value	0x157
 	.byte	0x1c
-	.long	0x100d
+	.long	0x1084
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -72
-	.uleb128 0x9
-	.long	.LASF440
+	.uleb128 0x21
+	.string	"td"
 	.value	0x157
-	.byte	0x28
+	.byte	0x35
+	.long	0x2062
+	.uleb128 0x3
+	.byte	0x91
+	.sleb128 -80
+	.uleb128 0x9
+	.long	.LASF445
+	.value	0x157
+	.byte	0x3d
 	.long	0x858
 	.uleb128 0x3
 	.byte	0x91
-	.sleb128 -76
-	.uleb128 0x19
+	.sleb128 -84
+	.uleb128 0x1a
 	.quad	.LBB6
 	.quad	.LBE6-.LBB6
-	.long	0x1f07
-	.uleb128 0x10
+	.long	0x1f8d
+	.uleb128 0x11
 	.string	"i"
 	.value	0x15a
 	.byte	0x11
@@ -7041,7 +7380,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0xf
 	.quad	.LBB7
 	.quad	.LBE7-.LBB7
-	.uleb128 0x10
+	.uleb128 0x11
 	.string	"i"
 	.value	0x170
 	.byte	0x11
@@ -7049,54 +7388,54 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -60
-	.uleb128 0x19
+	.uleb128 0x1a
 	.quad	.LBB8
 	.quad	.LBE8-.LBB8
-	.long	0x1f4a
-	.uleb128 0x7
-	.long	.LASF441
+	.long	0x1fd0
+	.uleb128 0x6
+	.long	.LASF446
 	.value	0x171
 	.byte	0xe
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
 	.byte	0
-	.uleb128 0x19
+	.uleb128 0x1a
 	.quad	.LBB9
 	.quad	.LBE9-.LBB9
-	.long	0x1f6f
-	.uleb128 0x7
-	.long	.LASF441
+	.long	0x1ff5
+	.uleb128 0x6
+	.long	.LASF446
 	.value	0x172
 	.byte	0xe
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
 	.byte	0
-	.uleb128 0x19
+	.uleb128 0x1a
 	.quad	.LBB10
 	.quad	.LBE10-.LBB10
-	.long	0x1f94
-	.uleb128 0x7
-	.long	.LASF441
+	.long	0x201a
+	.uleb128 0x6
+	.long	.LASF446
 	.value	0x173
 	.byte	0xe
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
 	.byte	0
-	.uleb128 0x19
+	.uleb128 0x1a
 	.quad	.LBB11
 	.quad	.LBE11-.LBB11
-	.long	0x1fb9
-	.uleb128 0x7
-	.long	.LASF441
+	.long	0x203f
+	.uleb128 0x6
+	.long	.LASF446
 	.value	0x174
 	.byte	0xe
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
@@ -7104,27 +7443,29 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0xf
 	.quad	.LBB12
 	.quad	.LBE12-.LBB12
-	.uleb128 0x7
-	.long	.LASF441
+	.uleb128 0x6
+	.long	.LASF446
 	.value	0x175
 	.byte	0xe
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
 	.byte	0
 	.byte	0
-	.uleb128 0x21
-	.long	.LASF442
+	.uleb128 0x5
+	.long	0x1093
+	.uleb128 0x22
+	.long	.LASF447
 	.byte	0xe4
 	.quad	.LFB331
 	.quad	.LFE331-.LFB331
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x2046
+	.long	0x20d1
 	.uleb128 0x13
-	.long	.LASF415
+	.long	.LASF421
 	.byte	0x2
 	.byte	0xe4
 	.byte	0x1d
@@ -7133,7 +7474,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x8
-	.long	.LASF443
+	.long	.LASF448
 	.byte	0xe6
 	.byte	0x9
 	.long	0x2e5
@@ -7143,34 +7484,34 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0xf
 	.quad	.LBB5
 	.quad	.LBE5-.LBB5
-	.uleb128 0x7
-	.long	.LASF444
+	.uleb128 0x6
+	.long	.LASF449
 	.value	0x109
 	.byte	0xb
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
-	.uleb128 0x7
-	.long	.LASF445
+	.uleb128 0x6
+	.long	.LASF450
 	.value	0x117
 	.byte	0xb
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
 	.byte	0
-	.uleb128 0x21
-	.long	.LASF446
+	.uleb128 0x22
+	.long	.LASF451
 	.byte	0xd0
 	.quad	.LFB330
 	.quad	.LFE330-.LFB330
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x20c0
+	.long	0x214b
 	.uleb128 0x13
-	.long	.LASF380
+	.long	.LASF386
 	.byte	0x2
 	.byte	0xd0
 	.byte	0x21
@@ -7179,7 +7520,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -104
 	.uleb128 0x8
-	.long	.LASF447
+	.long	.LASF452
 	.byte	0xd3
 	.byte	0x9
 	.long	0xd2
@@ -7190,13 +7531,13 @@ __PRETTY_FUNCTION__.0:
 	.long	.LASF206
 	.byte	0xd4
 	.byte	0x7
-	.long	0x20c0
+	.long	0x214b
 	.uleb128 0x4
 	.byte	0x91
 	.sleb128 -72
 	.byte	0x6
 	.uleb128 0x8
-	.long	.LASF448
+	.long	.LASF453
 	.byte	0xd5
 	.byte	0x9
 	.long	0xd2
@@ -7217,9 +7558,9 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -96
 	.byte	0
 	.byte	0
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	0xc6
-	.long	0x20d4
+	.long	0x215f
 	.uleb128 0x3d
 	.long	0x43
 	.uleb128 0x4
@@ -7228,7 +7569,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x6
 	.byte	0
 	.uleb128 0x3e
-	.long	.LASF449
+	.long	.LASF454
 	.byte	0x2
 	.byte	0xbd
 	.byte	0xe
@@ -7237,9 +7578,9 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE329-.LFB329
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x2131
+	.long	0x21bc
 	.uleb128 0x13
-	.long	.LASF450
+	.long	.LASF455
 	.byte	0x2
 	.byte	0xbd
 	.byte	0x2f
@@ -7248,7 +7589,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -72
 	.uleb128 0x8
-	.long	.LASF448
+	.long	.LASF453
 	.byte	0xbf
 	.byte	0x9
 	.long	0xd2
@@ -7256,7 +7597,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x8
-	.long	.LASF414
+	.long	.LASF420
 	.byte	0xc1
 	.byte	0x9
 	.long	0xd2
@@ -7264,7 +7605,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -48
 	.uleb128 0x8
-	.long	.LASF415
+	.long	.LASF421
 	.byte	0xc4
 	.byte	0x8
 	.long	0xbc
@@ -7273,29 +7614,29 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -40
 	.byte	0
 	.uleb128 0x29
-	.long	.LASF451
+	.long	.LASF456
 	.byte	0xb2
 	.quad	.LFB328
 	.quad	.LFE328-.LFB328
 	.uleb128 0x1
 	.byte	0x9c
 	.uleb128 0x29
-	.long	.LASF452
+	.long	.LASF457
 	.byte	0xac
 	.quad	.LFB327
 	.quad	.LFE327-.LFB327
 	.uleb128 0x1
 	.byte	0x9c
-	.uleb128 0x21
-	.long	.LASF453
+	.uleb128 0x22
+	.long	.LASF458
 	.byte	0xa3
 	.quad	.LFB326
 	.quad	.LFE326-.LFB326
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x218d
+	.long	0x2218
 	.uleb128 0x13
-	.long	.LASF454
+	.long	.LASF459
 	.byte	0x2
 	.byte	0xa3
 	.byte	0x16
@@ -7305,7 +7646,7 @@ __PRETTY_FUNCTION__.0:
 	.sleb128 -20
 	.byte	0
 	.uleb128 0x3f
-	.long	.LASF465
+	.long	.LASF470
 	.byte	0x2
 	.byte	0x83
 	.byte	0x6
@@ -7313,12 +7654,12 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE325-.LFB325
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x21cc
+	.long	0x2257
 	.uleb128 0xf
 	.quad	.LBB3
 	.quad	.LBE3-.LBB3
 	.uleb128 0x8
-	.long	.LASF455
+	.long	.LASF460
 	.byte	0x86
 	.byte	0x7
 	.long	0x70
@@ -7328,7 +7669,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.byte	0
 	.uleb128 0x2a
-	.long	.LASF456
+	.long	.LASF461
 	.byte	0x5f
 	.byte	0x8
 	.long	0xd2
@@ -7336,18 +7677,18 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE324-.LFB324
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x223b
+	.long	0x22c6
 	.uleb128 0x13
 	.long	.LASF206
 	.byte	0x2
 	.byte	0x5f
 	.byte	0x21
-	.long	0xc4c
+	.long	0xc51
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x13
-	.long	.LASF457
+	.long	.LASF462
 	.byte	0x2
 	.byte	0x5f
 	.byte	0x30
@@ -7356,39 +7697,39 @@ __PRETTY_FUNCTION__.0:
 	.byte	0x91
 	.sleb128 -48
 	.uleb128 0x8
-	.long	.LASF402
+	.long	.LASF408
 	.byte	0x61
 	.byte	0xb
-	.long	0x19c6
+	.long	0x1a3d
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x8
-	.long	.LASF458
+	.long	.LASF463
 	.byte	0x66
 	.byte	0x9
 	.long	0xd2
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -32
-	.uleb128 0x25
-	.long	.LASF459
-	.long	0x224b
+	.uleb128 0x26
+	.long	.LASF464
+	.long	0x22d6
 	.uleb128 0x9
 	.byte	0x3
 	.quad	__PRETTY_FUNCTION__.1
 	.byte	0
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	0xcd
-	.long	0x224b
+	.long	0x22d6
 	.uleb128 0x17
 	.long	0x43
 	.byte	0x11
 	.byte	0
-	.uleb128 0x15
-	.long	0x223b
+	.uleb128 0x14
+	.long	0x22c6
 	.uleb128 0x2a
-	.long	.LASF460
+	.long	.LASF465
 	.byte	0x1b
 	.byte	0x5
 	.long	0x858
@@ -7396,13 +7737,13 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LFE323-.LFB323
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x22a1
+	.long	0x232c
 	.uleb128 0x13
 	.long	.LASF166
 	.byte	0x2
 	.byte	0x1b
 	.byte	0x26
-	.long	0x872
+	.long	0x877
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
@@ -7410,7 +7751,7 @@ __PRETTY_FUNCTION__.0:
 	.quad	.LBB2
 	.quad	.LBE2-.LBB2
 	.uleb128 0x8
-	.long	.LASF461
+	.long	.LASF466
 	.byte	0x1f
 	.byte	0x7
 	.long	0x70
@@ -7420,7 +7761,7 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.byte	0
 	.uleb128 0x40
-	.long	.LASF466
+	.long	.LASF471
 	.byte	0x1
 	.byte	0x83
 	.byte	0x14
@@ -7429,11 +7770,11 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x1
 	.byte	0x9c
 	.uleb128 0x13
-	.long	.LASF462
+	.long	.LASF467
 	.byte	0x1
 	.byte	0x83
 	.byte	0x28
-	.long	0x12e8
+	.long	0x1375
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -7500,6 +7841,24 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.byte	0
 	.uleb128 0x6
+	.uleb128 0x34
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0x21
+	.sleb128 2
+	.uleb128 0x3b
+	.uleb128 0x5
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x2
+	.uleb128 0x18
+	.byte	0
+	.byte	0
+	.uleb128 0x7
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -7520,24 +7879,6 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x19
 	.uleb128 0x1
 	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x7
-	.uleb128 0x34
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0x21
-	.sleb128 2
-	.uleb128 0x3b
-	.uleb128 0x5
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x2
-	.uleb128 0x18
 	.byte	0
 	.byte	0
 	.uleb128 0x8
@@ -7671,6 +8012,22 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.byte	0
 	.uleb128 0x10
+	.uleb128 0x13
+	.byte	0x1
+	.uleb128 0xb
+	.uleb128 0xb
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0x21
+	.sleb128 9
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x11
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -7686,22 +8043,6 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x13
 	.uleb128 0x2
 	.uleb128 0x18
-	.byte	0
-	.byte	0
-	.uleb128 0x11
-	.uleb128 0x13
-	.byte	0x1
-	.uleb128 0xb
-	.uleb128 0xb
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0x21
-	.sleb128 9
-	.uleb128 0x1
-	.uleb128 0x13
 	.byte	0
 	.byte	0
 	.uleb128 0x12
@@ -7740,18 +8081,18 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.byte	0
 	.uleb128 0x14
+	.uleb128 0x26
+	.byte	0
+	.uleb128 0x49
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x15
 	.uleb128 0x1
 	.byte	0x1
 	.uleb128 0x49
 	.uleb128 0x13
 	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x15
-	.uleb128 0x26
-	.byte	0
-	.uleb128 0x49
 	.uleb128 0x13
 	.byte	0
 	.byte	0
@@ -7793,6 +8134,15 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.byte	0
 	.uleb128 0x18
+	.uleb128 0x13
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3c
+	.uleb128 0x19
+	.byte	0
+	.byte	0
+	.uleb128 0x19
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -7814,7 +8164,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x19
+	.uleb128 0x1a
 	.uleb128 0xb
 	.byte	0x1
 	.uleb128 0x11
@@ -7825,20 +8175,11 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x1a
+	.uleb128 0x1b
 	.uleb128 0x37
 	.byte	0
 	.uleb128 0x49
 	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x1b
-	.uleb128 0x13
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3c
-	.uleb128 0x19
 	.byte	0
 	.byte	0
 	.uleb128 0x1c
@@ -7951,6 +8292,24 @@ __PRETTY_FUNCTION__.0:
 	.byte	0
 	.byte	0
 	.uleb128 0x21
+	.uleb128 0x5
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0x8
+	.uleb128 0x3a
+	.uleb128 0x21
+	.sleb128 2
+	.uleb128 0x3b
+	.uleb128 0x5
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x2
+	.uleb128 0x18
+	.byte	0
+	.byte	0
+	.uleb128 0x22
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -7979,7 +8338,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x22
+	.uleb128 0x23
 	.uleb128 0x4
 	.byte	0x1
 	.uleb128 0x3e
@@ -8000,7 +8359,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x23
+	.uleb128 0x24
 	.uleb128 0x13
 	.byte	0x1
 	.uleb128 0xb
@@ -8016,14 +8375,14 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x24
+	.uleb128 0x25
 	.uleb128 0xd
 	.byte	0
 	.uleb128 0x3
 	.uleb128 0xe
 	.uleb128 0x3a
 	.uleb128 0x21
-	.sleb128 23
+	.sleb128 24
 	.uleb128 0x3b
 	.uleb128 0xb
 	.uleb128 0x39
@@ -8032,7 +8391,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x25
+	.uleb128 0x26
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -8045,7 +8404,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0x26
+	.uleb128 0x27
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -8073,24 +8432,6 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x19
 	.uleb128 0x1
 	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x27
-	.uleb128 0x5
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0x8
-	.uleb128 0x3a
-	.uleb128 0x21
-	.sleb128 2
-	.uleb128 0x3b
-	.uleb128 0x5
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x2
-	.uleb128 0x18
 	.byte	0
 	.byte	0
 	.uleb128 0x28
@@ -8542,7 +8883,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"dir_path"
 .LASF298:
 	.string	"direction"
-.LASF392:
+.LASF398:
 	.string	"wave_get_sample_rate"
 .LASF141:
 	.string	"SND_PCM_FORMAT_S32"
@@ -8560,7 +8901,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"centerW"
 .LASF253:
 	.string	"glue_bits"
-.LASF464:
+.LASF469:
 	.string	"_IO_lock_t"
 .LASF215:
 	.string	"body_storage"
@@ -8568,7 +8909,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"endfile_size"
 .LASF282:
 	.string	"output"
-.LASF375:
+.LASF381:
 	.string	"strlen"
 .LASF284:
 	.string	"sample_count"
@@ -8576,7 +8917,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_FORMAT_DSD_U16_LE"
 .LASF200:
 	.string	"stderr"
-.LASF450:
+.LASF455:
 	.string	"format"
 .LASF64:
 	.string	"tm_yday"
@@ -8586,13 +8927,13 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_FORMAT_S24_3BE"
 .LASF99:
 	.string	"SND_PCM_FORMAT_FLOAT_LE"
-.LASF355:
+.LASF362:
 	.string	"fsync"
-.LASF357:
+.LASF364:
 	.string	"fflush"
 .LASF187:
 	.string	"data_record_ok"
-.LASF458:
+.LASF463:
 	.string	"read_frames"
 .LASF127:
 	.string	"SND_PCM_FORMAT_G723_24"
@@ -8600,15 +8941,13 @@ __PRETTY_FUNCTION__.0:
 	.string	"e_o_s"
 .LASF153:
 	.string	"JSON_OBJECT"
-.LASF399:
+.LASF405:
 	.string	"snd_strerror"
-.LASF259:
-	.string	"pcmend"
 .LASF24:
 	.string	"_IO_write_end"
 .LASF4:
 	.string	"unsigned int"
-.LASF325:
+.LASF332:
 	.string	"Wave"
 .LASF268:
 	.string	"next"
@@ -8624,19 +8963,19 @@ __PRETTY_FUNCTION__.0:
 	.string	"pcm_current"
 .LASF119:
 	.string	"SND_PCM_FORMAT_S20_3LE"
-.LASF330:
+.LASF337:
 	.string	"Input_device"
 .LASF159:
 	.string	"JSON_FALSE"
 .LASF227:
 	.string	"serialno"
-.LASF301:
+.LASF308:
 	.string	"guint"
-.LASF368:
+.LASF374:
 	.string	"strerror"
 .LASF98:
 	.string	"SND_PCM_FORMAT_U32_BE"
-.LASF431:
+.LASF437:
 	.string	"slash"
 .LASF189:
 	.string	"calibration_time"
@@ -8654,7 +8993,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"rate"
 .LASF258:
 	.string	"vorbis_block"
-.LASF433:
+.LASF439:
 	.string	"get_extention"
 .LASF280:
 	.string	"update"
@@ -8670,15 +9009,15 @@ __PRETTY_FUNCTION__.0:
 	.string	"JSON_STRING"
 .LASF94:
 	.string	"SND_PCM_FORMAT_U24_BE"
-.LASF416:
+.LASF422:
 	.string	"audit_append_samples"
 .LASF180:
 	.string	"levels_record_period"
-.LASF306:
+.LASF313:
 	.string	"ChunkSize"
-.LASF342:
+.LASF349:
 	.string	"LAE_json"
-.LASF369:
+.LASF375:
 	.string	"__errno_location"
 .LASF18:
 	.string	"_flags"
@@ -8686,43 +9025,45 @@ __PRETTY_FUNCTION__.0:
 	.string	"__time_t"
 .LASF62:
 	.string	"tm_year"
-.LASF338:
+.LASF345:
 	.string	"data_output_index"
 .LASF80:
 	.string	"SND_PCM_ACCESS_RW_NONINTERLEAVED"
-.LASF463:
+.LASF468:
 	.string	"GNU C17 13.3.0 -mtune=generic -march=x86-64 -g -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection"
+.LASF305:
+	.string	"sbuffer"
 .LASF101:
 	.string	"SND_PCM_FORMAT_FLOAT64_LE"
 .LASF158:
 	.string	"JSON_TRUE"
-.LASF363:
+.LASF369:
 	.string	"json_array"
-.LASF329:
+.LASF336:
 	.string	"device"
 .LASF297:
 	.string	"le_counter"
 .LASF69:
 	.string	"uint32_t"
-.LASF374:
+.LASF380:
 	.string	"strcpy"
 .LASF207:
 	.string	"storage"
-.LASF371:
+.LASF377:
 	.string	"strftime"
 .LASF82:
 	.string	"snd_pcm_access_t"
 .LASF61:
 	.string	"tm_mon"
-.LASF373:
+.LASF379:
 	.string	"strcat"
 .LASF29:
 	.string	"_IO_save_end"
 .LASF276:
 	.string	"file_format"
-.LASF315:
+.LASF322:
 	.string	"BitsPerSample"
-.LASF327:
+.LASF334:
 	.string	"DEVICE_SOUND_CARD"
 .LASF269:
 	.string	"vorbis_comment"
@@ -8742,49 +9083,49 @@ __PRETTY_FUNCTION__.0:
 	.string	"long long unsigned int"
 .LASF164:
 	.string	"refcount"
-.LASF339:
+.LASF346:
 	.string	"calendar"
-.LASF361:
+.LASF367:
 	.string	"json_object_set_new"
-.LASF395:
+.LASF401:
 	.string	"snd_pcm_start"
 .LASF53:
 	.string	"int16_t"
 .LASF73:
 	.string	"snd_pcm_stream_t"
-.LASF419:
+.LASF425:
 	.string	"output_get_data_filepath"
-.LASF461:
+.LASF466:
 	.string	"result"
-.LASF434:
+.LASF440:
 	.string	"get_filename"
-.LASF341:
+.LASF348:
 	.string	"LAeq_json"
-.LASF442:
+.LASF447:
 	.string	"output_file_open"
 .LASF257:
 	.string	"backend_state"
-.LASF353:
+.LASF360:
 	.string	"strncpy"
-.LASF404:
+.LASF410:
 	.string	"samples_float_to_int16"
-.LASF317:
+.LASF324:
 	.string	"SubChunkData"
 .LASF273:
 	.string	"vendor"
 .LASF290:
 	.string	"record_struct"
-.LASF424:
+.LASF430:
 	.string	"audit_make_filename"
 .LASF120:
 	.string	"SND_PCM_FORMAT_S20_3BE"
-.LASF443:
+.LASF448:
 	.string	"output_file"
 .LASF9:
 	.string	"__uint16_t"
 .LASF89:
 	.string	"SND_PCM_FORMAT_U16_LE"
-.LASF451:
+.LASF456:
 	.string	"output_file_close"
 .LASF28:
 	.string	"_IO_backup_base"
@@ -8794,15 +9135,15 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_FORMAT_MU_LAW"
 .LASF39:
 	.string	"_offset"
-.LASF303:
+.LASF310:
 	.string	"_GArray"
 .LASF76:
 	.string	"SND_PCM_ACCESS_MMAP_INTERLEAVED"
 .LASF263:
 	.string	"localalloc"
-.LASF380:
+.LASF386:
 	.string	"time"
-.LASF413:
+.LASF419:
 	.string	"stem"
 .LASF223:
 	.string	"lacing_returned"
@@ -8810,23 +9151,23 @@ __PRETTY_FUNCTION__.0:
 	.string	"bitrate_upper"
 .LASF173:
 	.string	"data_output_format"
-.LASF398:
+.LASF404:
 	.string	"fprintf"
 .LASF106:
 	.string	"SND_PCM_FORMAT_A_LAW"
 .LASF32:
 	.string	"_fileno"
-.LASF328:
+.LASF335:
 	.string	"alsa_handle"
 .LASF97:
 	.string	"SND_PCM_FORMAT_U32_LE"
-.LASF460:
+.LASF465:
 	.string	"input_device_open"
 .LASF81:
 	.string	"SND_PCM_ACCESS_LAST"
-.LASF354:
+.LASF361:
 	.string	"strrchr"
-.LASF405:
+.LASF411:
 	.string	"samples_int16_to_float"
 .LASF228:
 	.string	"pageno"
@@ -8834,7 +9175,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"data_file_duration"
 .LASF54:
 	.string	"int64_t"
-.LASF302:
+.LASF309:
 	.string	"GArray"
 .LASF110:
 	.string	"SND_PCM_FORMAT_S20_LE"
@@ -8850,37 +9191,37 @@ __PRETTY_FUNCTION__.0:
 	.string	"_snd_pcm_format"
 .LASF144:
 	.string	"SND_PCM_FORMAT_FLOAT64"
-.LASF335:
+.LASF342:
 	.string	"data_output_fd"
 .LASF241:
 	.string	"bitrate_window"
-.LASF356:
+.LASF363:
 	.string	"fileno"
-.LASF350:
+.LASF357:
 	.string	"wave_create"
-.LASF402:
+.LASF408:
 	.string	"samples_int16"
 .LASF204:
 	.string	"endbyte"
-.LASF326:
+.LASF333:
 	.string	"DEVICE_WAVE"
-.LASF364:
+.LASF370:
 	.string	"json_object"
 .LASF264:
 	.string	"totaluse"
-.LASF383:
+.LASF389:
 	.string	"free"
-.LASF449:
+.LASF454:
 	.string	"output_init_filename"
-.LASF372:
+.LASF378:
 	.string	"localtime"
-.LASF411:
+.LASF417:
 	.string	"wrote_frames"
-.LASF377:
+.LASF383:
 	.string	"fclose"
 .LASF239:
 	.string	"bitrate_nominal"
-.LASF426:
+.LASF432:
 	.string	"path"
 .LASF111:
 	.string	"SND_PCM_FORMAT_S20_BE"
@@ -8890,63 +9231,65 @@ __PRETTY_FUNCTION__.0:
 	.string	"_chain"
 .LASF134:
 	.string	"SND_PCM_FORMAT_DSD_U16_BE"
-.LASF444:
+.LASF449:
 	.string	"object_json"
 .LASF138:
 	.string	"SND_PCM_FORMAT_U16"
-.LASF400:
+.LASF406:
 	.string	"snd_pcm_open"
 .LASF170:
 	.string	"output_path"
+.LASF259:
+	.string	"pcmend"
 .LASF100:
 	.string	"SND_PCM_FORMAT_FLOAT_BE"
 .LASF291:
 	.string	"segment_number"
 .LASF197:
 	.string	"server_socket"
-.LASF456:
+.LASF461:
 	.string	"input_device_read"
-.LASF436:
+.LASF442:
 	.string	"start"
-.LASF362:
+.LASF368:
 	.string	"json_integer"
-.LASF340:
+.LASF347:
 	.string	"output_time"
 .LASF16:
 	.string	"char"
-.LASF421:
+.LASF427:
 	.string	"option_output_filename"
 .LASF78:
 	.string	"SND_PCM_ACCESS_MMAP_COMPLEX"
-.LASF331:
+.LASF338:
 	.string	"audit"
 .LASF45:
 	.string	"_mode"
-.LASF346:
+.LASF353:
 	.string	"wave_store"
 .LASF178:
 	.string	"segment_duration"
-.LASF432:
+.LASF438:
 	.string	"stem_size"
-.LASF409:
+.LASF415:
 	.string	"filename"
-.LASF314:
+.LASF321:
 	.string	"BlockAlign"
 .LASF128:
 	.string	"SND_PCM_FORMAT_G723_24_1B"
 .LASF169:
 	.string	"input_file"
-.LASF318:
+.LASF325:
 	.string	"wave"
 .LASF22:
 	.string	"_IO_write_base"
 .LASF19:
 	.string	"_IO_read_ptr"
-.LASF428:
+.LASF434:
 	.string	"get_stem"
 .LASF213:
 	.string	"ogg_page"
-.LASF367:
+.LASF373:
 	.string	"exit"
 .LASF142:
 	.string	"SND_PCM_FORMAT_U32"
@@ -8970,19 +9313,19 @@ __PRETTY_FUNCTION__.0:
 	.string	"LAFmax"
 .LASF122:
 	.string	"SND_PCM_FORMAT_U20_3BE"
-.LASF313:
+.LASF320:
 	.string	"ByteRate"
-.LASF401:
+.LASF407:
 	.string	"samples_float"
 .LASF246:
 	.string	"pcm_storage"
-.LASF332:
+.LASF339:
 	.string	"Audit"
-.LASF312:
+.LASF319:
 	.string	"SampleRate"
 .LASF255:
 	.string	"floor_bits"
-.LASF445:
+.LASF450:
 	.string	"levels_json"
 .LASF96:
 	.string	"SND_PCM_FORMAT_S32_BE"
@@ -8990,11 +9333,11 @@ __PRETTY_FUNCTION__.0:
 	.string	"_IO_marker"
 .LASF88:
 	.string	"SND_PCM_FORMAT_S16_BE"
-.LASF323:
+.LASF330:
 	.string	"samples"
 .LASF51:
 	.string	"long long int"
-.LASF322:
+.LASF329:
 	.string	"file_offset"
 .LASF176:
 	.string	"bits_per_sample"
@@ -9004,17 +9347,19 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_FORMAT_U20"
 .LASF47:
 	.string	"FILE"
+.LASF300:
+	.string	"coefs"
 .LASF140:
 	.string	"SND_PCM_FORMAT_U24"
 .LASF209:
 	.string	"header"
 .LASF87:
 	.string	"SND_PCM_FORMAT_S16_LE"
-.LASF448:
+.LASF453:
 	.string	"date_position"
-.LASF417:
+.LASF423:
 	.string	"audit_create"
-.LASF365:
+.LASF371:
 	.string	"add_file"
 .LASF131:
 	.string	"SND_PCM_FORMAT_DSD_U8"
@@ -9022,7 +9367,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"__int16_t"
 .LASF175:
 	.string	"channels"
-.LASF415:
+.LASF421:
 	.string	"filepath"
 .LASF30:
 	.string	"_markers"
@@ -9038,7 +9383,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"audio_file_duration"
 .LASF240:
 	.string	"bitrate_lower"
-.LASF344:
+.LASF351:
 	.string	"LAFmax_json"
 .LASF145:
 	.string	"SND_PCM_FORMAT_IEC958_SUBFRAME"
@@ -9050,7 +9395,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"_freeres_buf"
 .LASF85:
 	.string	"SND_PCM_FORMAT_S8"
-.LASF437:
+.LASF443:
 	.string	"filename_len"
 .LASF71:
 	.string	"SND_PCM_STREAM_CAPTURE"
@@ -9062,17 +9407,15 @@ __PRETTY_FUNCTION__.0:
 	.string	"JSON_REAL"
 .LASF219:
 	.string	"granule_vals"
-.LASF465:
+.LASF470:
 	.string	"input_device_close"
-.LASF360:
-	.string	"get_level"
 .LASF44:
 	.string	"__pad5"
 .LASF184:
 	.string	"audio_record_ok"
 .LASF117:
 	.string	"SND_PCM_FORMAT_U24_3LE"
-.LASF397:
+.LASF403:
 	.string	"snd_pcm_set_params"
 .LASF216:
 	.string	"body_fill"
@@ -9080,7 +9423,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_FORMAT_FLOAT64_BE"
 .LASF196:
 	.string	"mqtt_device_credential"
-.LASF370:
+.LASF376:
 	.string	"fopen"
 .LASF36:
 	.string	"_vtable_offset"
@@ -9090,13 +9433,13 @@ __PRETTY_FUNCTION__.0:
 	.string	"eofflag"
 .LASF226:
 	.string	"b_o_s"
-.LASF349:
+.LASF356:
 	.string	"wave_set_sample_rate"
-.LASF452:
+.LASF457:
 	.string	"output_close"
 .LASF118:
 	.string	"SND_PCM_FORMAT_U24_3BE"
-.LASF420:
+.LASF426:
 	.string	"output_set_filename"
 .LASF299:
 	.string	"Levels"
@@ -9104,21 +9447,21 @@ __PRETTY_FUNCTION__.0:
 	.string	"long double"
 .LASF267:
 	.string	"alloc_chain"
-.LASF319:
+.LASF326:
 	.string	"riff_chunk"
 .LASF68:
 	.string	"uint16_t"
 .LASF212:
 	.string	"body_len"
-.LASF455:
+.LASF460:
 	.string	"result_code"
 .LASF256:
 	.string	"res_bits"
 .LASF17:
 	.string	"size_t"
-.LASF418:
+.LASF424:
 	.string	"output_get_audio_filepath"
-.LASF347:
+.LASF354:
 	.string	"wave_append_samples"
 .LASF41:
 	.string	"_wide_data"
@@ -9126,9 +9469,9 @@ __PRETTY_FUNCTION__.0:
 	.string	"__uint32_t"
 .LASF167:
 	.string	"identification"
-.LASF387:
+.LASF393:
 	.string	"wave_read_samples"
-.LASF429:
+.LASF435:
 	.string	"fullname"
 .LASF252:
 	.string	"sequence"
@@ -9146,29 +9489,31 @@ __PRETTY_FUNCTION__.0:
 	.string	"config"
 .LASF90:
 	.string	"SND_PCM_FORMAT_U16_BE"
-.LASF308:
+.LASF315:
 	.string	"Format"
 .LASF20:
 	.string	"_IO_read_end"
-.LASF366:
+.LASF372:
 	.string	"strchr"
 .LASF109:
 	.string	"SND_PCM_FORMAT_GSM"
 .LASF7:
 	.string	"short int"
-.LASF435:
+.LASF441:
 	.string	"no_path"
 .LASF12:
 	.string	"long int"
+.LASF301:
+	.string	"ThirdOctaveFilter"
 .LASF233:
 	.string	"bytes"
 .LASF286:
 	.string	"created_data_files"
 .LASF86:
 	.string	"SND_PCM_FORMAT_U8"
-.LASF403:
+.LASF409:
 	.string	"length"
-.LASF336:
+.LASF343:
 	.string	"audio_output_filepath"
 .LASF156:
 	.string	"JSON_INTEGER"
@@ -9182,25 +9527,27 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_FORMAT_S24_3LE"
 .LASF171:
 	.string	"output_filename"
-.LASF248:
-	.string	"pcm_returned"
+.LASF302:
+	.string	"filter"
 .LASF270:
 	.string	"user_comments"
 .LASF50:
 	.string	"_IO_wide_data"
-.LASF439:
+.LASF306:
+	.string	"ThirdOctaveData"
+.LASF303:
 	.string	"levels"
-.LASF320:
+.LASF327:
 	.string	"subchunk_fmt"
-.LASF393:
+.LASF399:
 	.string	"wave_get_number_of_channels"
-.LASF333:
+.LASF340:
 	.string	"current_format"
-.LASF423:
+.LASF429:
 	.string	"first_letter"
 .LASF177:
 	.string	"block_size"
-.LASF462:
+.LASF467:
 	.string	"json"
 .LASF70:
 	.string	"SND_PCM_STREAM_PLAYBACK"
@@ -9210,23 +9557,23 @@ __PRETTY_FUNCTION__.0:
 	.string	"header_len"
 .LASF190:
 	.string	"calibration_reference"
-.LASF309:
+.LASF316:
 	.string	"RiffChunk"
-.LASF440:
+.LASF445:
 	.string	"continuous"
 .LASF289:
 	.string	"record_state"
-.LASF337:
+.LASF344:
 	.string	"output_json"
 .LASF165:
 	.string	"json_int_t"
-.LASF457:
+.LASF462:
 	.string	"nframes"
 .LASF162:
 	.string	"json_t"
 .LASF104:
 	.string	"SND_PCM_FORMAT_IEC958_SUBFRAME_BE"
-.LASF305:
+.LASF312:
 	.string	"ChunkID"
 .LASF293:
 	.string	"LApeak"
@@ -9234,7 +9581,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"_IO_buf_base"
 .LASF265:
 	.string	"reap"
-.LASF447:
+.LASF452:
 	.string	"date_size"
 .LASF191:
 	.string	"calibration_delta"
@@ -9244,19 +9591,19 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_FORMAT_IMA_ADPCM"
 .LASF152:
 	.string	"_snd_pcm"
-.LASF334:
+.LASF341:
 	.string	"data_output_filepath"
 .LASF143:
 	.string	"SND_PCM_FORMAT_FLOAT"
-.LASF348:
+.LASF355:
 	.string	"wave_format_update"
 .LASF38:
 	.string	"_lock"
 .LASF188:
 	.string	"background_duration"
-.LASF453:
+.LASF458:
 	.string	"output_open"
-.LASF304:
+.LASF311:
 	.string	"data"
 .LASF5:
 	.string	"long unsigned int"
@@ -9264,27 +9611,27 @@ __PRETTY_FUNCTION__.0:
 	.string	"header_fill"
 .LASF34:
 	.string	"_old_offset"
-.LASF310:
+.LASF317:
 	.string	"AudioFormat"
-.LASF422:
+.LASF428:
 	.string	"option_input_filename"
-.LASF427:
+.LASF433:
 	.string	"concat2"
-.LASF425:
+.LASF431:
 	.string	"concat3"
 .LASF199:
 	.string	"float"
 .LASF125:
 	.string	"SND_PCM_FORMAT_U18_3LE"
-.LASF382:
+.LASF388:
 	.string	"snd_pcm_close"
 .LASF232:
 	.string	"packet"
-.LASF410:
+.LASF416:
 	.string	"data_size"
-.LASF386:
+.LASF392:
 	.string	"__assert_fail"
-.LASF311:
+.LASF318:
 	.string	"NumChannels"
 .LASF133:
 	.string	"SND_PCM_FORMAT_DSD_U32_LE"
@@ -9296,17 +9643,17 @@ __PRETTY_FUNCTION__.0:
 	.string	"tm_zone"
 .LASF108:
 	.string	"SND_PCM_FORMAT_MPEG"
-.LASF381:
+.LASF387:
 	.string	"wave_destroy"
 .LASF285:
 	.string	"created_audio_files"
 .LASF163:
 	.string	"type"
-.LASF396:
+.LASF402:
 	.string	"snd_pcm_prepare"
 .LASF2:
 	.string	"unsigned char"
-.LASF345:
+.LASF352:
 	.string	"LApeak_json"
 .LASF231:
 	.string	"ogg_stream_state"
@@ -9316,11 +9663,11 @@ __PRETTY_FUNCTION__.0:
 	.string	"endbit"
 .LASF234:
 	.string	"ogg_packet"
-.LASF408:
+.LASF414:
 	.string	"audit_destroy"
 .LASF208:
 	.string	"oggpack_buffer"
-.LASF359:
+.LASF366:
 	.string	"json_real"
 .LASF266:
 	.string	"internal"
@@ -9330,15 +9677,15 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_FORMAT_U24_LE"
 .LASF182:
 	.string	"audio_loop_recording"
-.LASF406:
+.LASF412:
 	.string	"samples_float_channel"
-.LASF414:
+.LASF420:
 	.string	"filepath_size"
 .LASF194:
 	.string	"mqtt_topic"
-.LASF376:
+.LASF382:
 	.string	"json_delete"
-.LASF378:
+.LASF384:
 	.string	"json_dumpf"
 .LASF77:
 	.string	"SND_PCM_ACCESS_MMAP_NONINTERLEAVED"
@@ -9346,15 +9693,15 @@ __PRETTY_FUNCTION__.0:
 	.string	"lacing_storage"
 .LASF201:
 	.string	"config_struct"
-.LASF466:
+.LASF471:
 	.string	"json_decref"
 .LASF151:
 	.string	"snd_pcm_t"
 .LASF154:
 	.string	"JSON_ARRAY"
-.LASF307:
+.LASF314:
 	.string	"ChunkHeader"
-.LASF384:
+.LASF390:
 	.string	"third_octave_levels"
 .LASF168:
 	.string	"input_device"
@@ -9364,29 +9711,31 @@ __PRETTY_FUNCTION__.0:
 	.string	"mqtt_broker"
 .LASF288:
 	.string	"time_elapsed"
-.LASF389:
+.LASF395:
 	.string	"malloc"
 .LASF192:
 	.string	"mqtt_enable"
 .LASF75:
 	.string	"_snd_pcm_access"
-.LASF300:
+.LASF307:
 	.string	"gchar"
-.LASF446:
+.LASF451:
 	.string	"output_new_filename"
 .LASF13:
 	.string	"__off_t"
+.LASF304:
+	.string	"ring"
 .LASF59:
 	.string	"tm_hour"
 .LASF161:
 	.string	"json_type"
-.LASF394:
+.LASF400:
 	.string	"wave_load"
 .LASF6:
 	.string	"signed char"
-.LASF316:
+.LASF323:
 	.string	"SubChunkFmt"
-.LASF351:
+.LASF358:
 	.string	"strdup"
 .LASF3:
 	.string	"short unsigned int"
@@ -9396,7 +9745,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_FORMAT_U20_LE"
 .LASF137:
 	.string	"SND_PCM_FORMAT_S16"
-.LASF352:
+.LASF359:
 	.string	"memcpy"
 .LASF203:
 	.string	"ogg_int64_t"
@@ -9404,33 +9753,35 @@ __PRETTY_FUNCTION__.0:
 	.string	"lacing_fill"
 .LASF63:
 	.string	"tm_wday"
+.LASF248:
+	.string	"pcm_returned"
 .LASF65:
 	.string	"tm_isdst"
-.LASF324:
+.LASF331:
 	.string	"current"
-.LASF430:
+.LASF436:
 	.string	"point"
 .LASF181:
 	.string	"run_duration"
-.LASF438:
+.LASF444:
 	.string	"output_record"
-.LASF391:
+.LASF397:
 	.string	"wave_get_bits_per_sample"
 .LASF66:
 	.string	"tm_gmtoff"
 .LASF72:
 	.string	"SND_PCM_STREAM_LAST"
-.LASF321:
+.LASF328:
 	.string	"subchunk_data"
-.LASF407:
+.LASF413:
 	.string	"samples_int16_channel"
 .LASF243:
 	.string	"vorbis_dsp_state"
-.LASF385:
+.LASF391:
 	.string	"record_append_samples"
 .LASF33:
 	.string	"_flags2"
-.LASF459:
+.LASF464:
 	.string	"__PRETTY_FUNCTION__"
 .LASF272:
 	.string	"comments"
@@ -9438,9 +9789,9 @@ __PRETTY_FUNCTION__.0:
 	.string	"time_bits"
 .LASF35:
 	.string	"_cur_column"
-.LASF358:
+.LASF365:
 	.string	"json_array_append_new"
-.LASF390:
+.LASF396:
 	.string	"wave_get_duration"
 .LASF146:
 	.string	"SND_PCM_FORMAT_S20"
@@ -9450,7 +9801,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"SND_PCM_ACCESS_RW_INTERLEAVED"
 .LASF92:
 	.string	"SND_PCM_FORMAT_S24_BE"
-.LASF454:
+.LASF459:
 	.string	"continous"
 .LASF14:
 	.string	"__off64_t"
@@ -9458,21 +9809,21 @@ __PRETTY_FUNCTION__.0:
 	.string	"lacing_vals"
 .LASF46:
 	.string	"_unused2"
-.LASF379:
+.LASF385:
 	.string	"strcmp"
-.LASF441:
+.LASF446:
 	.string	"real_json"
-.LASF343:
+.LASF350:
 	.string	"LAFmin_json"
-.LASF412:
+.LASF418:
 	.string	"extention"
-.LASF388:
+.LASF394:
 	.string	"snd_pcm_readi"
 	.section	.debug_line_str,"MS",@progbits,1
-.LASF1:
-	.string	"/home/aluno/Desktop/sound_meter-master_v02_2"
 .LASF0:
 	.string	"src/in_out.c"
+.LASF1:
+	.string	"/home/aluno/Desktop/sound_meter-master_v03"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

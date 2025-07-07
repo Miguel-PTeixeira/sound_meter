@@ -1,7 +1,7 @@
 	.file	"filter.c"
 	.text
 .Ltext0:
-	.file 0 "/home/aluno/Desktop/sound_meter-master_v02_2" "src/filter.c"
+	.file 0 "/home/aluno/Desktop/sound_meter-master_v03" "src/filter.c"
 	.type	linear_to_decibel, @function
 linear_to_decibel:
 .LFB6:
@@ -1196,27 +1196,65 @@ timeweight_create:
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
 	.loc 2 35 19
-	movl	$4, %edi
+	movl	$8, %edi
 	call	malloc@PLT
 	movq	%rax, -8(%rbp)
 	.loc 2 36 15
 	movq	-8(%rbp), %rax
 	pxor	%xmm0, %xmm0
 	movss	%xmm0, (%rax)
-	.loc 2 37 9
+	.loc 2 37 12
 	movq	-8(%rbp), %rax
-	.loc 2 38 1
+	movss	.LC4(%rip), %xmm0
+	movss	%xmm0, 4(%rax)
+	.loc 2 38 9
+	movq	-8(%rbp), %rax
+	.loc 2 39 1
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE8:
 	.size	timeweight_create, .-timeweight_create
+	.globl	timeweightSlow_create
+	.type	timeweightSlow_create, @function
+timeweightSlow_create:
+.LFB9:
+	.loc 2 42 1
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$16, %rsp
+	.loc 2 43 19
+	movl	$8, %edi
+	call	malloc@PLT
+	movq	%rax, -8(%rbp)
+	.loc 2 44 15
+	movq	-8(%rbp), %rax
+	pxor	%xmm0, %xmm0
+	movss	%xmm0, (%rax)
+	.loc 2 45 12
+	movq	-8(%rbp), %rax
+	movss	.LC5(%rip), %xmm0
+	movss	%xmm0, 4(%rax)
+	.loc 2 46 9
+	movq	-8(%rbp), %rax
+	.loc 2 47 1
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE9:
+	.size	timeweightSlow_create, .-timeweightSlow_create
 	.globl	timeweight_destroy
 	.type	timeweight_destroy, @function
 timeweight_destroy:
-.LFB9:
-	.loc 2 41 1
+.LFB10:
+	.loc 2 51 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1226,23 +1264,23 @@ timeweight_destroy:
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
 	movq	%rdi, -8(%rbp)
-	.loc 2 42 2
+	.loc 2 52 2
 	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	free@PLT
-	.loc 2 43 1
+	.loc 2 53 1
 	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE9:
+.LFE10:
 	.size	timeweight_destroy, .-timeweight_destroy
 	.globl	timeweight_filtering
 	.type	timeweight_filtering, @function
 timeweight_filtering:
-.LFB10:
-	.loc 2 46 1
+.LFB11:
+	.loc 2 56 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1255,67 +1293,69 @@ timeweight_filtering:
 	movq	%rdx, -40(%rbp)
 	movl	%ecx, -44(%rbp)
 .LBB2:
-	.loc 2 48 16
+	.loc 2 58 16
 	movl	$0, -4(%rbp)
-	.loc 2 48 2
-	jmp	.L7
-.L8:
-	.loc 2 51 47
+	.loc 2 58 2
+	jmp	.L9
+.L10:
+	.loc 2 61 29
+	movq	-24(%rbp), %rax
+	movss	4(%rax), %xmm1
+	.loc 2 61 41
 	movl	-4(%rbp), %eax
 	leaq	0(,%rax,4), %rdx
 	movq	-32(%rbp), %rax
 	addq	%rdx, %rax
 	movss	(%rax), %xmm0
-	pxor	%xmm1, %xmm1
-	cvtss2sd	%xmm0, %xmm1
-	.loc 2 51 44
-	movsd	.LC4(%rip), %xmm0
-	mulsd	%xmm0, %xmm1
-	.loc 2 51 81
+	.loc 2 61 38
+	mulss	%xmm0, %xmm1
+	.loc 2 61 56
+	movq	-24(%rbp), %rax
+	movss	4(%rax), %xmm3
+	.loc 2 61 52
+	movss	.LC6(%rip), %xmm0
+	movaps	%xmm0, %xmm2
+	subss	%xmm3, %xmm2
+	.loc 2 61 69
 	movq	-24(%rbp), %rax
 	movss	(%rax), %xmm0
-	pxor	%xmm2, %xmm2
-	cvtss2sd	%xmm0, %xmm2
-	.loc 2 51 77
-	movsd	.LC5(%rip), %xmm0
-	mulsd	%xmm2, %xmm0
-	.loc 2 51 52
-	addsd	%xmm1, %xmm0
-	.loc 2 51 19
+	.loc 2 61 65
+	mulss	%xmm2, %xmm0
+	.loc 2 61 19
 	movl	-4(%rbp), %eax
 	leaq	0(,%rax,4), %rdx
 	movq	-40(%rbp), %rax
 	addq	%rdx, %rax
-	.loc 2 51 52
-	cvtsd2ss	%xmm0, %xmm0
-	.loc 2 51 23
+	.loc 2 61 46
+	addss	%xmm1, %xmm0
+	.loc 2 61 23
 	movss	%xmm0, (%rax)
-	.loc 2 51 19
+	.loc 2 61 19
 	movss	(%rax), %xmm0
-	.loc 2 51 16
+	.loc 2 61 16
 	movq	-24(%rbp), %rax
 	movss	%xmm0, (%rax)
-	.loc 2 48 31 discriminator 3
+	.loc 2 58 31 discriminator 3
 	addl	$1, -4(%rbp)
-.L7:
-	.loc 2 48 25 discriminator 1
+.L9:
+	.loc 2 58 25 discriminator 1
 	movl	-4(%rbp), %eax
 	cmpl	-44(%rbp), %eax
-	jb	.L8
+	jb	.L10
 .LBE2:
-	.loc 2 52 1
+	.loc 2 62 1
 	nop
 	nop
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE10:
+.LFE11:
 	.size	timeweight_filtering, .-timeweight_filtering
 	.type	shift_right, @function
 shift_right:
-.LFB11:
-	.loc 2 55 1
+.LFB12:
+	.loc 2 65 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1326,37 +1366,37 @@ shift_right:
 	subq	$16, %rsp
 	movq	%rdi, -8(%rbp)
 	movl	%esi, -12(%rbp)
-	.loc 2 56 30
+	.loc 2 66 30
 	movl	-12(%rbp), %eax
 	subl	$1, %eax
 	cltq
-	.loc 2 56 2
+	.loc 2 66 2
 	leaq	0(,%rax,4), %rdx
-	.loc 2 56 10
+	.loc 2 66 10
 	movq	-8(%rbp), %rax
 	leaq	4(%rax), %rcx
-	.loc 2 56 2
+	.loc 2 66 2
 	movq	-8(%rbp), %rax
 	movq	%rax, %rsi
 	movq	%rcx, %rdi
 	call	memmove@PLT
-	.loc 2 57 7
+	.loc 2 67 7
 	movq	-8(%rbp), %rax
 	pxor	%xmm0, %xmm0
 	movss	%xmm0, (%rax)
-	.loc 2 58 1
+	.loc 2 68 1
 	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE11:
+.LFE12:
 	.size	shift_right, .-shift_right
 	.globl	aweighting_create
 	.type	aweighting_create, @function
 aweighting_create:
-.LFB12:
-	.loc 2 61 1
+.LFB13:
+	.loc 2 71 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1366,46 +1406,46 @@ aweighting_create:
 	.cfi_def_cfa_register 6
 	subq	$32, %rsp
 	movl	%edi, -20(%rbp)
-	.loc 2 62 16
+	.loc 2 72 16
 	movl	$24, %edi
 	call	malloc@PLT
 	movq	%rax, -8(%rbp)
-	.loc 2 63 12
+	.loc 2 73 12
 	movq	-8(%rbp), %rax
 	leaq	A_WEIGHTED_taps(%rip), %rdx
 	movq	%rdx, 16(%rax)
-	.loc 2 64 19
+	.loc 2 74 19
 	movl	-20(%rbp), %edx
 	movl	%edx, %eax
 	addl	%eax, %eax
 	addl	%edx, %eax
-	.loc 2 64 10
+	.loc 2 74 10
 	cltq
 	movl	$4, %esi
 	movq	%rax, %rdi
 	call	calloc@PLT
 	movq	%rax, %rdx
-	.loc 2 64 8 discriminator 1
+	.loc 2 74 8 discriminator 1
 	movq	-8(%rbp), %rax
 	movq	%rdx, (%rax)
-	.loc 2 65 8
+	.loc 2 75 8
 	movq	-8(%rbp), %rax
 	movl	-20(%rbp), %edx
 	movl	%edx, 8(%rax)
-	.loc 2 66 9
+	.loc 2 76 9
 	movq	-8(%rbp), %rax
-	.loc 2 67 1
+	.loc 2 77 1
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE12:
+.LFE13:
 	.size	aweighting_create, .-aweighting_create
 	.globl	aweighting_destroy
 	.type	aweighting_destroy, @function
 aweighting_destroy:
-.LFB13:
-	.loc 2 70 1
+.LFB14:
+	.loc 2 80 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1415,28 +1455,28 @@ aweighting_destroy:
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
 	movq	%rdi, -8(%rbp)
-	.loc 2 71 9
+	.loc 2 81 9
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	.loc 2 71 2
+	.loc 2 81 2
 	movq	%rax, %rdi
 	call	free@PLT
-	.loc 2 72 2
+	.loc 2 82 2
 	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	free@PLT
-	.loc 2 73 1
+	.loc 2 83 1
 	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE13:
+.LFE14:
 	.size	aweighting_destroy, .-aweighting_destroy
 	.type	biquad, @function
 biquad:
-.LFB14:
-	.loc 2 93 1
+.LFB15:
+	.loc 2 103 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1448,77 +1488,77 @@ biquad:
 	movq	%rdi, -16(%rbp)
 	movq	%rsi, -24(%rbp)
 	movq	%rdx, -32(%rbp)
-	.loc 2 95 14
+	.loc 2 105 14
 	movq	-24(%rbp), %rax
 	addq	$4, %rax
 	movss	(%rax), %xmm1
-	.loc 2 95 21
+	.loc 2 105 21
 	movq	-16(%rbp), %rax
 	addq	$4, %rax
 	movss	(%rax), %xmm0
-	.loc 2 95 18
+	.loc 2 105 18
 	mulss	%xmm0, %xmm1
-	.loc 2 95 11
+	.loc 2 105 11
 	movss	-4(%rbp), %xmm0
 	subss	%xmm1, %xmm0
-	.loc 2 95 28
+	.loc 2 105 28
 	movq	-24(%rbp), %rax
 	addq	$8, %rax
 	movss	(%rax), %xmm2
-	.loc 2 95 35
+	.loc 2 105 35
 	movq	-16(%rbp), %rax
 	addq	$8, %rax
 	movss	(%rax), %xmm1
-	.loc 2 95 32
+	.loc 2 105 32
 	mulss	%xmm2, %xmm1
-	.loc 2 95 25
+	.loc 2 105 25
 	subss	%xmm1, %xmm0
-	.loc 2 95 7
+	.loc 2 105 7
 	movq	-16(%rbp), %rax
 	movss	%xmm0, (%rax)
-	.loc 2 97 10
+	.loc 2 107 10
 	movq	-32(%rbp), %rax
 	movss	(%rax), %xmm1
-	.loc 2 97 17
+	.loc 2 107 17
 	movq	-16(%rbp), %rax
 	movss	(%rax), %xmm0
-	.loc 2 97 14
+	.loc 2 107 14
 	mulss	%xmm0, %xmm1
-	.loc 2 97 24
+	.loc 2 107 24
 	movq	-32(%rbp), %rax
 	addq	$4, %rax
 	movss	(%rax), %xmm2
-	.loc 2 97 31
+	.loc 2 107 31
 	movq	-16(%rbp), %rax
 	addq	$4, %rax
 	movss	(%rax), %xmm0
-	.loc 2 97 28
+	.loc 2 107 28
 	mulss	%xmm2, %xmm0
-	.loc 2 97 21
+	.loc 2 107 21
 	addss	%xmm0, %xmm1
-	.loc 2 97 38
+	.loc 2 107 38
 	movq	-32(%rbp), %rax
 	addq	$8, %rax
 	movss	(%rax), %xmm2
-	.loc 2 97 45
+	.loc 2 107 45
 	movq	-16(%rbp), %rax
 	addq	$8, %rax
 	movss	(%rax), %xmm0
-	.loc 2 97 42
+	.loc 2 107 42
 	mulss	%xmm2, %xmm0
-	.loc 2 97 35
+	.loc 2 107 35
 	addss	%xmm1, %xmm0
-	.loc 2 98 1
+	.loc 2 108 1
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE14:
+.LFE15:
 	.size	biquad, .-biquad
 	.type	cascade_biquad, @function
 cascade_biquad:
-.LFB15:
-	.loc 2 101 1
+.LFB16:
+	.loc 2 111 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1531,49 +1571,49 @@ cascade_biquad:
 	movq	%rdi, -32(%rbp)
 	movq	%rsi, -40(%rbp)
 	movl	%edx, -24(%rbp)
-	.loc 2 102 8
+	.loc 2 112 8
 	movss	-20(%rbp), %xmm0
 	movss	%xmm0, -8(%rbp)
 .LBB3:
-	.loc 2 103 11
+	.loc 2 113 11
 	movl	$0, -4(%rbp)
-	.loc 2 103 2
-	jmp	.L16
-.L17:
-	.loc 2 104 57
+	.loc 2 113 2
+	jmp	.L18
+.L19:
+	.loc 2 114 57
 	movl	-4(%rbp), %edx
 	movl	%edx, %eax
 	addl	%eax, %eax
 	addl	%edx, %eax
 	addl	%eax, %eax
 	cltq
-	.loc 2 104 53
+	.loc 2 114 53
 	leaq	0(,%rax,4), %rdx
-	.loc 2 104 7
+	.loc 2 114 7
 	movq	-40(%rbp), %rax
 	leaq	(%rdx,%rax), %rdi
-	.loc 2 104 42
+	.loc 2 114 42
 	movl	-4(%rbp), %edx
 	movl	%edx, %eax
 	addl	%eax, %eax
 	addl	%edx, %eax
 	addl	%eax, %eax
-	.loc 2 104 38
+	.loc 2 114 38
 	cltq
 	addq	$3, %rax
 	leaq	0(,%rax,4), %rdx
-	.loc 2 104 7
+	.loc 2 114 7
 	movq	-40(%rbp), %rax
 	leaq	(%rdx,%rax), %rsi
-	.loc 2 104 23
+	.loc 2 114 23
 	movl	-4(%rbp), %edx
 	movl	%edx, %eax
 	addl	%eax, %eax
 	addl	%edx, %eax
 	cltq
-	.loc 2 104 19
+	.loc 2 114 19
 	leaq	0(,%rax,4), %rdx
-	.loc 2 104 7
+	.loc 2 114 7
 	movq	-32(%rbp), %rax
 	leaq	(%rdx,%rax), %rcx
 	movl	-8(%rbp), %eax
@@ -1583,28 +1623,28 @@ cascade_biquad:
 	call	biquad
 	movd	%xmm0, %eax
 	movl	%eax, -8(%rbp)
-	.loc 2 103 26 discriminator 3
+	.loc 2 113 26 discriminator 3
 	addl	$1, -4(%rbp)
-.L16:
-	.loc 2 103 20 discriminator 1
+.L18:
+	.loc 2 113 20 discriminator 1
 	movl	-4(%rbp), %eax
 	cmpl	-24(%rbp), %eax
-	jl	.L17
+	jl	.L19
 .LBE3:
-	.loc 2 105 9
+	.loc 2 115 9
 	movss	-8(%rbp), %xmm0
-	.loc 2 106 1
+	.loc 2 116 1
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE15:
+.LFE16:
 	.size	cascade_biquad, .-cascade_biquad
 	.globl	aweighting_filtering
 	.type	aweighting_filtering, @function
 aweighting_filtering:
-.LFB16:
-	.loc 2 109 1
+.LFB17:
+	.loc 2 119 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1618,94 +1658,94 @@ aweighting_filtering:
 	movq	%rdx, -40(%rbp)
 	movl	%ecx, -44(%rbp)
 .LBB4:
-	.loc 2 110 19
+	.loc 2 120 19
 	movl	$0, -12(%rbp)
-	.loc 2 110 5
-	jmp	.L20
-.L23:
+	.loc 2 120 5
+	jmp	.L22
+.L25:
 .LBB5:
 .LBB6:
-	.loc 2 111 18
+	.loc 2 121 18
 	movl	$0, -8(%rbp)
-	.loc 2 111 9
-	jmp	.L21
-.L22:
-	.loc 2 112 27
+	.loc 2 121 9
+	jmp	.L23
+.L24:
+	.loc 2 122 27
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rcx
-	.loc 2 112 39
+	.loc 2 122 39
 	movl	-8(%rbp), %edx
 	movl	%edx, %eax
 	addl	%eax, %eax
 	addl	%edx, %eax
 	cltq
-	.loc 2 112 31
+	.loc 2 122 31
 	salq	$2, %rax
-	.loc 2 112 13
+	.loc 2 122 13
 	addq	%rcx, %rax
 	movl	$3, %esi
 	movq	%rax, %rdi
 	call	shift_right
-	.loc 2 111 49 discriminator 3
+	.loc 2 121 49 discriminator 3
 	addl	$1, -8(%rbp)
-.L21:
-	.loc 2 111 39 discriminator 1
+.L23:
+	.loc 2 121 39 discriminator 1
 	movq	-24(%rbp), %rax
 	movl	8(%rax), %eax
-	.loc 2 111 35 discriminator 1
+	.loc 2 121 35 discriminator 1
 	cmpl	%eax, -8(%rbp)
-	jl	.L22
+	jl	.L24
 .LBE6:
-	.loc 2 114 26
+	.loc 2 124 26
 	movq	-24(%rbp), %rax
 	movl	8(%rax), %edx
 	movq	-24(%rbp), %rax
 	movq	16(%rax), %rsi
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rcx
-	.loc 2 114 42
+	.loc 2 124 42
 	movl	-12(%rbp), %eax
 	leaq	0(,%rax,4), %rdi
 	movq	-32(%rbp), %rax
 	addq	%rdi, %rax
-	.loc 2 114 26
+	.loc 2 124 26
 	movl	(%rax), %eax
 	movq	%rcx, %rdi
 	movd	%eax, %xmm0
 	call	cascade_biquad
 	movd	%xmm0, %eax
 	movl	%eax, -4(%rbp)
-	.loc 2 115 10
+	.loc 2 125 10
 	movl	-12(%rbp), %eax
 	leaq	0(,%rax,4), %rdx
 	movq	-40(%rbp), %rax
 	addq	%rdx, %rax
-	.loc 2 115 14
+	.loc 2 125 14
 	movss	-4(%rbp), %xmm0
 	movss	%xmm0, (%rax)
 .LBE5:
-	.loc 2 110 37 discriminator 2
+	.loc 2 120 37 discriminator 2
 	addl	$1, -12(%rbp)
-.L20:
-	.loc 2 110 28 discriminator 1
+.L22:
+	.loc 2 120 28 discriminator 1
 	movl	-12(%rbp), %eax
 	cmpl	-44(%rbp), %eax
-	jb	.L23
+	jb	.L25
 .LBE4:
-	.loc 2 118 1
+	.loc 2 128 1
 	nop
 	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE16:
+.LFE17:
 	.size	aweighting_filtering, .-aweighting_filtering
 	.globl	cweighting_create
 	.type	cweighting_create, @function
 cweighting_create:
-.LFB17:
-	.loc 2 121 1
+.LFB18:
+	.loc 2 131 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1715,46 +1755,46 @@ cweighting_create:
 	.cfi_def_cfa_register 6
 	subq	$32, %rsp
 	movl	%edi, -20(%rbp)
-	.loc 2 122 16
+	.loc 2 132 16
 	movl	$24, %edi
 	call	malloc@PLT
 	movq	%rax, -8(%rbp)
-	.loc 2 123 12
+	.loc 2 133 12
 	movq	-8(%rbp), %rax
 	leaq	C_WEIGHTED_taps(%rip), %rdx
 	movq	%rdx, 16(%rax)
-	.loc 2 124 19
+	.loc 2 134 19
 	movl	-20(%rbp), %edx
 	movl	%edx, %eax
 	addl	%eax, %eax
 	addl	%edx, %eax
-	.loc 2 124 10
+	.loc 2 134 10
 	cltq
 	movl	$4, %esi
 	movq	%rax, %rdi
 	call	calloc@PLT
 	movq	%rax, %rdx
-	.loc 2 124 8 discriminator 1
+	.loc 2 134 8 discriminator 1
 	movq	-8(%rbp), %rax
 	movq	%rdx, (%rax)
-	.loc 2 125 8
+	.loc 2 135 8
 	movq	-8(%rbp), %rax
 	movl	-20(%rbp), %edx
 	movl	%edx, 8(%rax)
-	.loc 2 126 9
+	.loc 2 136 9
 	movq	-8(%rbp), %rax
-	.loc 2 127 1
+	.loc 2 137 1
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE17:
+.LFE18:
 	.size	cweighting_create, .-cweighting_create
 	.globl	cweighting_destroy
 	.type	cweighting_destroy, @function
 cweighting_destroy:
-.LFB18:
-	.loc 2 130 1
+.LFB19:
+	.loc 2 140 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1764,29 +1804,29 @@ cweighting_destroy:
 	.cfi_def_cfa_register 6
 	subq	$16, %rsp
 	movq	%rdi, -8(%rbp)
-	.loc 2 131 9
+	.loc 2 141 9
 	movq	-8(%rbp), %rax
 	movq	(%rax), %rax
-	.loc 2 131 2
+	.loc 2 141 2
 	movq	%rax, %rdi
 	call	free@PLT
-	.loc 2 132 2
+	.loc 2 142 2
 	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	free@PLT
-	.loc 2 133 1
+	.loc 2 143 1
 	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE18:
+.LFE19:
 	.size	cweighting_destroy, .-cweighting_destroy
 	.globl	cweighting_filtering
 	.type	cweighting_filtering, @function
 cweighting_filtering:
-.LFB19:
-	.loc 2 136 1
+.LFB20:
+	.loc 2 146 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1800,88 +1840,88 @@ cweighting_filtering:
 	movq	%rdx, -40(%rbp)
 	movl	%ecx, -44(%rbp)
 .LBB7:
-	.loc 2 137 19
+	.loc 2 147 19
 	movl	$0, -12(%rbp)
-	.loc 2 137 5
-	jmp	.L28
-.L31:
+	.loc 2 147 5
+	jmp	.L30
+.L33:
 .LBB8:
 .LBB9:
-	.loc 2 138 18
+	.loc 2 148 18
 	movl	$0, -8(%rbp)
-	.loc 2 138 9
-	jmp	.L29
-.L30:
-	.loc 2 139 27
+	.loc 2 148 9
+	jmp	.L31
+.L32:
+	.loc 2 149 27
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rcx
-	.loc 2 139 39
+	.loc 2 149 39
 	movl	-8(%rbp), %edx
 	movl	%edx, %eax
 	addl	%eax, %eax
 	addl	%edx, %eax
 	cltq
-	.loc 2 139 31
+	.loc 2 149 31
 	salq	$2, %rax
-	.loc 2 139 13
+	.loc 2 149 13
 	addq	%rcx, %rax
 	movl	$3, %esi
 	movq	%rax, %rdi
 	call	shift_right
-	.loc 2 138 49 discriminator 3
+	.loc 2 148 49 discriminator 3
 	addl	$1, -8(%rbp)
-.L29:
-	.loc 2 138 39 discriminator 1
+.L31:
+	.loc 2 148 39 discriminator 1
 	movq	-24(%rbp), %rax
 	movl	8(%rax), %eax
-	.loc 2 138 35 discriminator 1
+	.loc 2 148 35 discriminator 1
 	cmpl	%eax, -8(%rbp)
-	jl	.L30
+	jl	.L32
 .LBE9:
-	.loc 2 141 26
+	.loc 2 151 26
 	movq	-24(%rbp), %rax
 	movl	8(%rax), %edx
 	movq	-24(%rbp), %rax
 	movq	16(%rax), %rsi
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rcx
-	.loc 2 141 42
+	.loc 2 151 42
 	movl	-12(%rbp), %eax
 	leaq	0(,%rax,4), %rdi
 	movq	-32(%rbp), %rax
 	addq	%rdi, %rax
-	.loc 2 141 26
+	.loc 2 151 26
 	movl	(%rax), %eax
 	movq	%rcx, %rdi
 	movd	%eax, %xmm0
 	call	cascade_biquad
 	movd	%xmm0, %eax
 	movl	%eax, -4(%rbp)
-	.loc 2 142 10
+	.loc 2 152 10
 	movl	-12(%rbp), %eax
 	leaq	0(,%rax,4), %rdx
 	movq	-40(%rbp), %rax
 	addq	%rdx, %rax
-	.loc 2 142 14
+	.loc 2 152 14
 	movss	-4(%rbp), %xmm0
 	movss	%xmm0, (%rax)
 .LBE8:
-	.loc 2 137 37 discriminator 2
+	.loc 2 147 37 discriminator 2
 	addl	$1, -12(%rbp)
-.L28:
-	.loc 2 137 28 discriminator 1
+.L30:
+	.loc 2 147 28 discriminator 1
 	movl	-12(%rbp), %eax
 	cmpl	-44(%rbp), %eax
-	jb	.L31
+	jb	.L33
 .LBE7:
-	.loc 2 145 1
+	.loc 2 155 1
 	nop
 	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE19:
+.LFE20:
 	.size	cweighting_filtering, .-cweighting_filtering
 	.section	.data.rel.local,"aw"
 	.align 32
@@ -1924,8 +1964,8 @@ bands:
 	.globl	get_level
 	.type	get_level, @function
 get_level:
-.LFB20:
-	.loc 2 184 30
+.LFB21:
+	.loc 2 194 30
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -1934,78 +1974,22 @@ get_level:
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
 	movl	%edi, -4(%rbp)
-	.loc 2 185 18
+	.loc 2 195 18
 	movl	-4(%rbp), %eax
 	cltq
 	leaq	0(,%rax,4), %rdx
 	leaq	TO_levels(%rip), %rax
 	movss	(%rdx,%rax), %xmm0
-	.loc 2 186 1
+	.loc 2 196 1
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE20:
+.LFE21:
 	.size	get_level, .-get_level
 	.globl	third_octave_create
 	.type	third_octave_create, @function
 third_octave_create:
-.LFB21:
-	.loc 2 189 54
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	subq	$32, %rsp
-	movl	%edi, -20(%rbp)
-	.loc 2 190 15
-	movl	$4, -12(%rbp)
-	.loc 2 192 33
-	movl	$24, %edi
-	call	malloc@PLT
-	movq	%rax, -8(%rbp)
-	.loc 2 193 26
-	movl	-20(%rbp), %eax
-	cltq
-	leaq	0(,%rax,8), %rdx
-	leaq	bands(%rip), %rax
-	movq	(%rdx,%rax), %rdx
-	.loc 2 193 19
-	movq	-8(%rbp), %rax
-	movq	%rdx, 16(%rax)
-	.loc 2 194 26
-	movl	-12(%rbp), %edx
-	movl	%edx, %eax
-	addl	%eax, %eax
-	addl	%edx, %eax
-	.loc 2 194 17
-	cltq
-	movl	$4, %esi
-	movq	%rax, %rdi
-	call	calloc@PLT
-	movq	%rax, %rdx
-	.loc 2 194 15 discriminator 1
-	movq	-8(%rbp), %rax
-	movq	%rdx, (%rax)
-	.loc 2 195 15
-	movq	-8(%rbp), %rax
-	movl	-12(%rbp), %edx
-	movl	%edx, 8(%rax)
-	.loc 2 196 12
-	movq	-8(%rbp), %rax
-	.loc 2 197 1
-	leave
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE21:
-	.size	third_octave_create, .-third_octave_create
-	.globl	third_octave_destroy
-	.type	third_octave_destroy, @function
-third_octave_destroy:
 .LFB22:
 	.loc 2 199 54
 	.cfi_startproc
@@ -2015,35 +1999,91 @@ third_octave_destroy:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$16, %rsp
-	movq	%rdi, -8(%rbp)
-	.loc 2 200 8
-	cmpq	$0, -8(%rbp)
-	je	.L38
-	.loc 2 201 20
+	subq	$32, %rsp
+	movl	%edi, -20(%rbp)
+	.loc 2 200 15
+	movl	$4, -12(%rbp)
+	.loc 2 202 33
+	movl	$24, %edi
+	call	malloc@PLT
+	movq	%rax, -8(%rbp)
+	.loc 2 203 26
+	movl	-20(%rbp), %eax
+	cltq
+	leaq	0(,%rax,8), %rdx
+	leaq	bands(%rip), %rax
+	movq	(%rdx,%rax), %rdx
+	.loc 2 203 19
 	movq	-8(%rbp), %rax
-	movq	(%rax), %rax
-	.loc 2 201 9
+	movq	%rdx, 16(%rax)
+	.loc 2 204 26
+	movl	-12(%rbp), %edx
+	movl	%edx, %eax
+	addl	%eax, %eax
+	addl	%edx, %eax
+	.loc 2 204 17
+	cltq
+	movl	$4, %esi
 	movq	%rax, %rdi
-	call	free@PLT
-	.loc 2 202 9
+	call	calloc@PLT
+	movq	%rax, %rdx
+	.loc 2 204 15 discriminator 1
 	movq	-8(%rbp), %rax
-	movq	%rax, %rdi
-	call	free@PLT
-.L38:
-	.loc 2 204 1
-	nop
+	movq	%rdx, (%rax)
+	.loc 2 205 15
+	movq	-8(%rbp), %rax
+	movl	-12(%rbp), %edx
+	movl	%edx, 8(%rax)
+	.loc 2 206 12
+	movq	-8(%rbp), %rax
+	.loc 2 207 1
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
 .LFE22:
+	.size	third_octave_create, .-third_octave_create
+	.globl	third_octave_destroy
+	.type	third_octave_destroy, @function
+third_octave_destroy:
+.LFB23:
+	.loc 2 209 54
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$16, %rsp
+	movq	%rdi, -8(%rbp)
+	.loc 2 210 8
+	cmpq	$0, -8(%rbp)
+	je	.L40
+	.loc 2 211 20
+	movq	-8(%rbp), %rax
+	movq	(%rax), %rax
+	.loc 2 211 9
+	movq	%rax, %rdi
+	call	free@PLT
+	.loc 2 212 9
+	movq	-8(%rbp), %rax
+	movq	%rax, %rdi
+	call	free@PLT
+.L40:
+	.loc 2 214 1
+	nop
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE23:
 	.size	third_octave_destroy, .-third_octave_destroy
 	.globl	third_octave_filtering
 	.type	third_octave_filtering, @function
 third_octave_filtering:
-.LFB23:
-	.loc 2 207 1
+.LFB24:
+	.loc 2 217 1
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -2057,94 +2097,94 @@ third_octave_filtering:
 	movq	%rdx, -40(%rbp)
 	movl	%ecx, -44(%rbp)
 .LBB10:
-	.loc 2 208 19
+	.loc 2 218 19
 	movl	$0, -12(%rbp)
-	.loc 2 208 5
-	jmp	.L40
-.L43:
+	.loc 2 218 5
+	jmp	.L42
+.L45:
 .LBB11:
 .LBB12:
-	.loc 2 209 18
+	.loc 2 219 18
 	movl	$0, -8(%rbp)
-	.loc 2 209 9
-	jmp	.L41
-.L42:
-	.loc 2 210 27
+	.loc 2 219 9
+	jmp	.L43
+.L44:
+	.loc 2 220 27
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rcx
-	.loc 2 210 39
+	.loc 2 220 39
 	movl	-8(%rbp), %edx
 	movl	%edx, %eax
 	addl	%eax, %eax
 	addl	%edx, %eax
 	cltq
-	.loc 2 210 31
+	.loc 2 220 31
 	salq	$2, %rax
-	.loc 2 210 13
+	.loc 2 220 13
 	addq	%rcx, %rax
 	movl	$3, %esi
 	movq	%rax, %rdi
 	call	shift_right
-	.loc 2 209 49 discriminator 3
+	.loc 2 219 49 discriminator 3
 	addl	$1, -8(%rbp)
-.L41:
-	.loc 2 209 39 discriminator 1
+.L43:
+	.loc 2 219 39 discriminator 1
 	movq	-24(%rbp), %rax
 	movl	8(%rax), %eax
-	.loc 2 209 35 discriminator 1
+	.loc 2 219 35 discriminator 1
 	cmpl	%eax, -8(%rbp)
-	jl	.L42
+	jl	.L44
 .LBE12:
-	.loc 2 212 26
+	.loc 2 222 26
 	movq	-24(%rbp), %rax
 	movl	8(%rax), %edx
 	movq	-24(%rbp), %rax
 	movq	16(%rax), %rsi
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rcx
-	.loc 2 212 42
+	.loc 2 222 42
 	movl	-12(%rbp), %eax
 	leaq	0(,%rax,4), %rdi
 	movq	-32(%rbp), %rax
 	addq	%rdi, %rax
-	.loc 2 212 26
+	.loc 2 222 26
 	movl	(%rax), %eax
 	movq	%rcx, %rdi
 	movd	%eax, %xmm0
 	call	cascade_biquad
 	movd	%xmm0, %eax
 	movl	%eax, -4(%rbp)
-	.loc 2 213 10
+	.loc 2 223 10
 	movl	-12(%rbp), %eax
 	leaq	0(,%rax,4), %rdx
 	movq	-40(%rbp), %rax
 	addq	%rdx, %rax
-	.loc 2 213 14
+	.loc 2 223 14
 	movss	-4(%rbp), %xmm0
 	movss	%xmm0, (%rax)
 .LBE11:
-	.loc 2 208 37 discriminator 2
+	.loc 2 218 37 discriminator 2
 	addl	$1, -12(%rbp)
-.L40:
-	.loc 2 208 28 discriminator 1
+.L42:
+	.loc 2 218 28 discriminator 1
 	movl	-12(%rbp), %eax
 	cmpl	-44(%rbp), %eax
-	jb	.L43
+	jb	.L45
 .LBE10:
-	.loc 2 215 1
+	.loc 2 225 1
 	nop
 	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE23:
+.LFE24:
 	.size	third_octave_filtering, .-third_octave_filtering
 	.globl	third_octave_levels
 	.type	third_octave_levels, @function
 third_octave_levels:
-.LFB24:
-	.loc 2 219 52
+.LFB25:
+	.loc 2 229 52
 	.cfi_startproc
 	endbr64
 	pushq	%rbp
@@ -2155,83 +2195,83 @@ third_octave_levels:
 	subq	$48, %rsp
 	movq	%rdi, -40(%rbp)
 	movl	%esi, -44(%rbp)
-	.loc 2 220 11
+	.loc 2 230 11
 	movl	-44(%rbp), %eax
 	movl	%eax, -20(%rbp)
-	.loc 2 221 13
+	.loc 2 231 13
 	movl	-20(%rbp), %eax
 	salq	$2, %rax
 	movq	%rax, %rdi
 	call	malloc@PLT
 	movq	%rax, -16(%rbp)
 .LBB13:
-	.loc 2 223 11
+	.loc 2 233 11
 	movl	$0, -32(%rbp)
-	.loc 2 223 2
-	jmp	.L45
-.L50:
+	.loc 2 233 2
+	jmp	.L47
+.L52:
 .LBB14:
-	.loc 2 224 31
+	.loc 2 234 31
 	movl	-32(%rbp), %eax
 	movl	%eax, %edi
 	call	third_octave_create
 	movq	%rax, -8(%rbp)
-	.loc 2 225 3
+	.loc 2 235 3
 	movl	-20(%rbp), %ecx
 	movq	-16(%rbp), %rdx
 	movq	-40(%rbp), %rsi
 	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	third_octave_filtering
-	.loc 2 226 3
+	.loc 2 236 3
 	movq	-8(%rbp), %rax
 	movq	%rax, %rdi
 	call	third_octave_destroy
-	.loc 2 227 9
+	.loc 2 237 9
 	pxor	%xmm0, %xmm0
 	movss	%xmm0, -28(%rbp)
 .LBB15:
-	.loc 2 228 11
+	.loc 2 238 11
 	movl	$0, -24(%rbp)
-	.loc 2 228 3
-	jmp	.L46
-.L47:
-	.loc 2 229 19
+	.loc 2 238 3
+	jmp	.L48
+.L49:
+	.loc 2 239 19
 	movl	-24(%rbp), %eax
 	cltq
 	leaq	0(,%rax,4), %rdx
 	movq	-16(%rbp), %rax
 	addq	%rdx, %rax
 	movss	(%rax), %xmm1
-	.loc 2 229 26
+	.loc 2 239 26
 	movl	-24(%rbp), %eax
 	cltq
 	leaq	0(,%rax,4), %rdx
 	movq	-16(%rbp), %rax
 	addq	%rdx, %rax
 	movss	(%rax), %xmm0
-	.loc 2 229 23
+	.loc 2 239 23
 	mulss	%xmm1, %xmm0
-	.loc 2 229 15
+	.loc 2 239 15
 	movss	-28(%rbp), %xmm1
 	addss	%xmm1, %xmm0
 	movss	%xmm0, -28(%rbp)
-	.loc 2 228 29 discriminator 3
+	.loc 2 238 29 discriminator 3
 	addl	$1, -24(%rbp)
-.L46:
-	.loc 2 228 20 discriminator 1
+.L48:
+	.loc 2 238 20 discriminator 1
 	movl	-24(%rbp), %eax
 	cmpl	-44(%rbp), %eax
-	jb	.L47
+	jb	.L49
 .LBE15:
-	.loc 2 230 17
+	.loc 2 240 17
 	movl	-44(%rbp), %eax
 	testq	%rax, %rax
-	js	.L48
+	js	.L50
 	pxor	%xmm0, %xmm0
 	cvtsi2ssq	%rax, %xmm0
-	jmp	.L49
-.L48:
+	jmp	.L51
+.L50:
 	movq	%rax, %rdx
 	shrq	%rdx
 	andl	$1, %eax
@@ -2239,38 +2279,38 @@ third_octave_levels:
 	pxor	%xmm0, %xmm0
 	cvtsi2ssq	%rdx, %xmm0
 	addss	%xmm0, %xmm0
-.L49:
+.L51:
 	movss	-28(%rbp), %xmm1
 	divss	%xmm0, %xmm1
 	movd	%xmm1, %eax
 	movd	%eax, %xmm0
 	call	linear_to_decibel
 	movd	%xmm0, %eax
-	.loc 2 230 15 discriminator 1
+	.loc 2 240 15 discriminator 1
 	movl	-32(%rbp), %edx
 	movslq	%edx, %rdx
 	leaq	0(,%rdx,4), %rcx
 	leaq	TO_levels(%rip), %rdx
 	movl	%eax, (%rcx,%rdx)
 .LBE14:
-	.loc 2 223 27 discriminator 2
+	.loc 2 233 27 discriminator 2
 	addl	$1, -32(%rbp)
-.L45:
-	.loc 2 223 20 discriminator 1
+.L47:
+	.loc 2 233 20 discriminator 1
 	cmpl	$29, -32(%rbp)
-	jle	.L50
+	jle	.L52
 .LBE13:
-	.loc 2 232 2
+	.loc 2 242 2
 	movq	-16(%rbp), %rax
 	movq	%rax, %rdi
 	call	free@PLT
-	.loc 2 233 1
+	.loc 2 243 1
 	nop
 	leave
 	.cfi_def_cfa 7, 8
 	ret
 	.cfi_endproc
-.LFE24:
+.LFE25:
 	.size	third_octave_levels, .-third_octave_levels
 	.section	.rodata
 	.align 8
@@ -2285,31 +2325,32 @@ third_octave_levels:
 .LC2:
 	.long	0
 	.long	1077149696
-	.align 8
+	.align 4
 .LC4:
-	.long	2005277555
-	.long	1059444720
-	.align 8
+	.long	965649635
+	.align 4
 .LC5:
-	.long	-2131196002
-	.long	1072692898
+	.long	940484910
+	.align 4
+.LC6:
+	.long	1065353216
 	.text
 .Letext0:
-	.file 3 "/usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h"
-	.file 4 "src/filter.h"
+	.file 3 "src/filter.h"
+	.file 4 "/usr/lib/gcc/x86_64-linux-gnu/13/include/stddef.h"
 	.file 5 "src/FilterCoefs_48000.h"
 	.file 6 "/usr/include/x86_64-linux-gnu/bits/mathcalls.h"
 	.file 7 "/usr/include/stdlib.h"
 	.file 8 "/usr/include/string.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.long	0xc8d
+	.long	0xcc5
 	.value	0x5
 	.byte	0x1
 	.byte	0x8
 	.long	.Ldebug_abbrev0
-	.uleb128 0x16
-	.long	.LASF100
+	.uleb128 0x17
+	.long	.LASF102
 	.byte	0x1d
 	.long	.LASF0
 	.long	.LASF1
@@ -2317,8 +2358,8 @@ third_octave_levels:
 	.quad	.Letext0-.Ltext0
 	.long	.Ldebug_line0
 	.uleb128 0x10
-	.long	.LASF16
-	.byte	0x3
+	.long	.LASF18
+	.byte	0x4
 	.byte	0xd6
 	.byte	0x1b
 	.long	0x3a
@@ -2326,7 +2367,7 @@ third_octave_levels:
 	.byte	0x8
 	.byte	0x7
 	.long	.LASF2
-	.uleb128 0x17
+	.uleb128 0x18
 	.byte	0x4
 	.byte	0x5
 	.string	"int"
@@ -2360,7 +2401,7 @@ third_octave_levels:
 	.byte	0x2
 	.byte	0x5
 	.long	.LASF9
-	.uleb128 0x18
+	.uleb128 0x19
 	.byte	0x8
 	.uleb128 0x4
 	.byte	0x1
@@ -2372,7 +2413,7 @@ third_octave_levels:
 	.long	.LASF11
 	.uleb128 0xb
 	.long	0x93
-	.uleb128 0x19
+	.uleb128 0x1a
 	.uleb128 0x4
 	.byte	0x4
 	.byte	0x4
@@ -2393,509 +2434,499 @@ third_octave_levels:
 	.long	.LASF15
 	.uleb128 0xb
 	.long	0x94
-	.uleb128 0x11
-	.byte	0x4
-	.byte	0x24
-	.long	0xce
 	.uleb128 0x12
-	.long	.LASF18
+	.byte	0x8
+	.byte	0x24
+	.long	0xda
+	.uleb128 0x11
+	.long	.LASF16
 	.byte	0x25
 	.byte	0x8
 	.long	0x94
 	.byte	0
+	.uleb128 0x11
+	.long	.LASF17
+	.byte	0x26
+	.byte	0x8
+	.long	0x94
+	.byte	0x4
 	.byte	0
 	.uleb128 0x10
-	.long	.LASF17
-	.byte	0x4
-	.byte	0x26
+	.long	.LASF19
+	.byte	0x3
+	.byte	0x27
 	.byte	0x3
 	.long	0xba
-	.uleb128 0x11
+	.uleb128 0x12
 	.byte	0x18
-	.byte	0x2f
-	.long	0x102
+	.byte	0x31
+	.long	0x10e
 	.uleb128 0xd
 	.string	"u"
-	.byte	0x30
+	.byte	0x32
 	.byte	0x9
 	.long	0xb5
 	.byte	0
 	.uleb128 0xd
 	.string	"N"
-	.byte	0x33
+	.byte	0x35
 	.byte	0x6
 	.long	0x41
 	.byte	0x8
-	.uleb128 0x12
-	.long	.LASF19
-	.byte	0x34
+	.uleb128 0x11
+	.long	.LASF20
+	.byte	0x36
 	.byte	0xf
-	.long	0x102
+	.long	0x10e
 	.byte	0x10
 	.byte	0
 	.uleb128 0xb
 	.long	0x9b
 	.uleb128 0x10
-	.long	.LASF20
-	.byte	0x4
-	.byte	0x35
+	.long	.LASF21
 	.byte	0x3
-	.long	0xda
-	.uleb128 0x11
+	.byte	0x37
+	.byte	0x3
+	.long	0xe6
+	.uleb128 0x12
 	.byte	0x18
-	.byte	0x40
-	.long	0x13b
+	.byte	0x42
+	.long	0x147
 	.uleb128 0xd
 	.string	"u"
-	.byte	0x41
+	.byte	0x43
 	.byte	0x9
 	.long	0xb5
 	.byte	0
 	.uleb128 0xd
 	.string	"N"
-	.byte	0x44
+	.byte	0x46
 	.byte	0x6
 	.long	0x41
 	.byte	0x8
-	.uleb128 0x12
-	.long	.LASF19
-	.byte	0x45
+	.uleb128 0x11
+	.long	.LASF20
+	.byte	0x47
 	.byte	0xf
-	.long	0x102
+	.long	0x10e
 	.byte	0x10
 	.byte	0
 	.uleb128 0x10
-	.long	.LASF21
-	.byte	0x4
-	.byte	0x46
+	.long	.LASF22
 	.byte	0x3
-	.long	0x113
-	.uleb128 0x11
+	.byte	0x48
+	.byte	0x3
+	.long	0x11f
+	.uleb128 0x12
 	.byte	0x18
-	.byte	0x4c
-	.long	0x16f
+	.byte	0x4e
+	.long	0x17b
 	.uleb128 0xd
 	.string	"u"
-	.byte	0x4d
+	.byte	0x4f
 	.byte	0xc
 	.long	0xb5
 	.byte	0
 	.uleb128 0xd
 	.string	"N"
-	.byte	0x4e
+	.byte	0x50
 	.byte	0x9
 	.long	0x41
 	.byte	0x8
-	.uleb128 0x12
-	.long	.LASF19
-	.byte	0x4f
+	.uleb128 0x11
+	.long	.LASF20
+	.byte	0x51
 	.byte	0x12
-	.long	0x102
+	.long	0x10e
 	.byte	0x10
 	.byte	0
 	.uleb128 0x10
-	.long	.LASF22
-	.byte	0x4
-	.byte	0x50
+	.long	.LASF23
 	.byte	0x3
-	.long	0x147
+	.byte	0x52
+	.byte	0x3
+	.long	0x153
 	.uleb128 0xb
-	.long	0x16f
+	.long	0x17b
 	.uleb128 0xe
 	.long	0x9b
-	.long	0x190
+	.long	0x19c
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0x11
 	.byte	0
 	.uleb128 0xc
-	.long	0x180
+	.long	0x18c
 	.uleb128 0x1
-	.long	.LASF23
+	.long	.LASF24
 	.byte	0x5
 	.byte	0x15
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	A_WEIGHTED_taps
 	.uleb128 0xe
 	.long	0x9b
-	.long	0x1bb
+	.long	0x1c7
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0xb
 	.byte	0
 	.uleb128 0xc
-	.long	0x1ab
+	.long	0x1b7
 	.uleb128 0x1
-	.long	.LASF24
+	.long	.LASF25
 	.byte	0x5
 	.byte	0x1c
 	.byte	0x14
-	.long	0x1bb
+	.long	0x1c7
 	.uleb128 0x9
 	.byte	0x3
 	.quad	C_WEIGHTED_taps
 	.uleb128 0xe
 	.long	0x9b
-	.long	0x1e6
+	.long	0x1f2
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0x3
 	.byte	0
 	.uleb128 0xc
-	.long	0x1d6
+	.long	0x1e2
 	.uleb128 0x1
-	.long	.LASF25
+	.long	.LASF26
 	.byte	0x5
 	.byte	0x2a
 	.byte	0x14
-	.long	0x1e6
+	.long	0x1f2
 	.uleb128 0x9
 	.byte	0x3
 	.quad	TWSL_FAST_taps
 	.uleb128 0x1
-	.long	.LASF26
+	.long	.LASF27
 	.byte	0x5
 	.byte	0x2b
 	.byte	0x14
-	.long	0x1e6
+	.long	0x1f2
 	.uleb128 0x9
 	.byte	0x3
 	.quad	TWSL_SLOW_taps
 	.uleb128 0x1
-	.long	.LASF27
+	.long	.LASF28
 	.byte	0x5
 	.byte	0x32
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_1
 	.uleb128 0x1
-	.long	.LASF28
+	.long	.LASF29
 	.byte	0x5
 	.byte	0x39
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_2
 	.uleb128 0x1
-	.long	.LASF29
+	.long	.LASF30
 	.byte	0x5
 	.byte	0x40
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_3
 	.uleb128 0x1
-	.long	.LASF30
+	.long	.LASF31
 	.byte	0x5
 	.byte	0x47
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_4
 	.uleb128 0x1
-	.long	.LASF31
+	.long	.LASF32
 	.byte	0x5
 	.byte	0x4e
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_5
 	.uleb128 0x1
-	.long	.LASF32
+	.long	.LASF33
 	.byte	0x5
 	.byte	0x55
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_6
 	.uleb128 0x1
-	.long	.LASF33
+	.long	.LASF34
 	.byte	0x5
 	.byte	0x5c
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_7
 	.uleb128 0x1
-	.long	.LASF34
+	.long	.LASF35
 	.byte	0x5
 	.byte	0x63
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_8
 	.uleb128 0x1
-	.long	.LASF35
+	.long	.LASF36
 	.byte	0x5
 	.byte	0x6a
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_9
 	.uleb128 0x1
-	.long	.LASF36
+	.long	.LASF37
 	.byte	0x5
 	.byte	0x71
 	.byte	0x14
-	.long	0x190
+	.long	0x19c
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_10
 	.uleb128 0xe
 	.long	0x9b
-	.long	0x303
+	.long	0x30f
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0x17
 	.byte	0
 	.uleb128 0xc
-	.long	0x2f3
+	.long	0x2ff
 	.uleb128 0x1
-	.long	.LASF37
+	.long	.LASF38
 	.byte	0x5
 	.byte	0x7d
 	.byte	0x14
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_1
 	.uleb128 0x1
-	.long	.LASF38
+	.long	.LASF39
 	.byte	0x5
 	.byte	0x85
 	.byte	0x14
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_2
 	.uleb128 0x3
-	.long	.LASF39
+	.long	.LASF40
 	.byte	0x8d
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_3
 	.uleb128 0x3
-	.long	.LASF40
+	.long	.LASF41
 	.byte	0x95
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_4
 	.uleb128 0x3
-	.long	.LASF41
+	.long	.LASF42
 	.byte	0x9d
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_5
 	.uleb128 0x3
-	.long	.LASF42
+	.long	.LASF43
 	.byte	0xa5
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_6
 	.uleb128 0x3
-	.long	.LASF43
+	.long	.LASF44
 	.byte	0xad
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_7
 	.uleb128 0x3
-	.long	.LASF44
+	.long	.LASF45
 	.byte	0xb5
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_8
 	.uleb128 0x3
-	.long	.LASF45
+	.long	.LASF46
 	.byte	0xbd
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_9
 	.uleb128 0x3
-	.long	.LASF46
+	.long	.LASF47
 	.byte	0xc5
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_10
 	.uleb128 0x3
-	.long	.LASF47
+	.long	.LASF48
 	.byte	0xcd
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_11
 	.uleb128 0x3
-	.long	.LASF48
+	.long	.LASF49
 	.byte	0xd5
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_12
 	.uleb128 0x3
-	.long	.LASF49
+	.long	.LASF50
 	.byte	0xdd
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_13
 	.uleb128 0x3
-	.long	.LASF50
+	.long	.LASF51
 	.byte	0xe5
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_14
 	.uleb128 0x3
-	.long	.LASF51
+	.long	.LASF52
 	.byte	0xed
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_15
 	.uleb128 0x3
-	.long	.LASF52
+	.long	.LASF53
 	.byte	0xf5
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_16
 	.uleb128 0x3
-	.long	.LASF53
+	.long	.LASF54
 	.byte	0xfd
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_17
 	.uleb128 0x6
-	.long	.LASF54
+	.long	.LASF55
 	.value	0x105
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_18
 	.uleb128 0x6
-	.long	.LASF55
+	.long	.LASF56
 	.value	0x10d
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_19
 	.uleb128 0x6
-	.long	.LASF56
+	.long	.LASF57
 	.value	0x115
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_20
 	.uleb128 0x6
-	.long	.LASF57
+	.long	.LASF58
 	.value	0x11d
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_21
 	.uleb128 0x6
-	.long	.LASF58
+	.long	.LASF59
 	.value	0x125
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_22
 	.uleb128 0x6
-	.long	.LASF59
+	.long	.LASF60
 	.value	0x12d
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_23
 	.uleb128 0x6
-	.long	.LASF60
+	.long	.LASF61
 	.value	0x135
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_24
 	.uleb128 0x6
-	.long	.LASF61
+	.long	.LASF62
 	.value	0x13d
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_25
 	.uleb128 0x6
-	.long	.LASF62
+	.long	.LASF63
 	.value	0x145
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_26
 	.uleb128 0x6
-	.long	.LASF63
+	.long	.LASF64
 	.value	0x14d
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_27
 	.uleb128 0x6
-	.long	.LASF64
+	.long	.LASF65
 	.value	0x155
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_28
 	.uleb128 0x6
-	.long	.LASF65
+	.long	.LASF66
 	.value	0x15d
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_29
 	.uleb128 0x6
-	.long	.LASF66
+	.long	.LASF67
 	.value	0x165
-	.long	0x303
+	.long	0x30f
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_30
 	.uleb128 0xe
-	.long	0x102
-	.long	0x581
-	.uleb128 0xf
-	.long	0x3a
-	.byte	0x1d
-	.byte	0
-	.uleb128 0x1
-	.long	.LASF67
-	.byte	0x2
-	.byte	0x94
-	.byte	0x15
-	.long	0x571
-	.uleb128 0x9
-	.byte	0x3
-	.quad	bands
-	.uleb128 0xe
-	.long	0x94
-	.long	0x5a7
+	.long	0x10e
+	.long	0x58d
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0x1d
@@ -2903,39 +2934,55 @@ third_octave_levels:
 	.uleb128 0x1
 	.long	.LASF68
 	.byte	0x2
-	.byte	0xb6
+	.byte	0x9e
+	.byte	0x15
+	.long	0x57d
+	.uleb128 0x9
+	.byte	0x3
+	.quad	bands
+	.uleb128 0xe
+	.long	0x94
+	.long	0x5b3
+	.uleb128 0xf
+	.long	0x3a
+	.byte	0x1d
+	.byte	0
+	.uleb128 0x1
+	.long	.LASF69
+	.byte	0x2
+	.byte	0xc0
 	.byte	0xe
-	.long	0x597
+	.long	0x5a3
 	.uleb128 0x9
 	.byte	0x3
 	.quad	TO_levels
 	.uleb128 0x14
-	.long	.LASF69
+	.long	.LASF70
 	.byte	0x6
 	.byte	0x6b
 	.byte	0x10
 	.long	0xa0
-	.long	0x5d3
+	.long	0x5df
 	.uleb128 0x9
 	.long	0xa0
 	.byte	0
 	.uleb128 0x15
-	.long	.LASF70
+	.long	.LASF71
 	.value	0x2a3
 	.long	0x7e
-	.long	0x5ed
+	.long	0x5f9
 	.uleb128 0x9
 	.long	0x2e
 	.uleb128 0x9
 	.long	0x2e
 	.byte	0
 	.uleb128 0x14
-	.long	.LASF71
+	.long	.LASF72
 	.byte	0x8
 	.byte	0x2f
 	.byte	0xe
 	.long	0x7e
-	.long	0x60d
+	.long	0x619
 	.uleb128 0x9
 	.long	0x7e
 	.uleb128 0x9
@@ -2943,52 +2990,52 @@ third_octave_levels:
 	.uleb128 0x9
 	.long	0x2e
 	.byte	0
-	.uleb128 0x1a
-	.long	.LASF101
+	.uleb128 0x1b
+	.long	.LASF103
 	.byte	0x7
 	.value	0x2af
 	.byte	0xd
-	.long	0x620
+	.long	0x62c
 	.uleb128 0x9
 	.long	0x7e
 	.byte	0
 	.uleb128 0x15
-	.long	.LASF72
+	.long	.LASF73
 	.value	0x2a0
 	.long	0x7e
-	.long	0x635
+	.long	0x641
 	.uleb128 0x9
 	.long	0x2e
 	.byte	0
 	.uleb128 0xa
-	.long	.LASF77
-	.byte	0xdb
-	.quad	.LFB24
-	.quad	.LFE24-.LFB24
+	.long	.LASF78
+	.byte	0xe5
+	.quad	.LFB25
+	.quad	.LFE25-.LFB25
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x6f4
+	.long	0x700
 	.uleb128 0x2
 	.string	"x"
-	.byte	0xdb
+	.byte	0xe5
 	.byte	0x20
 	.long	0xb5
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x8
-	.long	.LASF73
+	.long	.LASF74
 	.byte	0x2
-	.byte	0xdb
+	.byte	0xe5
 	.byte	0x2e
 	.long	0x69
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -60
 	.uleb128 0x1
-	.long	.LASF74
+	.long	.LASF75
 	.byte	0x2
-	.byte	0xdc
+	.byte	0xe6
 	.byte	0xb
 	.long	0x69
 	.uleb128 0x2
@@ -2996,7 +3043,7 @@ third_octave_levels:
 	.sleb128 -36
 	.uleb128 0x7
 	.string	"y"
-	.byte	0xdd
+	.byte	0xe7
 	.byte	0x9
 	.long	0xb5
 	.uleb128 0x2
@@ -3007,7 +3054,7 @@ third_octave_levels:
 	.quad	.LBE13-.LBB13
 	.uleb128 0x7
 	.string	"i"
-	.byte	0xdf
+	.byte	0xe9
 	.byte	0xb
 	.long	0x41
 	.uleb128 0x2
@@ -3017,18 +3064,18 @@ third_octave_levels:
 	.quad	.LBB14
 	.quad	.LBE14-.LBB14
 	.uleb128 0x1
-	.long	.LASF75
+	.long	.LASF76
 	.byte	0x2
-	.byte	0xe0
+	.byte	0xea
 	.byte	0x16
-	.long	0x17b
+	.long	0x187
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x1
-	.long	.LASF76
+	.long	.LASF77
 	.byte	0x2
-	.byte	0xe3
+	.byte	0xed
 	.byte	0x9
 	.long	0x94
 	.uleb128 0x2
@@ -3039,7 +3086,7 @@ third_octave_levels:
 	.quad	.LBE15-.LBB15
 	.uleb128 0x7
 	.string	"c"
-	.byte	0xe4
+	.byte	0xee
 	.byte	0xb
 	.long	0x41
 	.uleb128 0x2
@@ -3050,24 +3097,24 @@ third_octave_levels:
 	.byte	0
 	.byte	0
 	.uleb128 0xa
-	.long	.LASF78
-	.byte	0xce
-	.quad	.LFB23
-	.quad	.LFE23-.LFB23
+	.long	.LASF79
+	.byte	0xd8
+	.quad	.LFB24
+	.quad	.LFE24-.LFB24
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x7a5
+	.long	0x7b1
 	.uleb128 0x2
 	.string	"of"
-	.byte	0xce
+	.byte	0xd8
 	.byte	0x30
-	.long	0x17b
+	.long	0x187
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x2
 	.string	"x"
-	.byte	0xce
+	.byte	0xd8
 	.byte	0x3a
 	.long	0xb5
 	.uleb128 0x2
@@ -3075,16 +3122,16 @@ third_octave_levels:
 	.sleb128 -48
 	.uleb128 0x2
 	.string	"y"
-	.byte	0xce
+	.byte	0xd8
 	.byte	0x45
 	.long	0xb5
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x8
-	.long	.LASF73
+	.long	.LASF74
 	.byte	0x2
-	.byte	0xce
+	.byte	0xd8
 	.byte	0x53
 	.long	0x69
 	.uleb128 0x2
@@ -3095,7 +3142,7 @@ third_octave_levels:
 	.quad	.LBE10-.LBB10
 	.uleb128 0x7
 	.string	"n"
-	.byte	0xd0
+	.byte	0xda
 	.byte	0x13
 	.long	0x69
 	.uleb128 0x2
@@ -3105,9 +3152,9 @@ third_octave_levels:
 	.quad	.LBB11
 	.quad	.LBE11-.LBB11
 	.uleb128 0x1
-	.long	.LASF79
+	.long	.LASF80
 	.byte	0x2
-	.byte	0xd4
+	.byte	0xde
 	.byte	0xf
 	.long	0x94
 	.uleb128 0x2
@@ -3117,9 +3164,9 @@ third_octave_levels:
 	.quad	.LBB12
 	.quad	.LBE12-.LBB12
 	.uleb128 0x1
-	.long	.LASF80
+	.long	.LASF81
 	.byte	0x2
-	.byte	0xd1
+	.byte	0xdb
 	.byte	0x12
 	.long	0x41
 	.uleb128 0x2
@@ -3130,76 +3177,76 @@ third_octave_levels:
 	.byte	0
 	.byte	0
 	.uleb128 0xa
-	.long	.LASF81
-	.byte	0xc7
-	.quad	.LFB22
-	.quad	.LFE22-.LFB22
+	.long	.LASF82
+	.byte	0xd1
+	.quad	.LFB23
+	.quad	.LFE23-.LFB23
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x7d1
+	.long	0x7dd
 	.uleb128 0x8
-	.long	.LASF75
+	.long	.LASF76
 	.byte	0x2
-	.byte	0xc7
+	.byte	0xd1
 	.byte	0x2e
-	.long	0x17b
+	.long	0x187
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x13
-	.long	.LASF84
-	.byte	0xbd
+	.long	.LASF85
+	.byte	0xc7
 	.byte	0x14
-	.long	0x17b
-	.quad	.LFB21
-	.quad	.LFE21-.LFB21
+	.long	0x187
+	.quad	.LFB22
+	.quad	.LFE22-.LFB22
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x820
+	.long	0x82c
 	.uleb128 0x8
-	.long	.LASF82
+	.long	.LASF83
 	.byte	0x2
-	.byte	0xbd
+	.byte	0xc7
 	.byte	0x2c
 	.long	0x41
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -36
 	.uleb128 0x1
-	.long	.LASF83
+	.long	.LASF84
 	.byte	0x2
-	.byte	0xbe
+	.byte	0xc8
 	.byte	0xf
 	.long	0x48
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -28
 	.uleb128 0x1
-	.long	.LASF75
+	.long	.LASF76
 	.byte	0x2
-	.byte	0xc0
+	.byte	0xca
 	.byte	0x18
-	.long	0x17b
+	.long	0x187
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
-	.uleb128 0x1b
-	.long	.LASF85
+	.uleb128 0x1c
+	.long	.LASF86
 	.byte	0x2
-	.byte	0xb8
+	.byte	0xc2
 	.byte	0x7
 	.long	0x94
-	.quad	.LFB20
-	.quad	.LFE20-.LFB20
+	.quad	.LFB21
+	.quad	.LFE21-.LFB21
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x852
+	.long	0x85e
 	.uleb128 0x8
-	.long	.LASF82
+	.long	.LASF83
 	.byte	0x2
-	.byte	0xb8
+	.byte	0xc2
 	.byte	0x15
 	.long	0x41
 	.uleb128 0x2
@@ -3207,24 +3254,24 @@ third_octave_levels:
 	.sleb128 -20
 	.byte	0
 	.uleb128 0xa
-	.long	.LASF86
-	.byte	0x87
-	.quad	.LFB19
-	.quad	.LFE19-.LFB19
+	.long	.LASF87
+	.byte	0x91
+	.quad	.LFB20
+	.quad	.LFE20-.LFB20
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x903
+	.long	0x90f
 	.uleb128 0x2
 	.string	"cf"
-	.byte	0x87
+	.byte	0x91
 	.byte	0x24
-	.long	0x903
+	.long	0x90f
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x2
 	.string	"x"
-	.byte	0x87
+	.byte	0x91
 	.byte	0x2e
 	.long	0xb5
 	.uleb128 0x2
@@ -3232,16 +3279,16 @@ third_octave_levels:
 	.sleb128 -48
 	.uleb128 0x2
 	.string	"y"
-	.byte	0x87
+	.byte	0x91
 	.byte	0x39
 	.long	0xb5
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x8
-	.long	.LASF73
+	.long	.LASF74
 	.byte	0x2
-	.byte	0x87
+	.byte	0x91
 	.byte	0x47
 	.long	0x69
 	.uleb128 0x2
@@ -3252,7 +3299,7 @@ third_octave_levels:
 	.quad	.LBE7-.LBB7
 	.uleb128 0x7
 	.string	"n"
-	.byte	0x89
+	.byte	0x93
 	.byte	0x13
 	.long	0x69
 	.uleb128 0x2
@@ -3262,9 +3309,9 @@ third_octave_levels:
 	.quad	.LBB8
 	.quad	.LBE8-.LBB8
 	.uleb128 0x1
-	.long	.LASF79
+	.long	.LASF80
 	.byte	0x2
-	.byte	0x8d
+	.byte	0x97
 	.byte	0xf
 	.long	0x94
 	.uleb128 0x2
@@ -3274,9 +3321,9 @@ third_octave_levels:
 	.quad	.LBB9
 	.quad	.LBE9-.LBB9
 	.uleb128 0x1
-	.long	.LASF80
+	.long	.LASF81
 	.byte	0x2
-	.byte	0x8a
+	.byte	0x94
 	.byte	0x12
 	.long	0x41
 	.uleb128 0x2
@@ -3287,37 +3334,37 @@ third_octave_levels:
 	.byte	0
 	.byte	0
 	.uleb128 0xb
-	.long	0x13b
+	.long	0x147
 	.uleb128 0xa
-	.long	.LASF87
-	.byte	0x81
-	.quad	.LFB18
-	.quad	.LFE18-.LFB18
+	.long	.LASF88
+	.byte	0x8b
+	.quad	.LFB19
+	.quad	.LFE19-.LFB19
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x932
+	.long	0x93e
 	.uleb128 0x2
 	.string	"cf"
-	.byte	0x81
+	.byte	0x8b
 	.byte	0x22
-	.long	0x903
+	.long	0x90f
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x13
-	.long	.LASF88
-	.byte	0x78
+	.long	.LASF89
+	.byte	0x82
 	.byte	0xa
-	.long	0x903
-	.quad	.LFB17
-	.quad	.LFE17-.LFB17
+	.long	0x90f
+	.quad	.LFB18
+	.quad	.LFE18-.LFB18
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x96d
+	.long	0x979
 	.uleb128 0x2
 	.string	"N"
-	.byte	0x78
+	.byte	0x82
 	.byte	0x20
 	.long	0x41
 	.uleb128 0x2
@@ -3325,32 +3372,32 @@ third_octave_levels:
 	.sleb128 -36
 	.uleb128 0x7
 	.string	"cf"
-	.byte	0x7a
+	.byte	0x84
 	.byte	0xb
-	.long	0x903
+	.long	0x90f
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
 	.uleb128 0xa
-	.long	.LASF89
-	.byte	0x6c
-	.quad	.LFB16
-	.quad	.LFE16-.LFB16
+	.long	.LASF90
+	.byte	0x76
+	.quad	.LFB17
+	.quad	.LFE17-.LFB17
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xa1e
+	.long	0xa2a
 	.uleb128 0x2
 	.string	"af"
-	.byte	0x6c
+	.byte	0x76
 	.byte	0x24
-	.long	0xa1e
+	.long	0xa2a
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x2
 	.string	"x"
-	.byte	0x6c
+	.byte	0x76
 	.byte	0x2e
 	.long	0xb5
 	.uleb128 0x2
@@ -3358,16 +3405,16 @@ third_octave_levels:
 	.sleb128 -48
 	.uleb128 0x2
 	.string	"y"
-	.byte	0x6c
+	.byte	0x76
 	.byte	0x39
 	.long	0xb5
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x8
-	.long	.LASF73
+	.long	.LASF74
 	.byte	0x2
-	.byte	0x6c
+	.byte	0x76
 	.byte	0x47
 	.long	0x69
 	.uleb128 0x2
@@ -3378,7 +3425,7 @@ third_octave_levels:
 	.quad	.LBE4-.LBB4
 	.uleb128 0x7
 	.string	"n"
-	.byte	0x6e
+	.byte	0x78
 	.byte	0x13
 	.long	0x69
 	.uleb128 0x2
@@ -3388,9 +3435,9 @@ third_octave_levels:
 	.quad	.LBB5
 	.quad	.LBE5-.LBB5
 	.uleb128 0x1
-	.long	.LASF79
+	.long	.LASF80
 	.byte	0x2
-	.byte	0x72
+	.byte	0x7c
 	.byte	0xf
 	.long	0x94
 	.uleb128 0x2
@@ -3400,9 +3447,9 @@ third_octave_levels:
 	.quad	.LBB6
 	.quad	.LBE6-.LBB6
 	.uleb128 0x1
-	.long	.LASF80
+	.long	.LASF81
 	.byte	0x2
-	.byte	0x6f
+	.byte	0x79
 	.byte	0x12
 	.long	0x41
 	.uleb128 0x2
@@ -3413,21 +3460,21 @@ third_octave_levels:
 	.byte	0
 	.byte	0
 	.uleb128 0xb
-	.long	0x107
-	.uleb128 0x1c
-	.long	.LASF90
+	.long	0x113
+	.uleb128 0x1d
+	.long	.LASF91
 	.byte	0x2
-	.byte	0x64
+	.byte	0x6e
 	.byte	0xe
 	.long	0x94
-	.quad	.LFB15
-	.quad	.LFE15-.LFB15
+	.quad	.LFB16
+	.quad	.LFE16-.LFB16
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xaa3
+	.long	0xaaf
 	.uleb128 0x2
 	.string	"x"
-	.byte	0x64
+	.byte	0x6e
 	.byte	0x23
 	.long	0x94
 	.uleb128 0x2
@@ -3435,24 +3482,24 @@ third_octave_levels:
 	.sleb128 -36
 	.uleb128 0x2
 	.string	"u"
-	.byte	0x64
+	.byte	0x6e
 	.byte	0x2d
 	.long	0xb5
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
 	.uleb128 0x8
-	.long	.LASF19
+	.long	.LASF20
 	.byte	0x2
-	.byte	0x64
+	.byte	0x6e
 	.byte	0x3d
-	.long	0x102
+	.long	0x10e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -56
 	.uleb128 0x2
 	.string	"N"
-	.byte	0x64
+	.byte	0x6e
 	.byte	0x48
 	.long	0x41
 	.uleb128 0x2
@@ -3460,7 +3507,7 @@ third_octave_levels:
 	.sleb128 -40
 	.uleb128 0x7
 	.string	"y"
-	.byte	0x66
+	.byte	0x70
 	.byte	0x8
 	.long	0x94
 	.uleb128 0x2
@@ -3471,7 +3518,7 @@ third_octave_levels:
 	.quad	.LBE3-.LBB3
 	.uleb128 0x7
 	.string	"i"
-	.byte	0x67
+	.byte	0x71
 	.byte	0xb
 	.long	0x41
 	.uleb128 0x2
@@ -3479,20 +3526,20 @@ third_octave_levels:
 	.sleb128 -20
 	.byte	0
 	.byte	0
-	.uleb128 0x1d
-	.long	.LASF91
+	.uleb128 0x1e
+	.long	.LASF92
 	.byte	0x2
-	.byte	0x5c
+	.byte	0x66
 	.byte	0xe
 	.long	0x94
-	.quad	.LFB14
-	.quad	.LFE14-.LFB14
+	.quad	.LFB15
+	.quad	.LFE15-.LFB15
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xaf6
+	.long	0xb02
 	.uleb128 0x2
 	.string	"x"
-	.byte	0x5c
+	.byte	0x66
 	.byte	0x1b
 	.long	0x94
 	.uleb128 0x2
@@ -3500,7 +3547,7 @@ third_octave_levels:
 	.sleb128 -20
 	.uleb128 0x2
 	.string	"u"
-	.byte	0x5c
+	.byte	0x66
 	.byte	0x25
 	.long	0xb5
 	.uleb128 0x2
@@ -3508,51 +3555,51 @@ third_octave_levels:
 	.sleb128 -32
 	.uleb128 0x2
 	.string	"a"
-	.byte	0x5c
+	.byte	0x66
 	.byte	0x35
-	.long	0x102
+	.long	0x10e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x2
 	.string	"b"
-	.byte	0x5c
+	.byte	0x66
 	.byte	0x45
-	.long	0x102
+	.long	0x10e
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -48
 	.byte	0
 	.uleb128 0xa
-	.long	.LASF92
-	.byte	0x45
-	.quad	.LFB13
-	.quad	.LFE13-.LFB13
+	.long	.LASF93
+	.byte	0x4f
+	.quad	.LFB14
+	.quad	.LFE14-.LFB14
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xb20
+	.long	0xb2c
 	.uleb128 0x2
 	.string	"af"
-	.byte	0x45
+	.byte	0x4f
 	.byte	0x22
-	.long	0xa1e
+	.long	0xa2a
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x13
-	.long	.LASF93
-	.byte	0x3c
+	.long	.LASF94
+	.byte	0x46
 	.byte	0xa
-	.long	0xa1e
-	.quad	.LFB12
-	.quad	.LFE12-.LFB12
+	.long	0xa2a
+	.quad	.LFB13
+	.quad	.LFE13-.LFB13
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xb5b
+	.long	0xb67
 	.uleb128 0x2
 	.string	"N"
-	.byte	0x3c
+	.byte	0x46
 	.byte	0x20
 	.long	0x41
 	.uleb128 0x2
@@ -3560,62 +3607,62 @@ third_octave_levels:
 	.sleb128 -36
 	.uleb128 0x7
 	.string	"af"
-	.byte	0x3e
+	.byte	0x48
 	.byte	0xb
-	.long	0xa1e
+	.long	0xa2a
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
-	.uleb128 0x1e
-	.long	.LASF97
+	.uleb128 0x1f
+	.long	.LASF99
 	.byte	0x2
-	.byte	0x36
+	.byte	0x40
 	.byte	0xd
-	.quad	.LFB11
-	.quad	.LFE11-.LFB11
+	.quad	.LFB12
+	.quad	.LFE12-.LFB12
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xb95
+	.long	0xba1
 	.uleb128 0x2
 	.string	"u"
-	.byte	0x36
+	.byte	0x40
 	.byte	0x1f
 	.long	0xb5
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.uleb128 0x8
-	.long	.LASF73
+	.long	.LASF74
 	.byte	0x2
-	.byte	0x36
+	.byte	0x40
 	.byte	0x28
 	.long	0x41
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -28
 	.byte	0
-	.uleb128 0x1f
-	.long	.LASF94
+	.uleb128 0x20
+	.long	.LASF95
 	.byte	0x2
-	.byte	0x2d
+	.byte	0x37
 	.byte	0x6
-	.quad	.LFB10
-	.quad	.LFE10-.LFB10
+	.quad	.LFB11
+	.quad	.LFE11-.LFB11
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xc03
+	.long	0xc0f
 	.uleb128 0x2
 	.string	"tw"
-	.byte	0x2d
+	.byte	0x37
 	.byte	0x27
-	.long	0xc03
+	.long	0xc0f
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
 	.uleb128 0x2
 	.string	"x"
-	.byte	0x2d
+	.byte	0x37
 	.byte	0x32
 	.long	0xb5
 	.uleb128 0x2
@@ -3623,7 +3670,7 @@ third_octave_levels:
 	.sleb128 -48
 	.uleb128 0x2
 	.string	"y"
-	.byte	0x2d
+	.byte	0x37
 	.byte	0x3c
 	.long	0xb5
 	.uleb128 0x2
@@ -3631,7 +3678,7 @@ third_octave_levels:
 	.sleb128 -56
 	.uleb128 0x2
 	.string	"n"
-	.byte	0x2d
+	.byte	0x37
 	.byte	0x48
 	.long	0x69
 	.uleb128 0x2
@@ -3642,7 +3689,7 @@ third_octave_levels:
 	.quad	.LBE2-.LBB2
 	.uleb128 0x7
 	.string	"i"
-	.byte	0x30
+	.byte	0x3a
 	.byte	0x10
 	.long	0x69
 	.uleb128 0x2
@@ -3651,46 +3698,62 @@ third_octave_levels:
 	.byte	0
 	.byte	0
 	.uleb128 0xb
-	.long	0xce
+	.long	0xda
 	.uleb128 0xa
-	.long	.LASF95
-	.byte	0x28
-	.quad	.LFB9
-	.quad	.LFE9-.LFB9
+	.long	.LASF96
+	.byte	0x32
+	.quad	.LFB10
+	.quad	.LFE10-.LFB10
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xc32
+	.long	0xc3e
 	.uleb128 0x2
 	.string	"tw"
-	.byte	0x28
+	.byte	0x32
 	.byte	0x25
-	.long	0xc03
+	.long	0xc0f
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
-	.uleb128 0x20
-	.long	.LASF96
-	.byte	0x2
+	.uleb128 0x16
+	.long	.LASF97
+	.byte	0x29
+	.long	0xc0f
+	.quad	.LFB9
+	.quad	.LFE9-.LFB9
+	.uleb128 0x1
+	.byte	0x9c
+	.long	0xc6c
+	.uleb128 0x7
+	.string	"tw"
+	.byte	0x2b
+	.byte	0xe
+	.long	0xc0f
+	.uleb128 0x2
+	.byte	0x91
+	.sleb128 -24
+	.byte	0
+	.uleb128 0x16
+	.long	.LASF98
 	.byte	0x21
-	.byte	0xd
-	.long	0xc03
+	.long	0xc0f
 	.quad	.LFB8
 	.quad	.LFE8-.LFB8
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xc62
+	.long	0xc9a
 	.uleb128 0x7
 	.string	"tw"
 	.byte	0x23
 	.byte	0xe
-	.long	0xc03
+	.long	0xc0f
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
 	.byte	0
 	.uleb128 0x21
-	.long	.LASF98
+	.long	.LASF100
 	.byte	0x1
 	.byte	0x28
 	.byte	0x15
@@ -3700,7 +3763,7 @@ third_octave_levels:
 	.uleb128 0x1
 	.byte	0x9c
 	.uleb128 0x8
-	.long	.LASF99
+	.long	.LASF101
 	.byte	0x1
 	.byte	0x28
 	.byte	0x2d
@@ -3904,7 +3967,7 @@ third_octave_levels:
 	.uleb128 0x8
 	.uleb128 0x3a
 	.uleb128 0x21
-	.sleb128 4
+	.sleb128 3
 	.uleb128 0x3b
 	.uleb128 0xb
 	.uleb128 0x39
@@ -3949,30 +4012,13 @@ third_octave_levels:
 	.byte	0
 	.byte	0
 	.uleb128 0x11
-	.uleb128 0x13
-	.byte	0x1
-	.uleb128 0xb
-	.uleb128 0xb
-	.uleb128 0x3a
-	.uleb128 0x21
-	.sleb128 4
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0x21
-	.sleb128 9
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x12
 	.uleb128 0xd
 	.byte	0
 	.uleb128 0x3
 	.uleb128 0xe
 	.uleb128 0x3a
 	.uleb128 0x21
-	.sleb128 4
+	.sleb128 3
 	.uleb128 0x3b
 	.uleb128 0xb
 	.uleb128 0x39
@@ -3981,6 +4027,23 @@ third_octave_levels:
 	.uleb128 0x13
 	.uleb128 0x38
 	.uleb128 0xb
+	.byte	0
+	.byte	0
+	.uleb128 0x12
+	.uleb128 0x13
+	.byte	0x1
+	.uleb128 0xb
+	.uleb128 0xb
+	.uleb128 0x3a
+	.uleb128 0x21
+	.sleb128 3
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0x21
+	.sleb128 9
+	.uleb128 0x1
+	.uleb128 0x13
 	.byte	0
 	.byte	0
 	.uleb128 0x13
@@ -4062,6 +4125,35 @@ third_octave_levels:
 	.byte	0
 	.byte	0
 	.uleb128 0x16
+	.uleb128 0x2e
+	.byte	0x1
+	.uleb128 0x3f
+	.uleb128 0x19
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0x21
+	.sleb128 2
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0x21
+	.sleb128 13
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x11
+	.uleb128 0x1
+	.uleb128 0x12
+	.uleb128 0x7
+	.uleb128 0x40
+	.uleb128 0x18
+	.uleb128 0x7c
+	.uleb128 0x19
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x17
 	.uleb128 0x11
 	.byte	0x1
 	.uleb128 0x25
@@ -4080,7 +4172,7 @@ third_octave_levels:
 	.uleb128 0x17
 	.byte	0
 	.byte	0
-	.uleb128 0x17
+	.uleb128 0x18
 	.uleb128 0x24
 	.byte	0
 	.uleb128 0xb
@@ -4091,19 +4183,19 @@ third_octave_levels:
 	.uleb128 0x8
 	.byte	0
 	.byte	0
-	.uleb128 0x18
+	.uleb128 0x19
 	.uleb128 0xf
 	.byte	0
 	.uleb128 0xb
 	.uleb128 0xb
 	.byte	0
 	.byte	0
-	.uleb128 0x19
+	.uleb128 0x1a
 	.uleb128 0x26
 	.byte	0
 	.byte	0
 	.byte	0
-	.uleb128 0x1a
+	.uleb128 0x1b
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4124,7 +4216,7 @@ third_octave_levels:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x1b
+	.uleb128 0x1c
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4148,33 +4240,6 @@ third_octave_levels:
 	.uleb128 0x40
 	.uleb128 0x18
 	.uleb128 0x7a
-	.uleb128 0x19
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x1c
-	.uleb128 0x2e
-	.byte	0x1
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x27
-	.uleb128 0x19
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x11
-	.uleb128 0x1
-	.uleb128 0x12
-	.uleb128 0x7
-	.uleb128 0x40
-	.uleb128 0x18
-	.uleb128 0x7c
 	.uleb128 0x19
 	.uleb128 0x1
 	.uleb128 0x13
@@ -4201,7 +4266,7 @@ third_octave_levels:
 	.uleb128 0x7
 	.uleb128 0x40
 	.uleb128 0x18
-	.uleb128 0x7a
+	.uleb128 0x7c
 	.uleb128 0x19
 	.uleb128 0x1
 	.uleb128 0x13
@@ -4220,6 +4285,33 @@ third_octave_levels:
 	.uleb128 0xb
 	.uleb128 0x27
 	.uleb128 0x19
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x11
+	.uleb128 0x1
+	.uleb128 0x12
+	.uleb128 0x7
+	.uleb128 0x40
+	.uleb128 0x18
+	.uleb128 0x7a
+	.uleb128 0x19
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x1f
+	.uleb128 0x2e
+	.byte	0x1
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x27
+	.uleb128 0x19
 	.uleb128 0x11
 	.uleb128 0x1
 	.uleb128 0x12
@@ -4232,7 +4324,7 @@ third_octave_levels:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x1f
+	.uleb128 0x20
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -4254,33 +4346,6 @@ third_octave_levels:
 	.uleb128 0x40
 	.uleb128 0x18
 	.uleb128 0x7a
-	.uleb128 0x19
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0x20
-	.uleb128 0x2e
-	.byte	0x1
-	.uleb128 0x3f
-	.uleb128 0x19
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x11
-	.uleb128 0x1
-	.uleb128 0x12
-	.uleb128 0x7
-	.uleb128 0x40
-	.uleb128 0x18
-	.uleb128 0x7c
 	.uleb128 0x19
 	.uleb128 0x1
 	.uleb128 0x13
@@ -4327,53 +4392,53 @@ third_octave_levels:
 	.section	.debug_line,"",@progbits
 .Ldebug_line0:
 	.section	.debug_str,"MS",@progbits,1
-.LASF98:
+.LASF100:
 	.string	"linear_to_decibel"
-.LASF66:
+.LASF67:
 	.string	"THIRD_OCTAVE_BAND_30"
-.LASF37:
-	.string	"THIRD_OCTAVE_BAND_1"
 .LASF38:
-	.string	"THIRD_OCTAVE_BAND_2"
+	.string	"THIRD_OCTAVE_BAND_1"
 .LASF39:
+	.string	"THIRD_OCTAVE_BAND_2"
+.LASF40:
 	.string	"THIRD_OCTAVE_BAND_3"
-.LASF99:
+.LASF101:
 	.string	"linear"
-.LASF41:
+.LASF42:
 	.string	"THIRD_OCTAVE_BAND_5"
-.LASF77:
+.LASF78:
 	.string	"third_octave_levels"
-.LASF43:
-	.string	"THIRD_OCTAVE_BAND_7"
 .LASF44:
-	.string	"THIRD_OCTAVE_BAND_8"
+	.string	"THIRD_OCTAVE_BAND_7"
 .LASF45:
+	.string	"THIRD_OCTAVE_BAND_8"
+.LASF46:
 	.string	"THIRD_OCTAVE_BAND_9"
-.LASF93:
+.LASF94:
 	.string	"aweighting_create"
 .LASF9:
 	.string	"short int"
-.LASF16:
-	.string	"size_t"
-.LASF72:
-	.string	"malloc"
-.LASF83:
-	.string	"biquad_stages"
-.LASF17:
-	.string	"Timeweight"
-.LASF91:
-	.string	"biquad"
-.LASF69:
-	.string	"log10"
-.LASF19:
-	.string	"coefs"
-.LASF22:
-	.string	"ThirdOctaveFilter"
 .LASF18:
+	.string	"size_t"
+.LASF73:
+	.string	"malloc"
+.LASF84:
+	.string	"biquad_stages"
+.LASF19:
+	.string	"Timeweight"
+.LASF92:
+	.string	"biquad"
+.LASF70:
+	.string	"log10"
+.LASF20:
+	.string	"coefs"
+.LASF23:
+	.string	"ThirdOctaveFilter"
+.LASF16:
 	.string	"previous"
-.LASF101:
+.LASF103:
 	.string	"free"
-.LASF76:
+.LASF77:
 	.string	"sample_sum"
 .LASF8:
 	.string	"signed char"
@@ -4385,153 +4450,157 @@ third_octave_levels:
 	.string	"long long unsigned int"
 .LASF10:
 	.string	"char"
-.LASF85:
+.LASF17:
+	.string	"alpha"
+.LASF86:
 	.string	"get_level"
 .LASF3:
 	.string	"long int"
-.LASF20:
+.LASF21:
 	.string	"Afilter"
-.LASF90:
+.LASF91:
 	.string	"cascade_biquad"
-.LASF73:
+.LASF74:
 	.string	"size"
-.LASF100:
+.LASF102:
 	.string	"GNU C17 13.3.0 -mtune=generic -march=x86-64 -g -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection"
-.LASF96:
+.LASF98:
 	.string	"timeweight_create"
 .LASF15:
 	.string	"long double"
-.LASF21:
+.LASF22:
 	.string	"Cfilter"
-.LASF71:
+.LASF72:
 	.string	"memmove"
 .LASF5:
 	.string	"unsigned char"
-.LASF23:
-	.string	"A_WEIGHTED_taps"
-.LASF92:
-	.string	"aweighting_destroy"
 .LASF24:
+	.string	"A_WEIGHTED_taps"
+.LASF93:
+	.string	"aweighting_destroy"
+.LASF25:
 	.string	"C_WEIGHTED_taps"
-.LASF46:
-	.string	"THIRD_OCTAVE_BAND_10"
 .LASF47:
-	.string	"THIRD_OCTAVE_BAND_11"
+	.string	"THIRD_OCTAVE_BAND_10"
 .LASF48:
-	.string	"THIRD_OCTAVE_BAND_12"
+	.string	"THIRD_OCTAVE_BAND_11"
 .LASF49:
-	.string	"THIRD_OCTAVE_BAND_13"
+	.string	"THIRD_OCTAVE_BAND_12"
 .LASF50:
-	.string	"THIRD_OCTAVE_BAND_14"
+	.string	"THIRD_OCTAVE_BAND_13"
 .LASF51:
-	.string	"THIRD_OCTAVE_BAND_15"
+	.string	"THIRD_OCTAVE_BAND_14"
 .LASF52:
-	.string	"THIRD_OCTAVE_BAND_16"
+	.string	"THIRD_OCTAVE_BAND_15"
 .LASF53:
-	.string	"THIRD_OCTAVE_BAND_17"
+	.string	"THIRD_OCTAVE_BAND_16"
 .LASF54:
-	.string	"THIRD_OCTAVE_BAND_18"
+	.string	"THIRD_OCTAVE_BAND_17"
 .LASF55:
+	.string	"THIRD_OCTAVE_BAND_18"
+.LASF56:
 	.string	"THIRD_OCTAVE_BAND_19"
-.LASF86:
+.LASF87:
 	.string	"cweighting_filtering"
 .LASF14:
 	.string	"_Bool"
-.LASF80:
+.LASF81:
 	.string	"stage"
-.LASF27:
-	.string	"OCTAVE_BAND_1"
 .LASF28:
-	.string	"OCTAVE_BAND_2"
+	.string	"OCTAVE_BAND_1"
 .LASF29:
-	.string	"OCTAVE_BAND_3"
+	.string	"OCTAVE_BAND_2"
 .LASF30:
-	.string	"OCTAVE_BAND_4"
+	.string	"OCTAVE_BAND_3"
 .LASF31:
-	.string	"OCTAVE_BAND_5"
+	.string	"OCTAVE_BAND_4"
 .LASF32:
-	.string	"OCTAVE_BAND_6"
+	.string	"OCTAVE_BAND_5"
 .LASF33:
-	.string	"OCTAVE_BAND_7"
+	.string	"OCTAVE_BAND_6"
 .LASF34:
-	.string	"OCTAVE_BAND_8"
+	.string	"OCTAVE_BAND_7"
 .LASF35:
+	.string	"OCTAVE_BAND_8"
+.LASF36:
 	.string	"OCTAVE_BAND_9"
 .LASF6:
 	.string	"short unsigned int"
-.LASF70:
+.LASF71:
 	.string	"calloc"
-.LASF88:
-	.string	"cweighting_create"
-.LASF78:
-	.string	"third_octave_filtering"
-.LASF68:
-	.string	"TO_levels"
 .LASF89:
+	.string	"cweighting_create"
+.LASF79:
+	.string	"third_octave_filtering"
+.LASF69:
+	.string	"TO_levels"
+.LASF90:
 	.string	"aweighting_filtering"
 .LASF2:
 	.string	"long unsigned int"
-.LASF74:
+.LASF75:
 	.string	"length_read"
 .LASF13:
 	.string	"double"
-.LASF56:
-	.string	"THIRD_OCTAVE_BAND_20"
 .LASF57:
-	.string	"THIRD_OCTAVE_BAND_21"
+	.string	"THIRD_OCTAVE_BAND_20"
 .LASF58:
-	.string	"THIRD_OCTAVE_BAND_22"
+	.string	"THIRD_OCTAVE_BAND_21"
 .LASF59:
-	.string	"THIRD_OCTAVE_BAND_23"
+	.string	"THIRD_OCTAVE_BAND_22"
 .LASF60:
-	.string	"THIRD_OCTAVE_BAND_24"
+	.string	"THIRD_OCTAVE_BAND_23"
 .LASF61:
-	.string	"THIRD_OCTAVE_BAND_25"
+	.string	"THIRD_OCTAVE_BAND_24"
 .LASF62:
-	.string	"THIRD_OCTAVE_BAND_26"
+	.string	"THIRD_OCTAVE_BAND_25"
 .LASF63:
-	.string	"THIRD_OCTAVE_BAND_27"
+	.string	"THIRD_OCTAVE_BAND_26"
 .LASF64:
-	.string	"THIRD_OCTAVE_BAND_28"
+	.string	"THIRD_OCTAVE_BAND_27"
 .LASF65:
+	.string	"THIRD_OCTAVE_BAND_28"
+.LASF66:
 	.string	"THIRD_OCTAVE_BAND_29"
-.LASF25:
-	.string	"TWSL_FAST_taps"
-.LASF84:
-	.string	"third_octave_create"
-.LASF36:
-	.string	"OCTAVE_BAND_10"
 .LASF26:
-	.string	"TWSL_SLOW_taps"
-.LASF95:
-	.string	"timeweight_destroy"
-.LASF87:
-	.string	"cweighting_destroy"
+	.string	"TWSL_FAST_taps"
+.LASF85:
+	.string	"third_octave_create"
 .LASF97:
+	.string	"timeweightSlow_create"
+.LASF37:
+	.string	"OCTAVE_BAND_10"
+.LASF27:
+	.string	"TWSL_SLOW_taps"
+.LASF96:
+	.string	"timeweight_destroy"
+.LASF88:
+	.string	"cweighting_destroy"
+.LASF99:
 	.string	"shift_right"
-.LASF75:
+.LASF76:
 	.string	"filter"
 .LASF7:
 	.string	"unsigned int"
-.LASF81:
-	.string	"third_octave_destroy"
 .LASF82:
+	.string	"third_octave_destroy"
+.LASF83:
 	.string	"band_idx"
-.LASF40:
+.LASF41:
 	.string	"THIRD_OCTAVE_BAND_4"
-.LASF67:
+.LASF68:
 	.string	"bands"
-.LASF94:
+.LASF95:
 	.string	"timeweight_filtering"
-.LASF79:
+.LASF80:
 	.string	"filtered"
-.LASF42:
+.LASF43:
 	.string	"THIRD_OCTAVE_BAND_6"
 	.section	.debug_line_str,"MS",@progbits,1
 .LASF0:
 	.string	"src/filter.c"
 .LASF1:
-	.string	"/home/aluno/Desktop/sound_meter-master_v02_2"
+	.string	"/home/aluno/Desktop/sound_meter-master_v03"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

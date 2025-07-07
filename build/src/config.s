@@ -1,7 +1,7 @@
 	.file	"config.c"
 	.text
 .Ltext0:
-	.file 0 "/home/aluno/Desktop/sound_meter-master_v02_2" "src/config.c"
+	.file 0 "/home/aluno/Desktop/sound_meter-master_v03" "src/config.c"
 	.type	json_decref, @function
 json_decref:
 .LFB7:
@@ -6654,10 +6654,10 @@ config_save:
 .LASF134:
 	.string	"real_json"
 	.section	.debug_line_str,"MS",@progbits,1
-.LASF1:
-	.string	"/home/aluno/Desktop/sound_meter-master_v02_2"
 .LASF0:
 	.string	"src/config.c"
+.LASF1:
+	.string	"/home/aluno/Desktop/sound_meter-master_v03"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

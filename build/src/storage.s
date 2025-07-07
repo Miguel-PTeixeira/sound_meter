@@ -1,7 +1,7 @@
 	.file	"storage.c"
 	.text
 .Ltext0:
-	.file 0 "/home/aluno/Desktop/sound_meter-master_v02_2" "src/storage.c"
+	.file 0 "/home/aluno/Desktop/sound_meter-master_v03" "src/storage.c"
 	.data
 	.type	reading_dir, @object
 	.size	reading_dir, 1
@@ -3621,7 +3621,7 @@ delete_files_storage:
 .LASF0:
 	.string	"src/storage.c"
 .LASF1:
-	.string	"/home/aluno/Desktop/sound_meter-master_v02_2"
+	.string	"/home/aluno/Desktop/sound_meter-master_v03"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

@@ -1,5 +1,5 @@
 # 0 "src/in_out.c"
-# 1 "/home/aluno/Desktop/sound_meter-master_v02_2//"
+# 1 "/home/aluno/Desktop/sound_meter-master_v03//"
 # 0 "<built-in>"
 # 0 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
@@ -9328,9 +9328,11 @@ typedef struct {
 
 typedef struct {
  float previous;
+ float alpha;
 } Timeweight;
 
 Timeweight *timeweight_create();
+Timeweight *timeweightSlow_create();
 void timeweight_destroy(Timeweight *);
 
 
@@ -21535,11 +21537,11 @@ void output_close();
 void output_set_filename(const char *filename, const char *extension);
 char *output_get_data_filepath();
 char *output_get_audio_filepath();
-void output_record(Levels *levels, 
+void output_record(Levels *levels, ThirdOctaveData *td, 
 # 46 "src/in_out.h" 3 4
-                                  _Bool 
+                                                       _Bool 
 # 46 "src/in_out.h"
-                                       continuous);
+                                                            continuous);
 void output_file_close();
 
 
@@ -21892,7 +21894,7 @@ void output_file_open(char *filepath)
  if (strcmp(current_format, ".csv") == 0){
   data_output_fd = output_file;
   add_file(record_struct->created_data_files, filepath);
-  fprintf(data_output_fd, "LAeq, LAFmin, LAE, LAFmax, LApeak, Freq[Hz]:, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1k, 1.25k, 1.6k, 2k, 2.5k, 3.15k, 4k, 5k, 6.3k, 8k, 10k, 12.5k, 16k, 20k\n");
+  fprintf(data_output_fd, "LAFeq, LAFmin, LAFE, LAFmax, LCpeak, Freq[Hz]:, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1k, 1.25k, 1.6k, 2k, 2.5k, 3.15k, 4k, 5k, 6.3k, 8k, 10k, 12.5k, 16k, 20k\n");
  }
 
  else if (strcmp(current_format, ".json") == 0) {
@@ -22045,11 +22047,11 @@ void output_file_open(char *filepath)
  }
 }
 # 343 "src/in_out.c"
-void output_record(Levels *levels, 
+void output_record(Levels *levels, ThirdOctaveData *td, 
 # 343 "src/in_out.c" 3 4
-                                  _Bool 
+                                                       _Bool 
 # 343 "src/in_out.c"
-                                       continuous)
+                                                            continuous)
 {
  if (strcmp(config_struct->data_output_format, ".csv") == 0) {
   for (unsigned i = 0; i < levels->segment_number; ++i) {
@@ -22063,12 +22065,12 @@ void output_record(Levels *levels,
     "%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
     "%2.1f, %2.1f, %2.1f, %2.1f, %2.1f\n",
     levels->LAeq[i], levels->LAFmin[i], levels->LAE[i], levels->LAFmax[i], levels->LApeak[i],
-    get_level(0), get_level(1), get_level(2), get_level(3), get_level(4),
-    get_level(5), get_level(6), get_level(7), get_level(8), get_level(9),
-    get_level(10), get_level(11), get_level(12), get_level(13), get_level(14),
-    get_level(15), get_level(16), get_level(17), get_level(18), get_level(19),
-    get_level(20), get_level(21), get_level(22), get_level(23), get_level(24),
-    get_level(25), get_level(26), get_level(27), get_level(28), get_level(29)
+    td[0].levels->LAE[i], td[1].levels->LAE[i], td[2].levels->LAE[i], td[3].levels->LAE[i], td[4].levels->LAE[i],
+    td[5].levels->LAE[i], td[6].levels->LAE[i], td[7].levels->LAE[i], td[8].levels->LAE[i], td[9].levels->LAE[i],
+    td[10].levels->LAE[i], td[11].levels->LAE[i], td[12].levels->LAE[i], td[13].levels->LAE[i], td[14].levels->LAE[i],
+    td[15].levels->LAE[i], td[16].levels->LAE[i], td[17].levels->LAE[i], td[18].levels->LAE[i], td[19].levels->LAE[i],
+    td[20].levels->LAE[i], td[21].levels->LAE[i], td[22].levels->LAE[i], td[23].levels->LAE[i], td[24].levels->LAE[i],
+    td[25].levels->LAE[i], td[26].levels->LAE[i], td[27].levels->LAE[i], td[28].levels->LAE[i], td[29].levels->LAE[i]
    );
   }
   sample_count += config_struct->sample_rate/config_struct->levels_record_period;
