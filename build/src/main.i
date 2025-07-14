@@ -1,5 +1,5 @@
 # 0 "src/main.c"
-# 1 "/home/aluno/Desktop/sound_meter-master_v03//"
+# 1 "/home/aluno/Desktop/sound_meter-master_v03_1//"
 # 0 "<built-in>"
 # 0 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
@@ -15860,6 +15860,15 @@ static inline float decibel_to_linear(float decibel)
  return 0.00002f * pow(10, decibel / 20.0f);
 }
 
+
+typedef struct{
+ unsigned pos;
+ float array[];
+} Percentil;
+
+Percentil *percentil_create();
+void percentil_destroy(Percentil *perc);
+
 typedef struct {
  unsigned segment_number;
  float *LAeq;
@@ -15867,6 +15876,10 @@ typedef struct {
  float *LAFmax;
  float *LAFmin;
  float *LAE;
+ float *LAS;
+ float background_LAS;
+ Percentil *perc;
+ int *event;
  double le_accumulator;
  unsigned le_counter;
  int direction;
@@ -15877,10 +15890,10 @@ void levels_destroy(Levels *);
 
 void process_block_square(float *input, float *output, unsigned length);
 void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config);
-void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config *config);
+void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct sbuffer *ring_aslow, struct config *config);
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config);
 float get_percentil(float* array, int size, int perc);
-int event_check(Levels* levels, float background_level);
+int event_check(Levels* levels);
 
 void lae_average_create();
 void lae_average_destroy();
@@ -20871,7 +20884,7 @@ void output_open(
 # 38 "src/in_out.h"
                     );
 void output_file_open(char* filepath);
-void output_new_filename(time_t time);
+void output_new_filename(time_t time,char *filepath);
 void output_close();
 
 void output_set_filename(const char *filename, const char *extension);
@@ -21422,7 +21435,165 @@ struct ovectl_ratemanage2_arg {
 
 
 
-# 5 "src/storage.h"
+# 1 "/usr/include/x86_64-linux-gnu/sys/stat.h" 1 3 4
+# 99 "/usr/include/x86_64-linux-gnu/sys/stat.h" 3 4
+
+
+# 1 "/usr/include/x86_64-linux-gnu/bits/stat.h" 1 3 4
+# 102 "/usr/include/x86_64-linux-gnu/sys/stat.h" 2 3 4
+# 205 "/usr/include/x86_64-linux-gnu/sys/stat.h" 3 4
+extern int stat (const char *__restrict __file,
+   struct stat *__restrict __buf) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (1, 2)));
+
+
+
+extern int fstat (int __fd, struct stat *__buf) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2)));
+# 264 "/usr/include/x86_64-linux-gnu/sys/stat.h" 3 4
+extern int fstatat (int __fd, const char *__restrict __file,
+      struct stat *__restrict __buf, int __flag)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2, 3)));
+# 313 "/usr/include/x86_64-linux-gnu/sys/stat.h" 3 4
+extern int lstat (const char *__restrict __file,
+    struct stat *__restrict __buf) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (1, 2)));
+# 352 "/usr/include/x86_64-linux-gnu/sys/stat.h" 3 4
+extern int chmod (const char *__file, __mode_t __mode)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (1)));
+
+
+
+
+
+extern int lchmod (const char *__file, __mode_t __mode)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (1)));
+
+
+
+
+extern int fchmod (int __fd, __mode_t __mode) __attribute__ ((__nothrow__ , __leaf__));
+
+
+
+
+
+extern int fchmodat (int __fd, const char *__file, __mode_t __mode,
+       int __flag)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2))) ;
+
+
+
+
+
+
+extern __mode_t umask (__mode_t __mask) __attribute__ ((__nothrow__ , __leaf__));
+# 389 "/usr/include/x86_64-linux-gnu/sys/stat.h" 3 4
+extern int mkdir (const char *__path, __mode_t __mode)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (1)));
+
+
+
+
+
+extern int mkdirat (int __fd, const char *__path, __mode_t __mode)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2)));
+
+
+
+
+
+
+extern int mknod (const char *__path, __mode_t __mode, __dev_t __dev)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (1)));
+
+
+
+
+
+extern int mknodat (int __fd, const char *__path, __mode_t __mode,
+      __dev_t __dev) __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2)));
+
+
+
+
+
+extern int mkfifo (const char *__path, __mode_t __mode)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (1)));
+
+
+
+
+
+extern int mkfifoat (int __fd, const char *__path, __mode_t __mode)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2)));
+
+
+
+
+
+
+extern int utimensat (int __fd, const char *__path,
+        const struct timespec __times[2],
+        int __flags)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2)));
+# 452 "/usr/include/x86_64-linux-gnu/sys/stat.h" 3 4
+extern int futimens (int __fd, const struct timespec __times[2]) __attribute__ ((__nothrow__ , __leaf__));
+# 468 "/usr/include/x86_64-linux-gnu/sys/stat.h" 3 4
+
+# 7 "src/storage.h" 2
+# 1 "/usr/include/x86_64-linux-gnu/sys/statvfs.h" 1 3 4
+# 25 "/usr/include/x86_64-linux-gnu/sys/statvfs.h" 3 4
+# 1 "/usr/include/x86_64-linux-gnu/bits/statvfs.h" 1 3 4
+# 29 "/usr/include/x86_64-linux-gnu/bits/statvfs.h" 3 4
+struct statvfs
+  {
+    unsigned long int f_bsize;
+    unsigned long int f_frsize;
+
+    __fsblkcnt_t f_blocks;
+    __fsblkcnt_t f_bfree;
+    __fsblkcnt_t f_bavail;
+    __fsfilcnt_t f_files;
+    __fsfilcnt_t f_ffree;
+    __fsfilcnt_t f_favail;
+# 48 "/usr/include/x86_64-linux-gnu/bits/statvfs.h" 3 4
+    unsigned long int f_fsid;
+
+
+
+    unsigned long int f_flag;
+    unsigned long int f_namemax;
+    unsigned int f_type;
+    int __f_spare[5];
+  };
+# 82 "/usr/include/x86_64-linux-gnu/bits/statvfs.h" 3 4
+enum
+{
+  ST_RDONLY = 1,
+
+  ST_NOSUID = 2
+# 113 "/usr/include/x86_64-linux-gnu/bits/statvfs.h" 3 4
+};
+# 26 "/usr/include/x86_64-linux-gnu/sys/statvfs.h" 2 3 4
+# 47 "/usr/include/x86_64-linux-gnu/sys/statvfs.h" 3 4
+
+
+
+
+extern int statvfs (const char *__restrict __file,
+      struct statvfs *__restrict __buf)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (1, 2)));
+# 73 "/usr/include/x86_64-linux-gnu/sys/statvfs.h" 3 4
+extern int fstatvfs (int __fildes, struct statvfs *__buf)
+     __attribute__ ((__nothrow__ , __leaf__)) __attribute__ ((__nonnull__ (2)));
+# 88 "/usr/include/x86_64-linux-gnu/sys/statvfs.h" 3 4
+
+# 8 "src/storage.h" 2
+
+
+
+
+
+
+# 13 "src/storage.h"
 typedef struct{
  char** storage;
  char* dir_path;
@@ -21436,7 +21607,7 @@ typedef struct{
 unsigned long long get_free_disk_space();
 
 
-int archive_files(const char* filepath);
+int archive_file(const char* filepath);
 int archive_file_with_thread(const char* filepath);
 
 Files_Storage* create_files_storage(int storage_space);
@@ -21470,7 +21641,7 @@ typedef struct{
   Files_Storage* created_data_files;
 
   time_t time_start;
-  time_t time_elapsed;
+  unsigned time_elapsed;
 }record_state;
 
 int record_start();
@@ -21522,7 +21693,7 @@ static void help(char *prog_name)
 
 static void about()
 {
- printf("Sound meter v" "1.0" " (" "Jul  7 2025" ")\n"
+ printf("Sound meter v" "1.0" " (" "Jul 14 2025" ")\n"
   "Based on MoSeMusic project by Guilherme Albano and David Meneses\n"
   "Ezequiel Conde (ezeq@cc.isel.ipl.pt)\n");
 }
@@ -21922,18 +22093,7 @@ int main (int argc, char *argv[])
  struct sbuffer *ring_afast = sbuffer_create(segment_buffer_size);
  struct sbuffer *ring_aslow = sbuffer_create(segment_buffer_size);
 
- Levels *levels_a = levels_create();
- Levels *levels_c = levels_create();
- Levels *levels_afast = levels_create();
- Levels *levels_aslow = levels_create();
-
  Levels *levels_return = levels_create();
-
- int percentil_segment_number = (config_struct->background_duration / (config_struct->segment_duration / 1000));
- int percentil_count = 0;
-
- float background_level = 40;
- float percentil_array[percentil_segment_number];
 
 
 
@@ -21956,21 +22116,21 @@ int main (int argc, char *argv[])
 
    float *block_ring_calibration = sbuffer_write_ptr(ring_calibration);
    
-# 341 "src/main.c" 3 4
+# 330 "src/main.c" 3 4
   ((void) sizeof ((
-# 341 "src/main.c"
+# 330 "src/main.c"
   lenght_read <= sbuffer_write_size(ring_calibration)
-# 341 "src/main.c" 3 4
+# 330 "src/main.c" 3 4
   ) ? 1 : 0), __extension__ ({ if (
-# 341 "src/main.c"
+# 330 "src/main.c"
   lenght_read <= sbuffer_write_size(ring_calibration)
-# 341 "src/main.c" 3 4
+# 330 "src/main.c" 3 4
   ) ; else __assert_fail (
-# 341 "src/main.c"
+# 330 "src/main.c"
   "lenght_read <= sbuffer_write_size(ring_calibration)"
-# 341 "src/main.c" 3 4
-  , "src/main.c", 341, __extension__ __PRETTY_FUNCTION__); }))
-# 341 "src/main.c"
+# 330 "src/main.c" 3 4
+  , "src/main.c", 330, __extension__ __PRETTY_FUNCTION__); }))
+# 330 "src/main.c"
                                                              ;
 
    aweighting_filtering(afilter, block_raw, block_ring_calibration, lenght_read);
@@ -21979,18 +22139,22 @@ int main (int argc, char *argv[])
    sbuffer_write_produces(ring_calibration, lenght_read);
 
    if (sbuffer_size(ring_calibration) >= config_struct->segment_size) {
-    process_segment_levels(levels_afast, ring_calibration, 0);
+    process_segment_levels(levels_return, ring_calibration, 
+# 338 "src/main.c" 3 4
+                                                           ((void *)0)
+# 338 "src/main.c"
+                                                               , 0);
     if (milisecs < 2 * 1000) {
      if (verbose_flag)
       puts("-");
     }
     else {
-     average_sum += levels_afast->LAE[0];
+     average_sum += levels_return->LAE[0];
      average_n++;
      if (verbose_flag)
       printf("%d\n", (calibration_milisecs - milisecs) / 1000);
     }
-    levels_afast->segment_number = 0;
+    levels_return->segment_number = 0;
     milisecs += config_struct->segment_duration;
    }
   }
@@ -22017,13 +22181,13 @@ int main (int argc, char *argv[])
   mqtt_begin();
 
  
-# 386 "src/main.c" 3 4
+# 375 "src/main.c" 3 4
 _Bool 
-# 386 "src/main.c"
+# 375 "src/main.c"
      continuous = option_input_filename == 
-# 386 "src/main.c" 3 4
+# 375 "src/main.c" 3 4
                                            ((void *)0)
-# 386 "src/main.c"
+# 375 "src/main.c"
                                                ;
 
  output_open(continuous);
@@ -22032,24 +22196,24 @@ _Bool
   printf("\nStarting sound level measuring...\n");
 
  Audit *wa = 
-# 393 "src/main.c" 3 4
+# 382 "src/main.c" 3 4
             ((void *)0)
-# 393 "src/main.c"
+# 382 "src/main.c"
                 ;
  Audit *wb = 
-# 394 "src/main.c" 3 4
+# 383 "src/main.c" 3 4
             ((void *)0)
-# 394 "src/main.c"
+# 383 "src/main.c"
                 ;
  Audit *wc = 
-# 395 "src/main.c" 3 4
+# 384 "src/main.c" 3 4
             ((void *)0)
-# 395 "src/main.c"
+# 384 "src/main.c"
                 ;
  Audit *wd = 
-# 396 "src/main.c" 3 4
+# 385 "src/main.c" 3 4
             ((void *)0)
-# 396 "src/main.c"
+# 385 "src/main.c"
                 ;
 
  if (!continuous) {
@@ -22081,21 +22245,21 @@ _Bool
   for(int i=0; i<30; i++){
    float *block_filter = sbuffer_write_ptr(third_octave_data[i].ring);
    
-# 426 "src/main.c" 3 4
+# 415 "src/main.c" 3 4
   ((void) sizeof ((
-# 426 "src/main.c"
+# 415 "src/main.c"
   lenght_read <= sbuffer_write_size(third_octave_data[i].ring)
-# 426 "src/main.c" 3 4
+# 415 "src/main.c" 3 4
   ) ? 1 : 0), __extension__ ({ if (
-# 426 "src/main.c"
+# 415 "src/main.c"
   lenght_read <= sbuffer_write_size(third_octave_data[i].ring)
-# 426 "src/main.c" 3 4
+# 415 "src/main.c" 3 4
   ) ; else __assert_fail (
-# 426 "src/main.c"
+# 415 "src/main.c"
   "lenght_read <= sbuffer_write_size(third_octave_data[i].ring)"
-# 426 "src/main.c" 3 4
-  , "src/main.c", 426, __extension__ __PRETTY_FUNCTION__); }))
-# 426 "src/main.c"
+# 415 "src/main.c" 3 4
+  , "src/main.c", 415, __extension__ __PRETTY_FUNCTION__); }))
+# 415 "src/main.c"
                                                                       ;
    third_octave_filtering(third_octave_data[i].filter, block_raw, block_filter, lenght_read);
    process_block_square(block_filter, block_filter, lenght_read);
@@ -22108,78 +22272,80 @@ _Bool
   float *block_ring_afast = sbuffer_write_ptr(ring_afast);
   float *block_ring_aslow = sbuffer_write_ptr(ring_aslow);
   
-# 437 "src/main.c" 3 4
+# 426 "src/main.c" 3 4
  ((void) sizeof ((
-# 437 "src/main.c"
+# 426 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_a)
-# 437 "src/main.c" 3 4
+# 426 "src/main.c" 3 4
  ) ? 1 : 0), __extension__ ({ if (
-# 437 "src/main.c"
+# 426 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_a)
-# 437 "src/main.c" 3 4
+# 426 "src/main.c" 3 4
  ) ; else __assert_fail (
-# 437 "src/main.c"
+# 426 "src/main.c"
  "lenght_read <= sbuffer_write_size(ring_a)"
-# 437 "src/main.c" 3 4
- , "src/main.c", 437, __extension__ __PRETTY_FUNCTION__); }))
-# 437 "src/main.c"
+# 426 "src/main.c" 3 4
+ , "src/main.c", 426, __extension__ __PRETTY_FUNCTION__); }))
+# 426 "src/main.c"
                                                   ;
   
-# 438 "src/main.c" 3 4
+# 427 "src/main.c" 3 4
  ((void) sizeof ((
-# 438 "src/main.c"
+# 427 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_c)
-# 438 "src/main.c" 3 4
+# 427 "src/main.c" 3 4
  ) ? 1 : 0), __extension__ ({ if (
-# 438 "src/main.c"
+# 427 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_c)
-# 438 "src/main.c" 3 4
+# 427 "src/main.c" 3 4
  ) ; else __assert_fail (
-# 438 "src/main.c"
+# 427 "src/main.c"
  "lenght_read <= sbuffer_write_size(ring_c)"
-# 438 "src/main.c" 3 4
- , "src/main.c", 438, __extension__ __PRETTY_FUNCTION__); }))
-# 438 "src/main.c"
+# 427 "src/main.c" 3 4
+ , "src/main.c", 427, __extension__ __PRETTY_FUNCTION__); }))
+# 427 "src/main.c"
                                                   ;
   
-# 439 "src/main.c" 3 4
+# 428 "src/main.c" 3 4
  ((void) sizeof ((
-# 439 "src/main.c"
+# 428 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_afast)
-# 439 "src/main.c" 3 4
+# 428 "src/main.c" 3 4
  ) ? 1 : 0), __extension__ ({ if (
-# 439 "src/main.c"
+# 428 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_afast)
-# 439 "src/main.c" 3 4
+# 428 "src/main.c" 3 4
  ) ; else __assert_fail (
-# 439 "src/main.c"
+# 428 "src/main.c"
  "lenght_read <= sbuffer_write_size(ring_afast)"
-# 439 "src/main.c" 3 4
- , "src/main.c", 439, __extension__ __PRETTY_FUNCTION__); }))
-# 439 "src/main.c"
+# 428 "src/main.c" 3 4
+ , "src/main.c", 428, __extension__ __PRETTY_FUNCTION__); }))
+# 428 "src/main.c"
                                                       ;
   
-# 440 "src/main.c" 3 4
+# 429 "src/main.c" 3 4
  ((void) sizeof ((
-# 440 "src/main.c"
+# 429 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_aslow)
-# 440 "src/main.c" 3 4
+# 429 "src/main.c" 3 4
  ) ? 1 : 0), __extension__ ({ if (
-# 440 "src/main.c"
+# 429 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_aslow)
-# 440 "src/main.c" 3 4
+# 429 "src/main.c" 3 4
  ) ; else __assert_fail (
-# 440 "src/main.c"
+# 429 "src/main.c"
  "lenght_read <= sbuffer_write_size(ring_aslow)"
-# 440 "src/main.c" 3 4
- , "src/main.c", 440, __extension__ __PRETTY_FUNCTION__); }))
-# 440 "src/main.c"
+# 429 "src/main.c" 3 4
+ , "src/main.c", 429, __extension__ __PRETTY_FUNCTION__); }))
+# 429 "src/main.c"
                                                       ;
 
   aweighting_filtering(afilter, block_raw, block_ring_a, lenght_read);
   cweighting_filtering(cfilter, block_raw, block_ring_c, lenght_read);
   sbuffer_write_produces(ring_a, lenght_read);
   sbuffer_write_produces(ring_c, lenght_read);
+  sbuffer_read_consumes(ring_a, lenght_read);
+  sbuffer_read_consumes(ring_c, lenght_read);
 
   process_block_square(block_ring_a, block_ring_afast, lenght_read);
   process_block_square(block_ring_a, block_ring_aslow, lenght_read);
@@ -22195,45 +22361,22 @@ _Bool
    audit_append_samples(wc, block_ring_a, lenght_read);
    audit_append_samples(wd, block_ring_afast, lenght_read);
   }
-
   if (sbuffer_size(ring_afast) >= config_struct->segment_size) {
    for(int i=0; i<30; i++){
-    process_segment_levels(third_octave_data[i].levels, third_octave_data[i].ring, config_struct);
+    process_segment_levels(third_octave_data[i].levels, third_octave_data[i].ring, 
+# 454 "src/main.c" 3 4
+                                                                                  ((void *)0)
+# 454 "src/main.c"
+                                                                                      , config_struct);
    }
-   process_segment_levels(levels_a, ring_a, config_struct);
-   process_segment_levels(levels_c, ring_c, config_struct);
-   process_segment_levels(levels_afast, ring_afast, config_struct);
-   process_segment_levels(levels_aslow, ring_aslow, config_struct);
-
-   levels_return->segment_number = levels_afast->segment_number;
-   { levels_return->LAeq[levels_return->segment_number - 1] = levels_afast->LAeq[levels_afast->segment_number - 1]; }
-   { levels_return->LAFmin[levels_return->segment_number - 1] = levels_afast->LAFmin[levels_afast->segment_number - 1]; }
-   { levels_return->LAE[levels_return->segment_number - 1] = levels_afast->LAE[levels_afast->segment_number - 1]; }
-   { levels_return->LAFmax[levels_return->segment_number - 1] = levels_afast->LAFmax[levels_afast->segment_number - 1]; }
-   { levels_return->LApeak[levels_return->segment_number - 1] = levels_c->LAFmax[levels_c->segment_number - 1]; }
-
-   percentil_array[percentil_count] = levels_aslow->LAE[levels_aslow->segment_number-1];
-
-   if(percentil_count >= percentil_segment_number){
-    background_level = get_percentil(percentil_array,percentil_count,10);
-    percentil_count = 0;
-   }
-
-   if(event_check(levels_aslow, background_level)){
-    printf("\tan event occured\n");
-    fflush(
-# 487 "src/main.c" 3 4
-          stdout
-# 487 "src/main.c"
-                );
-   }
+   process_segment_levels(levels_return, ring_afast, ring_aslow, config_struct);
 
    int segment_index = levels_return->segment_number - 1;
 
    server_send((uint64_t)time(
-# 492 "src/main.c" 3 4
+# 460 "src/main.c" 3 4
                              ((void *)0)
-# 492 "src/main.c"
+# 460 "src/main.c"
                                  ), levels_return->LAeq[segment_index],
      levels_return->LAFmin[segment_index],
      levels_return->LAE[segment_index],
@@ -22258,25 +22401,11 @@ _Bool
    output_record(levels_return, third_octave_data, continuous);
    levels_return->segment_number = 0;
   }
-
-  if (continuous &&
-   record_struct->sample_count >= config_struct->sample_rate * config_struct->audio_file_duration) {
-
-   record_stop();
-   if(!record_start()){
-    fprintf(
-# 522 "src/main.c" 3 4
-           stderr
-# 522 "src/main.c"
-                 ,"ERROR : could not start recording (in_out.c : 79)");
-    return 1;
-   }
-  }
  }
  running = 
-# 527 "src/main.c" 3 4
+# 485 "src/main.c" 3 4
           0
-# 527 "src/main.c"
+# 485 "src/main.c"
                ;
  if (verbose_flag)
   printf("\nTotal time: %d seconds\n", time_elapsed / 1000);
@@ -22310,10 +22439,6 @@ _Bool
  }
 
  levels_destroy(levels_return);
- levels_destroy(levels_c);
- levels_destroy(levels_a);
- levels_destroy(levels_aslow);
- levels_destroy(levels_afast);
  timeweight_destroy(twfastfilter);
  timeweight_destroy(twslowfilter);
  aweighting_destroy(afilter);

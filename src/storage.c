@@ -10,9 +10,13 @@
 
 static bool reading_dir = true;
 
+#define USER_ACCESSIBLE_STORAGE		"/home"
+#define SYSTEM_STORAGE				"/"
+#define ARCHIVED_DIRNAME			"/sound_events"
+
 unsigned long long get_free_disk_space() {
     struct statvfs stat;
-    if (statvfs("/", &stat) != 0) {
+    if (statvfs(USER_ACCESSIBLE_STORAGE, &stat) != 0) {
         fprintf(stderr, "ERROR: Could not read statistics\n");
         return 0;
     }
@@ -42,7 +46,7 @@ Files_Storage* create_files_storage(int storage_space) {
 int archive_file(const char* filepath) {
     if (!filepath) return 0;
 
-    const char* dirname = "./data/sound_events";
+    const char* dirname = "./data"ARCHIVED_DIRNAME;
 
     // Create directory if it doesn't exist
     DIR* dir = opendir(dirname);

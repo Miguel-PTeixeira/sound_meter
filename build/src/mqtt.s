@@ -1,7 +1,7 @@
 	.file	"mqtt.c"
 	.text
 .Ltext0:
-	.file 0 "/home/aluno/Desktop/sound_meter-master_v03" "src/mqtt.c"
+	.file 0 "/home/aluno/Desktop/sound_meter-master_v03_1" "src/mqtt.c"
 	.local	client
 	.comm	client,8,8
 	.section	.rodata
@@ -376,13 +376,13 @@ mqtt_end:
 	.file 14 "/usr/include/time.h"
 	.section	.debug_info,"",@progbits
 .Ldebug_info0:
-	.long	0xda7
+	.long	0xe24
 	.value	0x5
 	.byte	0x1
 	.byte	0x8
 	.long	.Ldebug_abbrev0
 	.uleb128 0x1b
-	.long	.LASF207
+	.long	.LASF211
 	.byte	0x1d
 	.long	.LASF0
 	.long	.LASF1
@@ -403,7 +403,7 @@ mqtt_end:
 	.byte	0x1
 	.byte	0x8
 	.long	.LASF3
-	.uleb128 0xd
+	.uleb128 0xf
 	.long	0x41
 	.uleb128 0x6
 	.byte	0x2
@@ -455,15 +455,15 @@ mqtt_end:
 	.long	0x70
 	.uleb128 0x1d
 	.byte	0x8
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0xb3
-	.uleb128 0xd
+	.uleb128 0xf
 	.long	0xa9
 	.uleb128 0x6
 	.byte	0x1
 	.byte	0x6
 	.long	.LASF14
-	.uleb128 0xd
+	.uleb128 0xf
 	.long	0xb3
 	.uleb128 0x7
 	.long	.LASF15
@@ -471,18 +471,18 @@ mqtt_end:
 	.byte	0xa
 	.byte	0x12
 	.long	0x9b
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0xba
-	.uleb128 0x15
+	.uleb128 0x16
 	.long	0xcb
-	.uleb128 0xe
+	.uleb128 0xc
 	.long	0xb3
 	.long	0xe5
-	.uleb128 0xf
+	.uleb128 0x10
 	.long	0x3a
 	.byte	0x3
 	.byte	0
-	.uleb128 0x12
+	.uleb128 0x13
 	.long	.LASF88
 	.byte	0xd8
 	.byte	0x5
@@ -700,45 +700,45 @@ mqtt_end:
 	.byte	0x19
 	.long	0xe5
 	.uleb128 0x1e
-	.long	.LASF208
+	.long	.LASF212
 	.byte	0x5
 	.byte	0x2b
 	.byte	0xe
-	.uleb128 0x13
+	.uleb128 0x14
 	.long	.LASF46
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0x280
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0xe5
-	.uleb128 0xe
+	.uleb128 0xc
 	.long	0xb3
 	.long	0x29f
-	.uleb128 0xf
+	.uleb128 0x10
 	.long	0x3a
 	.byte	0
 	.byte	0
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0x278
-	.uleb128 0x13
+	.uleb128 0x14
 	.long	.LASF47
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0x2a4
-	.uleb128 0x13
+	.uleb128 0x14
 	.long	.LASF48
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0x2ae
-	.uleb128 0xe
+	.uleb128 0xc
 	.long	0xb3
 	.long	0x2c8
-	.uleb128 0xf
+	.uleb128 0x10
 	.long	0x3a
 	.byte	0x13
 	.byte	0
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0x26c
-	.uleb128 0x15
-	.long	0x2c8
 	.uleb128 0x16
+	.long	0x2c8
+	.uleb128 0x17
 	.long	.LASF181
 	.byte	0xb
 	.byte	0x97
@@ -752,7 +752,7 @@ mqtt_end:
 	.byte	0x8
 	.byte	0x7
 	.long	.LASF50
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0x2f1
 	.uleb128 0x1f
 	.uleb128 0x7
@@ -762,7 +762,7 @@ mqtt_end:
 	.byte	0x14
 	.long	0x77
 	.uleb128 0x20
-	.long	.LASF209
+	.long	.LASF213
 	.byte	0x7
 	.byte	0x4
 	.long	0x54
@@ -770,98 +770,98 @@ mqtt_end:
 	.byte	0x1b
 	.byte	0x6
 	.long	0x3b9
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF52
 	.byte	0x1
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF53
 	.byte	0x2
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF54
 	.byte	0x3
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF55
 	.byte	0x8
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF56
 	.byte	0x9
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF57
 	.byte	0xb
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF58
 	.byte	0x11
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF59
 	.byte	0x12
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF60
 	.byte	0x12
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF61
 	.byte	0x13
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF62
 	.byte	0x15
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF63
 	.byte	0x16
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF64
 	.byte	0x17
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF65
 	.byte	0x18
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF66
 	.byte	0x19
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF67
 	.byte	0x1a
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF68
 	.byte	0x1c
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF69
 	.byte	0x1f
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF70
 	.byte	0x21
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF71
 	.byte	0x22
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF72
 	.byte	0x23
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF73
 	.byte	0x24
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF74
 	.byte	0x25
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF75
 	.byte	0x26
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF76
 	.byte	0x27
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF77
 	.byte	0x28
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF78
 	.byte	0x29
-	.uleb128 0x4
+	.uleb128 0x5
 	.long	.LASF79
 	.byte	0x2a
 	.byte	0
-	.uleb128 0x10
+	.uleb128 0xd
 	.byte	0x10
 	.byte	0x8
 	.byte	0x57
 	.byte	0x9
 	.long	0x3dd
-	.uleb128 0x17
+	.uleb128 0x11
 	.string	"len"
 	.byte	0x8
 	.byte	0x59
@@ -882,7 +882,7 @@ mqtt_end:
 	.byte	0x5b
 	.byte	0x3
 	.long	0x3b9
-	.uleb128 0x10
+	.uleb128 0xd
 	.byte	0x20
 	.byte	0x8
 	.byte	0x69
@@ -909,17 +909,17 @@ mqtt_end:
 	.byte	0x65
 	.byte	0x3
 	.long	0x43d
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	.LASF83
 	.byte	0x66
 	.byte	0x13
 	.long	0x41
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	.LASF84
 	.byte	0x67
 	.byte	0x14
 	.long	0x4d
-	.uleb128 0x14
+	.uleb128 0x15
 	.long	.LASF85
 	.byte	0x68
 	.byte	0x12
@@ -927,7 +927,7 @@ mqtt_end:
 	.uleb128 0x22
 	.long	0x3e9
 	.byte	0
-	.uleb128 0x10
+	.uleb128 0xd
 	.byte	0x28
 	.byte	0x8
 	.byte	0x61
@@ -954,7 +954,7 @@ mqtt_end:
 	.byte	0x6e
 	.byte	0x3
 	.long	0x43d
-	.uleb128 0x12
+	.uleb128 0x13
 	.long	.LASF89
 	.byte	0x18
 	.byte	0x8
@@ -990,7 +990,7 @@ mqtt_end:
 	.long	0x4af
 	.byte	0x10
 	.byte	0
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0x461
 	.uleb128 0x7
 	.long	.LASF89
@@ -998,6 +998,8 @@ mqtt_end:
 	.byte	0x79
 	.byte	0x3
 	.long	0x46d
+	.uleb128 0x4
+	.long	0x69
 	.uleb128 0x9
 	.long	.LASF94
 	.value	0x100
@@ -1012,7 +1014,7 @@ mqtt_end:
 	.byte	0x40
 	.value	0x114
 	.byte	0x9
-	.long	0x557
+	.long	0x55c
 	.uleb128 0x2
 	.long	.LASF96
 	.value	0x117
@@ -1072,14 +1074,14 @@ mqtt_end:
 	.long	.LASF103
 	.value	0x14f
 	.byte	0x3
-	.long	0x4d8
-	.uleb128 0x5
-	.long	0x557
+	.long	0x4dd
+	.uleb128 0x4
+	.long	0x55c
 	.uleb128 0x8
 	.byte	0x10
 	.value	0x28b
 	.byte	0x2
-	.long	0x58c
+	.long	0x591
 	.uleb128 0xb
 	.string	"len"
 	.value	0x28d
@@ -1097,7 +1099,7 @@ mqtt_end:
 	.byte	0x30
 	.value	0x275
 	.byte	0x9
-	.long	0x5f1
+	.long	0x5f6
 	.uleb128 0x2
 	.long	.LASF96
 	.value	0x278
@@ -1138,19 +1140,19 @@ mqtt_end:
 	.long	.LASF99
 	.value	0x28f
 	.byte	0x4
-	.long	0x568
+	.long	0x56d
 	.byte	0x20
 	.byte	0
 	.uleb128 0x9
 	.long	.LASF106
 	.value	0x290
 	.byte	0x3
-	.long	0x58c
+	.long	0x591
 	.uleb128 0x8
 	.byte	0x80
 	.value	0x2a5
 	.byte	0x9
-	.long	0x6f1
+	.long	0x6f6
 	.uleb128 0x2
 	.long	.LASF96
 	.value	0x2a8
@@ -1221,7 +1223,7 @@ mqtt_end:
 	.long	.LASF116
 	.value	0x2e8
 	.byte	0xb
-	.long	0x70a
+	.long	0x70f
 	.byte	0x48
 	.uleb128 0x2
 	.long	.LASF117
@@ -1233,7 +1235,7 @@ mqtt_end:
 	.long	.LASF118
 	.value	0x2f5
 	.byte	0x11
-	.long	0x73c
+	.long	0x741
 	.byte	0x58
 	.uleb128 0x2
 	.long	.LASF119
@@ -1251,7 +1253,7 @@ mqtt_end:
 	.long	.LASF121
 	.value	0x30b
 	.byte	0x17
-	.long	0x741
+	.long	0x746
 	.byte	0x70
 	.uleb128 0x2
 	.long	.LASF122
@@ -1262,7 +1264,7 @@ mqtt_end:
 	.byte	0
 	.uleb128 0x18
 	.long	0x69
-	.long	0x70a
+	.long	0x70f
 	.uleb128 0x3
 	.long	0xcb
 	.uleb128 0x3
@@ -1270,11 +1272,11 @@ mqtt_end:
 	.uleb128 0x3
 	.long	0xa7
 	.byte	0
-	.uleb128 0x5
-	.long	0x6f1
+	.uleb128 0x4
+	.long	0x6f6
 	.uleb128 0x18
 	.long	0x54
-	.long	0x737
+	.long	0x73c
 	.uleb128 0x3
 	.long	0xcb
 	.uleb128 0x3
@@ -1282,28 +1284,28 @@ mqtt_end:
 	.uleb128 0x3
 	.long	0x54
 	.uleb128 0x3
-	.long	0x737
+	.long	0x73c
 	.uleb128 0x3
 	.long	0x54
 	.uleb128 0x3
 	.long	0xa7
 	.byte	0
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0x41
-	.uleb128 0x5
-	.long	0x70f
-	.uleb128 0x5
+	.uleb128 0x4
+	.long	0x714
+	.uleb128 0x4
 	.long	0x48
 	.uleb128 0x9
 	.long	.LASF123
 	.value	0x312
 	.byte	0x3
-	.long	0x5fd
+	.long	0x602
 	.uleb128 0x8
 	.byte	0x10
 	.value	0x31d
 	.byte	0x9
-	.long	0x776
+	.long	0x77b
 	.uleb128 0x2
 	.long	.LASF124
 	.value	0x31f
@@ -1321,14 +1323,14 @@ mqtt_end:
 	.long	.LASF125
 	.value	0x321
 	.byte	0x3
-	.long	0x752
-	.uleb128 0xd
-	.long	0x776
+	.long	0x757
+	.uleb128 0xf
+	.long	0x77b
 	.uleb128 0x8
 	.byte	0x10
 	.value	0x3b7
 	.byte	0x2
-	.long	0x7b8
+	.long	0x7bd
 	.uleb128 0x2
 	.long	.LASF126
 	.value	0x3b9
@@ -1352,7 +1354,7 @@ mqtt_end:
 	.byte	0x10
 	.value	0x3c0
 	.byte	0x2
-	.long	0x7dc
+	.long	0x7e1
 	.uleb128 0xb
 	.string	"len"
 	.value	0x3c2
@@ -1370,7 +1372,7 @@ mqtt_end:
 	.byte	0x98
 	.value	0x33e
 	.byte	0x9
-	.long	0x8f7
+	.long	0x8fc
 	.uleb128 0x2
 	.long	.LASF96
 	.value	0x341
@@ -1405,7 +1407,7 @@ mqtt_end:
 	.long	.LASF132
 	.value	0x37c
 	.byte	0x1a
-	.long	0x8f7
+	.long	0x8fc
 	.byte	0x18
 	.uleb128 0x2
 	.long	.LASF133
@@ -1435,7 +1437,7 @@ mqtt_end:
 	.string	"ssl"
 	.value	0x399
 	.byte	0x19
-	.long	0x8fc
+	.long	0x901
 	.byte	0x38
 	.uleb128 0x2
 	.long	.LASF137
@@ -1447,7 +1449,7 @@ mqtt_end:
 	.long	.LASF138
 	.value	0x3ab
 	.byte	0xf
-	.long	0x901
+	.long	0x906
 	.byte	0x48
 	.uleb128 0x2
 	.long	.LASF127
@@ -1459,13 +1461,13 @@ mqtt_end:
 	.long	.LASF139
 	.value	0x3bc
 	.byte	0x4
-	.long	0x787
+	.long	0x78c
 	.byte	0x58
 	.uleb128 0x2
 	.long	.LASF140
 	.value	0x3c4
 	.byte	0x4
-	.long	0x7b8
+	.long	0x7bd
 	.byte	0x68
 	.uleb128 0x2
 	.long	.LASF141
@@ -1483,7 +1485,7 @@ mqtt_end:
 	.long	.LASF143
 	.value	0x3d0
 	.byte	0x1e
-	.long	0x906
+	.long	0x90b
 	.byte	0x80
 	.uleb128 0x2
 	.long	.LASF144
@@ -1498,26 +1500,26 @@ mqtt_end:
 	.long	0xcb
 	.byte	0x90
 	.byte	0
-	.uleb128 0x5
-	.long	0x5f1
-	.uleb128 0x5
-	.long	0x746
-	.uleb128 0x5
+	.uleb128 0x4
+	.long	0x5f6
+	.uleb128 0x4
+	.long	0x74b
+	.uleb128 0x4
 	.long	0xae
-	.uleb128 0x5
-	.long	0x782
+	.uleb128 0x4
+	.long	0x787
 	.uleb128 0x9
 	.long	.LASF146
 	.value	0x3db
 	.byte	0x3
-	.long	0x7dc
-	.uleb128 0x12
+	.long	0x7e1
+	.uleb128 0x13
 	.long	.LASF147
 	.byte	0xb0
 	.byte	0xa
 	.byte	0x53
 	.byte	0x8
-	.long	0xab8
+	.long	0xabd
 	.uleb128 0x1
 	.long	.LASF148
 	.byte	0xa
@@ -1642,7 +1644,7 @@ mqtt_end:
 	.byte	0xa
 	.byte	0x67
 	.byte	0x8
-	.long	0xab8
+	.long	0xabd
 	.byte	0x60
 	.uleb128 0x1
 	.long	.LASF166
@@ -1663,7 +1665,7 @@ mqtt_end:
 	.byte	0xa
 	.byte	0x6a
 	.byte	0x8
-	.long	0xab8
+	.long	0xabd
 	.byte	0x6c
 	.uleb128 0x1
 	.long	.LASF169
@@ -1684,21 +1686,21 @@ mqtt_end:
 	.byte	0xa
 	.byte	0x6e
 	.byte	0x8
-	.long	0xabf
+	.long	0xac4
 	.byte	0x78
 	.uleb128 0x1
 	.long	.LASF172
 	.byte	0xa
 	.byte	0x6f
 	.byte	0x8
-	.long	0xabf
+	.long	0xac4
 	.byte	0x7c
 	.uleb128 0x1
 	.long	.LASF173
 	.byte	0xa
 	.byte	0x71
 	.byte	0x6
-	.long	0xab8
+	.long	0xabd
 	.byte	0x80
 	.uleb128 0x1
 	.long	.LASF174
@@ -1744,14 +1746,14 @@ mqtt_end:
 	.byte	0x4
 	.byte	0x4
 	.long	.LASF180
-	.uleb128 0x16
+	.uleb128 0x17
 	.long	.LASF182
 	.byte	0xa
 	.byte	0x7f
 	.byte	0x17
-	.long	0xad2
-	.uleb128 0x5
-	.long	0x917
+	.long	0xad7
+	.uleb128 0x4
+	.long	0x91c
 	.uleb128 0x6
 	.byte	0x8
 	.byte	0x4
@@ -1760,189 +1762,252 @@ mqtt_end:
 	.byte	0x10
 	.byte	0x4
 	.long	.LASF184
-	.uleb128 0x10
-	.byte	0x40
-	.byte	0xc
-	.byte	0x32
-	.byte	0x9
-	.long	0xb64
-	.uleb128 0x1
-	.long	.LASF185
+	.uleb128 0xd
+	.byte	0x4
 	.byte	0xc
 	.byte	0x33
+	.byte	0x9
+	.long	0xb0e
+	.uleb128 0x11
+	.string	"pos"
+	.byte	0xc
+	.byte	0x34
 	.byte	0xb
 	.long	0x54
 	.byte	0
 	.uleb128 0x1
+	.long	.LASF93
+	.byte	0xc
+	.byte	0x35
+	.byte	0x8
+	.long	0xb0e
+	.byte	0x4
+	.byte	0
+	.uleb128 0xc
+	.long	0xac4
+	.long	0xb1d
+	.uleb128 0x23
+	.long	0x3a
+	.byte	0
+	.uleb128 0x7
+	.long	.LASF185
+	.byte	0xc
+	.byte	0x36
+	.byte	0x3
+	.long	0xaea
+	.uleb128 0xd
+	.byte	0x60
+	.byte	0xc
+	.byte	0x3b
+	.byte	0x9
+	.long	0xbdc
+	.uleb128 0x1
 	.long	.LASF186
 	.byte	0xc
-	.byte	0x34
-	.byte	0x9
-	.long	0xb64
-	.byte	0x8
+	.byte	0x3c
+	.byte	0xb
+	.long	0x54
+	.byte	0
 	.uleb128 0x1
 	.long	.LASF187
 	.byte	0xc
-	.byte	0x35
+	.byte	0x3d
 	.byte	0x9
-	.long	0xb64
-	.byte	0x10
+	.long	0xbdc
+	.byte	0x8
 	.uleb128 0x1
 	.long	.LASF188
 	.byte	0xc
-	.byte	0x36
+	.byte	0x3e
 	.byte	0x9
-	.long	0xb64
-	.byte	0x18
+	.long	0xbdc
+	.byte	0x10
 	.uleb128 0x1
 	.long	.LASF189
 	.byte	0xc
-	.byte	0x37
+	.byte	0x3f
 	.byte	0x9
-	.long	0xb64
-	.byte	0x20
-	.uleb128 0x17
-	.string	"LAE"
-	.byte	0xc
-	.byte	0x38
-	.byte	0x9
-	.long	0xb64
-	.byte	0x28
+	.long	0xbdc
+	.byte	0x18
 	.uleb128 0x1
 	.long	.LASF190
 	.byte	0xc
-	.byte	0x39
+	.byte	0x40
 	.byte	0x9
-	.long	0xad7
+	.long	0xbdc
+	.byte	0x20
+	.uleb128 0x11
+	.string	"LAE"
+	.byte	0xc
+	.byte	0x41
+	.byte	0x9
+	.long	0xbdc
+	.byte	0x28
+	.uleb128 0x11
+	.string	"LAS"
+	.byte	0xc
+	.byte	0x42
+	.byte	0x9
+	.long	0xbdc
 	.byte	0x30
 	.uleb128 0x1
 	.long	.LASF191
 	.byte	0xc
-	.byte	0x3a
-	.byte	0xb
-	.long	0x54
+	.byte	0x43
+	.byte	0x8
+	.long	0xac4
 	.byte	0x38
 	.uleb128 0x1
 	.long	.LASF192
 	.byte	0xc
-	.byte	0x3b
-	.byte	0x6
-	.long	0x69
-	.byte	0x3c
-	.byte	0
-	.uleb128 0x5
-	.long	0xabf
-	.uleb128 0x7
+	.byte	0x44
+	.byte	0xd
+	.long	0xbe1
+	.byte	0x40
+	.uleb128 0x1
 	.long	.LASF193
 	.byte	0xc
-	.byte	0x3c
+	.byte	0x45
+	.byte	0x7
+	.long	0x4c0
+	.byte	0x48
+	.uleb128 0x1
+	.long	.LASF194
+	.byte	0xc
+	.byte	0x46
+	.byte	0x9
+	.long	0xadc
+	.byte	0x50
+	.uleb128 0x1
+	.long	.LASF195
+	.byte	0xc
+	.byte	0x47
+	.byte	0xb
+	.long	0x54
+	.byte	0x58
+	.uleb128 0x1
+	.long	.LASF196
+	.byte	0xc
+	.byte	0x48
+	.byte	0x6
+	.long	0x69
+	.byte	0x5c
+	.byte	0
+	.uleb128 0x4
+	.long	0xac4
+	.uleb128 0x4
+	.long	0xb1d
+	.uleb128 0x7
+	.long	.LASF197
+	.byte	0xc
+	.byte	0x49
 	.byte	0x3
-	.long	0xae5
-	.uleb128 0xc
-	.long	.LASF202
+	.long	0xb29
+	.uleb128 0xe
+	.long	.LASF206
 	.byte	0x1a
 	.byte	0x13
-	.long	0x4c0
+	.long	0x4c5
 	.uleb128 0x9
 	.byte	0x3
 	.quad	client
-	.uleb128 0x23
-	.long	.LASF210
+	.uleb128 0x24
+	.long	.LASF214
 	.byte	0x9
 	.value	0x593
 	.byte	0xd
-	.long	0xb9d
+	.long	0xc1a
 	.uleb128 0x3
-	.long	0xb9d
+	.long	0xc1a
 	.byte	0
-	.uleb128 0x5
-	.long	0x4c0
+	.uleb128 0x4
+	.long	0x4c5
 	.uleb128 0xa
-	.long	.LASF194
+	.long	.LASF198
 	.byte	0x9
 	.value	0x43b
 	.byte	0xc
 	.long	0x69
-	.long	0xbbe
+	.long	0xc3b
 	.uleb128 0x3
-	.long	0x4c0
+	.long	0x4c5
 	.uleb128 0x3
 	.long	0x69
 	.byte	0
 	.uleb128 0xa
-	.long	.LASF195
+	.long	.LASF199
 	.byte	0x9
 	.value	0x505
 	.byte	0xc
 	.long	0x69
-	.long	0xbe4
+	.long	0xc61
 	.uleb128 0x3
-	.long	0x4c0
+	.long	0x4c5
 	.uleb128 0x3
 	.long	0xcb
 	.uleb128 0x3
-	.long	0x563
+	.long	0x568
 	.uleb128 0x3
-	.long	0xbe4
+	.long	0xc61
 	.byte	0
-	.uleb128 0x5
-	.long	0x4cc
+	.uleb128 0x4
+	.long	0x4d1
 	.uleb128 0xa
-	.long	.LASF196
+	.long	.LASF200
 	.byte	0xd
 	.value	0x197
 	.byte	0xf
 	.long	0x2e
-	.long	0xc00
+	.long	0xc7d
 	.uleb128 0x3
 	.long	0xcb
 	.byte	0
 	.uleb128 0xa
-	.long	.LASF197
+	.long	.LASF201
 	.byte	0xb
 	.value	0x16d
 	.byte	0xc
 	.long	0x69
-	.long	0xc1d
+	.long	0xc9a
 	.uleb128 0x3
 	.long	0xa9
 	.uleb128 0x3
 	.long	0xcb
 	.uleb128 0x19
 	.byte	0
-	.uleb128 0x24
-	.long	.LASF198
+	.uleb128 0x25
+	.long	.LASF202
 	.byte	0xe
 	.byte	0x4c
 	.byte	0xf
 	.long	0xbf
-	.long	0xc33
+	.long	0xcb0
 	.uleb128 0x3
-	.long	0xc33
+	.long	0xcb0
 	.byte	0
-	.uleb128 0x5
+	.uleb128 0x4
 	.long	0xbf
 	.uleb128 0xa
-	.long	.LASF199
+	.long	.LASF203
 	.byte	0x9
 	.value	0x405
 	.byte	0xc
 	.long	0x69
-	.long	0xc54
+	.long	0xcd1
 	.uleb128 0x3
-	.long	0x4c0
+	.long	0x4c5
 	.uleb128 0x3
-	.long	0xc54
+	.long	0xcd1
 	.byte	0
-	.uleb128 0x5
-	.long	0x90b
+	.uleb128 0x4
+	.long	0x910
 	.uleb128 0xa
-	.long	.LASF200
+	.long	.LASF204
 	.byte	0xb
 	.value	0x165
 	.byte	0xc
 	.long	0x69
-	.long	0xc76
+	.long	0xcf3
 	.uleb128 0x3
 	.long	0x2cd
 	.uleb128 0x3
@@ -1950,14 +2015,14 @@ mqtt_end:
 	.uleb128 0x19
 	.byte	0
 	.uleb128 0xa
-	.long	.LASF201
+	.long	.LASF205
 	.byte	0x9
 	.value	0x226
 	.byte	0xc
 	.long	0x69
-	.long	0xca1
+	.long	0xd1e
 	.uleb128 0x3
-	.long	0xb9d
+	.long	0xc1a
 	.uleb128 0x3
 	.long	0xcb
 	.uleb128 0x3
@@ -1967,18 +2032,18 @@ mqtt_end:
 	.uleb128 0x3
 	.long	0xa7
 	.byte	0
-	.uleb128 0x25
-	.long	.LASF211
+	.uleb128 0x26
+	.long	.LASF215
 	.byte	0x1
 	.byte	0x57
 	.byte	0x5
-	.long	0xab8
+	.long	0xabd
 	.quad	.LFB10
 	.quad	.LFE10-.LFB10
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xcd1
-	.uleb128 0x11
+	.long	0xd4e
+	.uleb128 0x12
 	.string	"rc"
 	.byte	0x58
 	.byte	0x9
@@ -1987,40 +2052,40 @@ mqtt_end:
 	.byte	0x91
 	.sleb128 -20
 	.byte	0
-	.uleb128 0x26
-	.long	.LASF212
+	.uleb128 0x27
+	.long	.LASF216
 	.byte	0x1
 	.byte	0x34
 	.byte	0x5
-	.long	0xab8
+	.long	0xabd
 	.quad	.LFB9
 	.quad	.LFE9-.LFB9
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xd59
+	.long	0xdd6
 	.uleb128 0x1a
-	.long	.LASF203
+	.long	.LASF207
 	.byte	0x1a
-	.long	0xd59
+	.long	0xdd6
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -232
 	.uleb128 0x1a
-	.long	.LASF185
+	.long	.LASF186
 	.byte	0x26
 	.long	0x69
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -236
-	.uleb128 0xc
+	.uleb128 0xe
 	.long	.LASF99
 	.byte	0x35
 	.byte	0x7
-	.long	0xd5e
+	.long	0xddb
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -144
-	.uleb128 0x11
+	.uleb128 0x12
 	.string	"ts"
 	.byte	0x36
 	.byte	0x18
@@ -2028,23 +2093,23 @@ mqtt_end:
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -216
-	.uleb128 0xc
-	.long	.LASF204
+	.uleb128 0xe
+	.long	.LASF208
 	.byte	0x41
 	.byte	0x18
-	.long	0x557
+	.long	0x55c
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -208
-	.uleb128 0xc
-	.long	.LASF205
+	.uleb128 0xe
+	.long	.LASF209
 	.byte	0x42
 	.byte	0x1e
-	.long	0x4cc
+	.long	0x4d1
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -224
-	.uleb128 0x11
+	.uleb128 0x12
 	.string	"rc"
 	.byte	0x47
 	.byte	0x9
@@ -2053,34 +2118,34 @@ mqtt_end:
 	.byte	0x91
 	.sleb128 -220
 	.byte	0
-	.uleb128 0x5
-	.long	0xb69
-	.uleb128 0xe
+	.uleb128 0x4
+	.long	0xbe6
+	.uleb128 0xc
 	.long	0xb3
-	.long	0xd6e
-	.uleb128 0xf
+	.long	0xdeb
+	.uleb128 0x10
 	.long	0x3a
 	.byte	0x77
 	.byte	0
-	.uleb128 0x27
-	.long	.LASF213
+	.uleb128 0x28
+	.long	.LASF217
 	.byte	0x1
 	.byte	0x1c
 	.byte	0x5
-	.long	0xab8
+	.long	0xabd
 	.quad	.LFB8
 	.quad	.LFE8-.LFB8
 	.uleb128 0x1
 	.byte	0x9c
-	.uleb128 0xc
-	.long	.LASF206
+	.uleb128 0xe
+	.long	.LASF210
 	.byte	0x1d
 	.byte	0x1f
-	.long	0x90b
+	.long	0x910
 	.uleb128 0x3
 	.byte	0x91
 	.sleb128 -176
-	.uleb128 0x11
+	.uleb128 0x12
 	.string	"rc"
 	.byte	0x1e
 	.byte	0x9
@@ -2135,15 +2200,6 @@ mqtt_end:
 	.byte	0
 	.byte	0
 	.uleb128 0x4
-	.uleb128 0x28
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x1c
-	.uleb128 0xb
-	.byte	0
-	.byte	0
-	.uleb128 0x5
 	.uleb128 0xf
 	.byte	0
 	.uleb128 0xb
@@ -2151,6 +2207,15 @@ mqtt_end:
 	.sleb128 8
 	.uleb128 0x49
 	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x5
+	.uleb128 0x28
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x1c
+	.uleb128 0xb
 	.byte	0
 	.byte	0
 	.uleb128 0x6
@@ -2253,6 +2318,30 @@ mqtt_end:
 	.byte	0
 	.byte	0
 	.uleb128 0xc
+	.uleb128 0x1
+	.byte	0x1
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0xd
+	.uleb128 0x13
+	.byte	0x1
+	.uleb128 0xb
+	.uleb128 0xb
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0xe
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -2270,23 +2359,14 @@ mqtt_end:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0xd
+	.uleb128 0xf
 	.uleb128 0x26
 	.byte	0
 	.uleb128 0x49
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0xe
-	.uleb128 0x1
-	.byte	0x1
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
-	.uleb128 0xf
+	.uleb128 0x10
 	.uleb128 0x21
 	.byte	0
 	.uleb128 0x49
@@ -2295,22 +2375,24 @@ mqtt_end:
 	.uleb128 0xb
 	.byte	0
 	.byte	0
-	.uleb128 0x10
-	.uleb128 0x13
-	.byte	0x1
-	.uleb128 0xb
-	.uleb128 0xb
+	.uleb128 0x11
+	.uleb128 0xd
+	.byte	0
+	.uleb128 0x3
+	.uleb128 0x8
 	.uleb128 0x3a
 	.uleb128 0xb
 	.uleb128 0x3b
 	.uleb128 0xb
 	.uleb128 0x39
 	.uleb128 0xb
-	.uleb128 0x1
+	.uleb128 0x49
 	.uleb128 0x13
+	.uleb128 0x38
+	.uleb128 0xb
 	.byte	0
 	.byte	0
-	.uleb128 0x11
+	.uleb128 0x12
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -2328,7 +2410,7 @@ mqtt_end:
 	.uleb128 0x18
 	.byte	0
 	.byte	0
-	.uleb128 0x12
+	.uleb128 0x13
 	.uleb128 0x13
 	.byte	0x1
 	.uleb128 0x3
@@ -2345,7 +2427,7 @@ mqtt_end:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x13
+	.uleb128 0x14
 	.uleb128 0x13
 	.byte	0
 	.uleb128 0x3
@@ -2354,7 +2436,7 @@ mqtt_end:
 	.uleb128 0x19
 	.byte	0
 	.byte	0
-	.uleb128 0x14
+	.uleb128 0x15
 	.uleb128 0xd
 	.byte	0
 	.uleb128 0x3
@@ -2370,14 +2452,14 @@ mqtt_end:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x15
+	.uleb128 0x16
 	.uleb128 0x37
 	.byte	0
 	.uleb128 0x49
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x16
+	.uleb128 0x17
 	.uleb128 0x34
 	.byte	0
 	.uleb128 0x3
@@ -2394,23 +2476,6 @@ mqtt_end:
 	.uleb128 0x19
 	.uleb128 0x3c
 	.uleb128 0x19
-	.byte	0
-	.byte	0
-	.uleb128 0x17
-	.uleb128 0xd
-	.byte	0
-	.uleb128 0x3
-	.uleb128 0x8
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x38
-	.uleb128 0xb
 	.byte	0
 	.byte	0
 	.uleb128 0x18
@@ -2547,6 +2612,13 @@ mqtt_end:
 	.byte	0
 	.byte	0
 	.uleb128 0x23
+	.uleb128 0x21
+	.byte	0
+	.uleb128 0x49
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x24
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -2567,7 +2639,7 @@ mqtt_end:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x24
+	.uleb128 0x25
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -2590,33 +2662,6 @@ mqtt_end:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x25
-	.uleb128 0x2e
-	.byte	0x1
-	.uleb128 0x3f
-	.uleb128 0x19
-	.uleb128 0x3
-	.uleb128 0xe
-	.uleb128 0x3a
-	.uleb128 0xb
-	.uleb128 0x3b
-	.uleb128 0xb
-	.uleb128 0x39
-	.uleb128 0xb
-	.uleb128 0x49
-	.uleb128 0x13
-	.uleb128 0x11
-	.uleb128 0x1
-	.uleb128 0x12
-	.uleb128 0x7
-	.uleb128 0x40
-	.uleb128 0x18
-	.uleb128 0x7c
-	.uleb128 0x19
-	.uleb128 0x1
-	.uleb128 0x13
-	.byte	0
-	.byte	0
 	.uleb128 0x26
 	.uleb128 0x2e
 	.byte	0x1
@@ -2630,6 +2675,33 @@ mqtt_end:
 	.uleb128 0xb
 	.uleb128 0x39
 	.uleb128 0xb
+	.uleb128 0x49
+	.uleb128 0x13
+	.uleb128 0x11
+	.uleb128 0x1
+	.uleb128 0x12
+	.uleb128 0x7
+	.uleb128 0x40
+	.uleb128 0x18
+	.uleb128 0x7c
+	.uleb128 0x19
+	.uleb128 0x1
+	.uleb128 0x13
+	.byte	0
+	.byte	0
+	.uleb128 0x27
+	.uleb128 0x2e
+	.byte	0x1
+	.uleb128 0x3f
+	.uleb128 0x19
+	.uleb128 0x3
+	.uleb128 0xe
+	.uleb128 0x3a
+	.uleb128 0xb
+	.uleb128 0x3b
+	.uleb128 0xb
+	.uleb128 0x39
+	.uleb128 0xb
 	.uleb128 0x27
 	.uleb128 0x19
 	.uleb128 0x49
@@ -2646,7 +2718,7 @@ mqtt_end:
 	.uleb128 0x13
 	.byte	0
 	.byte	0
-	.uleb128 0x27
+	.uleb128 0x28
 	.uleb128 0x2e
 	.byte	0x1
 	.uleb128 0x3f
@@ -2687,15 +2759,15 @@ mqtt_end:
 	.section	.debug_line,"",@progbits
 .Ldebug_line0:
 	.section	.debug_str,"MS",@progbits,1
-.LASF203:
+.LASF207:
 	.string	"levels"
-.LASF192:
+.LASF196:
 	.string	"direction"
 .LASF134:
 	.string	"password"
 .LASF67:
 	.string	"MQTTPROPERTY_CODE_RESPONSE_INFORMATION"
-.LASF211:
+.LASF215:
 	.string	"mqtt_end"
 .LASF160:
 	.string	"segment_size"
@@ -2705,9 +2777,9 @@ mqtt_end:
 	.string	"MQTTPROPERTY_CODE_RECEIVE_MAXIMUM"
 .LASF121:
 	.string	"protos"
-.LASF208:
+.LASF212:
 	.string	"_IO_lock_t"
-.LASF196:
+.LASF200:
 	.string	"strlen"
 .LASF181:
 	.string	"stderr"
@@ -2763,11 +2835,11 @@ mqtt_end:
 	.string	"levels_record_period"
 .LASF97:
 	.string	"struct_version"
-.LASF207:
+.LASF211:
 	.string	"GNU C17 13.3.0 -mtune=generic -march=x86-64 -g -fasynchronous-unwind-tables -fstack-protector-strong -fstack-clash-protection -fcf-protection"
 .LASF110:
 	.string	"privateKeyPassword"
-.LASF191:
+.LASF195:
 	.string	"le_counter"
 .LASF77:
 	.string	"MQTTPROPERTY_CODE_WILDCARD_SUBSCRIPTION_AVAILABLE"
@@ -2781,6 +2853,8 @@ mqtt_end:
 	.string	"float"
 .LASF68:
 	.string	"MQTTPROPERTY_CODE_SERVER_REFERENCE"
+.LASF193:
+	.string	"event"
 .LASF47:
 	.string	"_IO_codecvt"
 .LASF90:
@@ -2797,7 +2871,7 @@ mqtt_end:
 	.string	"_IO_backup_base"
 .LASF37:
 	.string	"_offset"
-.LASF198:
+.LASF202:
 	.string	"time"
 .LASF154:
 	.string	"data_output_format"
@@ -2807,7 +2881,7 @@ mqtt_end:
 	.string	"_fileno"
 .LASF74:
 	.string	"MQTTPROPERTY_CODE_RETAIN_AVAILABLE"
-.LASF195:
+.LASF199:
 	.string	"MQTTClient_publishMessage"
 .LASF145:
 	.string	"httpsProxy"
@@ -2837,8 +2911,10 @@ mqtt_end:
 	.string	"MQTTPROPERTY_CODE_MAXIMUM_PACKET_SIZE"
 .LASF98:
 	.string	"payloadlen"
-.LASF185:
+.LASF186:
 	.string	"segment_number"
+.LASF185:
+	.string	"Percentil"
 .LASF60:
 	.string	"MQTTPROPERTY_CODE_ASSIGNED_CLIENT_IDENTIFER"
 .LASF178:
@@ -2855,6 +2931,8 @@ mqtt_end:
 	.string	"segment_duration"
 .LASF46:
 	.string	"_IO_marker"
+.LASF191:
+	.string	"background_LAS"
 .LASF150:
 	.string	"input_file"
 .LASF17:
@@ -2867,13 +2945,13 @@ mqtt_end:
 	.string	"ssl_psk_cb"
 .LASF79:
 	.string	"MQTTPROPERTY_CODE_SHARED_SUBSCRIPTION_AVAILABLE"
-.LASF202:
+.LASF206:
 	.string	"client"
-.LASF189:
+.LASF190:
 	.string	"LAFmin"
 .LASF15:
 	.string	"time_t"
-.LASF188:
+.LASF189:
 	.string	"LAFmax"
 .LASF128:
 	.string	"sessionPresent"
@@ -2899,13 +2977,13 @@ mqtt_end:
 	.string	"MQTTClient_SSLOptions"
 .LASF156:
 	.string	"channels"
-.LASF194:
+.LASF198:
 	.string	"MQTTClient_disconnect"
 .LASF108:
 	.string	"keyStore"
 .LASF73:
 	.string	"MQTTPROPERTY_CODE_MAXIMUM_QOS"
-.LASF190:
+.LASF194:
 	.string	"le_accumulator"
 .LASF138:
 	.string	"serverURIs"
@@ -2929,7 +3007,7 @@ mqtt_end:
 	.string	"ssl_error_context"
 .LASF165:
 	.string	"audio_record_ok"
-.LASF199:
+.LASF203:
 	.string	"MQTTClient_connect"
 .LASF177:
 	.string	"mqtt_device_credential"
@@ -2943,15 +3021,15 @@ mqtt_end:
 	.string	"MQTTLenString"
 .LASF93:
 	.string	"array"
-.LASF210:
+.LASF214:
 	.string	"MQTTClient_destroy"
-.LASF193:
+.LASF197:
 	.string	"Levels"
 .LASF153:
 	.string	"audio_output_format"
-.LASF197:
+.LASF201:
 	.string	"sprintf"
-.LASF205:
+.LASF209:
 	.string	"token"
 .LASF148:
 	.string	"identification"
@@ -2981,17 +3059,17 @@ mqtt_end:
 	.string	"uint64_t"
 .LASF158:
 	.string	"block_size"
-.LASF200:
+.LASF204:
 	.string	"fprintf"
 .LASF171:
 	.string	"calibration_reference"
-.LASF201:
+.LASF205:
 	.string	"MQTTClient_create"
 .LASF124:
 	.string	"name"
-.LASF213:
+.LASF217:
 	.string	"mqtt_begin"
-.LASF206:
+.LASF210:
 	.string	"conn_opts"
 .LASF86:
 	.string	"identifier"
@@ -3013,7 +3091,7 @@ mqtt_end:
 	.string	"_IO_FILE"
 .LASF168:
 	.string	"data_record_ok"
-.LASF212:
+.LASF216:
 	.string	"mqtt_publish"
 .LASF83:
 	.string	"byte"
@@ -3021,6 +3099,8 @@ mqtt_end:
 	.string	"retryInterval"
 .LASF57:
 	.string	"MQTTPROPERTY_CODE_SUBSCRIPTION_IDENTIFIER"
+.LASF192:
+	.string	"perc"
 .LASF104:
 	.string	"topicName"
 .LASF3:
@@ -3067,15 +3147,15 @@ mqtt_end:
 	.string	"cleanstart"
 .LASF102:
 	.string	"properties"
-.LASF209:
+.LASF213:
 	.string	"MQTTPropertyCodes"
-.LASF186:
+.LASF187:
 	.string	"LAeq"
 .LASF162:
 	.string	"run_duration"
 .LASF183:
 	.string	"double"
-.LASF204:
+.LASF208:
 	.string	"pubmsg"
 .LASF29:
 	.string	"_chain"
@@ -3095,7 +3175,7 @@ mqtt_end:
 	.string	"_cur_column"
 .LASF166:
 	.string	"data_loop_recording"
-.LASF187:
+.LASF188:
 	.string	"LApeak"
 .LASF84:
 	.string	"integer2"
@@ -3115,7 +3195,7 @@ mqtt_end:
 .LASF0:
 	.string	"src/mqtt.c"
 .LASF1:
-	.string	"/home/aluno/Desktop/sound_meter-master_v03"
+	.string	"/home/aluno/Desktop/sound_meter-master_v03_1"
 	.ident	"GCC: (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0"
 	.section	.note.GNU-stack,"",@progbits
 	.section	.note.gnu.property,"a"

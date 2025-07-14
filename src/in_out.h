@@ -37,7 +37,7 @@ void input_device_close();
 
 void output_open(bool);
 void output_file_open(char* filepath);
-void output_new_filename(time_t time);
+void output_new_filename(time_t time,char *filepath);
 void output_close();
 
 void output_set_filename(const char *filename, const char *extension);

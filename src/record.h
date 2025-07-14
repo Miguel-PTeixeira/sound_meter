@@ -13,7 +13,7 @@
 
 #define OUTPUT_FORMAT "AAAA-MM-DD_HH:MM:SS"
 #define TIME_FORMAT "%Y-%m-%d_%H:%M:%S"
-#define AUX_MEMORY_PERC 5
+#define AUX_MEMORY_PERC 0
 #define FILE_COMPRESSION_RATIO 30
 
 typedef struct{
@@ -41,7 +41,7 @@ typedef struct{
   Files_Storage*			created_data_files;
   
   time_t 			time_start; /* startung time */
-  time_t        	time_elapsed; /* current time */
+  unsigned        	time_elapsed; /* current time */
 }record_state;
 
 int record_start();

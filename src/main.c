@@ -305,18 +305,7 @@ int main (int argc, char *argv[])
 	struct sbuffer *ring_afast = sbuffer_create(segment_buffer_size);
 	struct sbuffer *ring_aslow = sbuffer_create(segment_buffer_size);
 	
-	Levels *levels_a = levels_create();
-	Levels *levels_c = levels_create();
-	Levels *levels_afast = levels_create();
-	Levels *levels_aslow = levels_create();
-	
 	Levels *levels_return = levels_create();
-	
-	int percentil_segment_number = (config_struct->background_duration / (config_struct->segment_duration / 1000));
-	int percentil_count = 0;
-	
-	float background_level = 40;
-	float percentil_array[percentil_segment_number];
 
 	//----------------------------------------------------------------------
 	//	Calibração
@@ -346,18 +335,18 @@ int main (int argc, char *argv[])
 			sbuffer_write_produces(ring_calibration, lenght_read);
 
 			if (sbuffer_size(ring_calibration) >= config_struct->segment_size) {
-				process_segment_levels(levels_afast, ring_calibration, 0);
+				process_segment_levels(levels_return, ring_calibration, NULL, 0);
 				if (milisecs < CONFIG_CALIBRATION_GUARD * 1000) {
 					if (verbose_flag)
 						puts("-");
 				}
 				else {
-					average_sum += levels_afast->LAE[0];
+					average_sum += levels_return->LAE[0];
 					average_n++;
 					if (verbose_flag)
 						printf("%d\n", (calibration_milisecs - milisecs) / 1000);
 				}
-				levels_afast->segment_number = 0;
+				levels_return->segment_number = 0;
 				milisecs += config_struct->segment_duration;
 			}
 		}
@@ -420,7 +409,7 @@ int main (int argc, char *argv[])
 		size_t lenght_read = input_device_read(block_raw, config_struct->block_size);
 		if (lenght_read == 0)
 			break;
-			
+///FILTER BAND MANAGEMENT	
 		for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){//MOre than 2 results in corrupted data. (wrong memory access)
 			float *block_filter = sbuffer_write_ptr(third_octave_data[i].ring);
 			assert(lenght_read <= sbuffer_write_size(third_octave_data[i].ring));
@@ -429,7 +418,7 @@ int main (int argc, char *argv[])
 			timeweight_filtering(twfastfilter, block_filter, block_filter, lenght_read);
 			sbuffer_write_produces(third_octave_data[i].ring, lenght_read);
 		}
-			
+///POINT A	
 		float *block_ring_a = sbuffer_write_ptr(ring_a);
 		float *block_ring_c = sbuffer_write_ptr(ring_c);
 		float *block_ring_afast = sbuffer_write_ptr(ring_afast);
@@ -438,55 +427,34 @@ int main (int argc, char *argv[])
 		assert(lenght_read <= sbuffer_write_size(ring_c));
 		assert(lenght_read <= sbuffer_write_size(ring_afast));
 		assert(lenght_read <= sbuffer_write_size(ring_aslow));
-
+///POINT B
 		aweighting_filtering(afilter, block_raw, block_ring_a, lenght_read);
 		cweighting_filtering(cfilter, block_raw, block_ring_c, lenght_read);
 		sbuffer_write_produces(ring_a, lenght_read);
 		sbuffer_write_produces(ring_c, lenght_read);
-
+		sbuffer_read_consumes(ring_a, lenght_read);
+		sbuffer_read_consumes(ring_c, lenght_read);
+///POINT C
 		process_block_square(block_ring_a, block_ring_afast, lenght_read);
 		process_block_square(block_ring_a, block_ring_aslow, lenght_read);
-
+///POINT D
 		timeweight_filtering(twfastfilter, block_ring_afast, block_ring_afast, lenght_read);
 		timeweight_filtering(twslowfilter, block_ring_aslow, block_ring_aslow, lenght_read);
 		sbuffer_write_produces(ring_afast, lenght_read);
 		sbuffer_write_produces(ring_aslow, lenght_read);
-
+///SAMPLE MANAGEMENT
 		if (!continuous) {
 			audit_append_samples(wa, block_raw, lenght_read);
 			audit_append_samples(wb, block_ring_a, lenght_read);
 			audit_append_samples(wc, block_ring_a, lenght_read);
 			audit_append_samples(wd, block_ring_afast, lenght_read);
 		}
-		
 		if (sbuffer_size(ring_afast) >= config_struct->segment_size) {
 			for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){//MOre than 2 results in corrupted data. (wrong memory access)
-				process_segment_levels(third_octave_data[i].levels, third_octave_data[i].ring, config_struct);
+				process_segment_levels(third_octave_data[i].levels, third_octave_data[i].ring, NULL, config_struct);
 			}
-			process_segment_levels(levels_a, ring_a, config_struct);
-			process_segment_levels(levels_c, ring_c, config_struct);
-			process_segment_levels(levels_afast, ring_afast, config_struct);
-			process_segment_levels(levels_aslow, ring_aslow, config_struct);
-			
-			levels_return->segment_number = levels_afast->segment_number;
-			FILL_LEVELS_PARAMETER(levels_return, LAeq, levels_afast, LAeq)
-			FILL_LEVELS_PARAMETER(levels_return, LAFmin, levels_afast, LAFmin)
-			FILL_LEVELS_PARAMETER(levels_return, LAE, levels_afast, LAE)
-			FILL_LEVELS_PARAMETER(levels_return, LAFmax, levels_afast, LAFmax)
-			FILL_LEVELS_PARAMETER(levels_return, LApeak, levels_c, LAFmax)		
-			
-			percentil_array[percentil_count] = levels_aslow->LAE[levels_aslow->segment_number-1];
-			
-			if(percentil_count >= percentil_segment_number){
-				background_level = get_percentil(percentil_array,percentil_count,10);
-				percentil_count = 0;
-			}
-			
-			if(event_check(levels_aslow, background_level)){
-				printf("\tan event occured\n");
-				fflush(stdout);
-			}
-			
+			process_segment_levels(levels_return, ring_afast, ring_aslow, config_struct);	
+						
 			int segment_index = levels_return->segment_number - 1;
 
 			server_send((uint64_t)time(NULL), levels_return->LAeq[segment_index],
@@ -512,16 +480,6 @@ int main (int argc, char *argv[])
 		if (levels_return->segment_number == config_struct->levels_record_period) {
 			output_record(levels_return, third_octave_data, continuous);
 			levels_return->segment_number = 0;
-		}
-		
-		if (continuous && 
-			record_struct->sample_count >= config_struct->sample_rate * config_struct->audio_file_duration) {
-				
-			record_stop();
-			if(!record_start()){
-				fprintf(stderr,"ERROR : could not start recording (in_out.c : 79)");
-				return 1;
-			}
 		}
 	}
 	running = false;
@@ -557,10 +515,6 @@ int main (int argc, char *argv[])
 	}
 	
 	levels_destroy(levels_return);
-	levels_destroy(levels_c);
-	levels_destroy(levels_a);
-	levels_destroy(levels_aslow);
-	levels_destroy(levels_afast);
 	timeweight_destroy(twfastfilter);
 	timeweight_destroy(twslowfilter);
 	aweighting_destroy(afilter);

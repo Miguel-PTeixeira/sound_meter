@@ -1,5 +1,5 @@
 # 0 "src/filter.c"
-# 1 "/home/aluno/Desktop/sound_meter-master_v03//"
+# 1 "/home/aluno/Desktop/sound_meter-master_v03_1//"
 # 0 "<built-in>"
 # 0 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
@@ -3411,6 +3411,15 @@ static inline float decibel_to_linear(float decibel)
  return 0.00002f * pow(10, decibel / 20.0f);
 }
 
+
+typedef struct{
+ unsigned pos;
+ float array[];
+} Percentil;
+
+Percentil *percentil_create();
+void percentil_destroy(Percentil *perc);
+
 typedef struct {
  unsigned segment_number;
  float *LAeq;
@@ -3418,6 +3427,10 @@ typedef struct {
  float *LAFmax;
  float *LAFmin;
  float *LAE;
+ float *LAS;
+ float background_LAS;
+ Percentil *perc;
+ int *event;
  double le_accumulator;
  unsigned le_counter;
  int direction;
@@ -3428,10 +3441,10 @@ void levels_destroy(Levels *);
 
 void process_block_square(float *input, float *output, unsigned length);
 void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config);
-void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config *config);
+void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct sbuffer *ring_aslow, struct config *config);
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config);
 float get_percentil(float* array, int size, int perc);
-int event_check(Levels* levels, float background_level);
+int event_check(Levels* levels);
 
 void lae_average_create();
 void lae_average_destroy();

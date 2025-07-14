@@ -1,5 +1,6 @@
 #include "record.h"
 #include "in_out.h"
+#include "filter.h"
 #include <time.h>
 #include <assert.h>
 #include <dirent.h>
@@ -17,7 +18,6 @@ record_state record = {
 };
 record_state * record_struct = &record;
 
-static char filename[MAX_FILENAME];
 bool removing = false;
 bool start = false;
 
@@ -32,8 +32,7 @@ bool start = false;
  */ 
 void create_output_file() {
 	if(config_struct->input_file == NULL){
-		output_set_filename(NULL,NULL);
-		output_new_filename(0);
+		output_new_filename(0, output_get_audio_filepath());
 	}
 	char* filepath = output_get_audio_filepath();
 	if(config_struct->audio_record_ok)
@@ -69,8 +68,12 @@ int compare_by_name(const void *a, const void *b) {
  */ 
 int storage_window_init(){
 	int sample_byte_size = 16;	
+	unsigned int file_compression_ratio = (config_struct->sample_rate * sample_byte_size)/record_struct->vi.bitrate_nominal;
 	unsigned long long memory_needed;
 	
+	
+	
+	memory_needed = config_struct->sample_rate * config_struct->audio_file_duration;
 	if(config_struct->input_file == NULL){
 		unsigned int max_audio_files = (config_struct->audio_loop_recording + (config_struct->audio_file_duration-1)) / config_struct->audio_file_duration;
 		
@@ -105,14 +108,12 @@ int storage_window_init(){
 			!load_files_from_directory(record.created_data_files,config_struct->output_path,".csv"))
 				return 0;
 				
-			
-		memory_needed = config_struct->sample_rate * 
-						(config_struct->audio_loop_recording * sample_byte_size/4)+
-						(config_struct->data_loop_recording * sample_byte_size/4);				
-	}else{	
-		memory_needed = config_struct->sample_rate * config_struct->audio_file_duration * sample_byte_size/4;	
+		unsigned data_line_size = (((sizeof(Levels))) + THIRD_OCTAVE_BAND_MAX)*5 + strlen(output_get_audio_filepath()); //Aproximated number of chars per line (inside data file)
+		
+		memory_needed = (config_struct->audio_loop_recording * config_struct->sample_rate) +
+						(config_struct->data_loop_recording * config_struct->levels_record_period * data_line_size);				
 	}
-		memory_needed = memory_needed * 1/FILE_COMPRESSION_RATIO;
+		memory_needed = memory_needed * 1/file_compression_ratio;
 		memory_needed = memory_needed * (100 + AUX_MEMORY_PERC) / 100; //give an increased capacity as safety measure
 	
 	printf("\tFree Disk Space = %lld bytes\n",get_free_disk_space());
@@ -137,11 +138,6 @@ int storage_window_init(){
  * @return estrutura de gravação "record_state"
  */ 
 int record_start(){
-	if(!start){
-		start = true;
-		if(!storage_window_init() || !config_struct->audio_record_ok)
-			return 0;
-	}
 		/* Reset flags */
     record.eos = 0;
     
@@ -152,9 +148,6 @@ int record_start(){
 	record.sample_count = 0;
     
         /* Output file */
-    time_t current_time;
-    time(&current_time);
-    strftime(filename, sizeof(filename), TIME_FORMAT, localtime(&current_time));
     create_output_file();
     if (!record.output){
 		 fprintf(stderr, "ERROR : could not create an output_file (record.c : 173)");
@@ -191,7 +184,14 @@ int record_start(){
         fwrite(record.og.header, 1, record.og.header_len, record.output);
         fwrite(record.og.body, 1, record.og.body_len, record.output);
     }
+    
+    if(!start){
+		start = true;
+		if(!storage_window_init() || !config_struct->audio_record_ok)
+			return 0;
+	}
 	record.time_start = time(NULL);
+	record.time_elapsed = 0;
     return 1;
 }
 
@@ -230,8 +230,7 @@ void record_stop(){
 int record_append_samples(float *frames_buffer,size_t frames_read){
 	if(!config_struct->audio_record_ok) return 1;
 	assert(frames_read <= config_struct->block_size);
-	
-	record.time_elapsed = time(NULL) - record.time_start;
+
 	//int i = 0;
 	
 	if(frames_read==0 || record.eoc == 1){

@@ -1,5 +1,5 @@
 # 0 "src/storage.c"
-# 1 "/home/aluno/Desktop/sound_meter-master_v03//"
+# 1 "/home/aluno/Desktop/sound_meter-master_v03_1//"
 # 0 "<built-in>"
 # 0 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
@@ -3561,12 +3561,9 @@ extern int pthread_atfork (void (*__prepare) (void),
 
 # 9 "src/storage.c" 2
 # 1 "src/storage.h" 1
+# 13 "src/storage.h"
 
-
-
-
-
-# 5 "src/storage.h"
+# 13 "src/storage.h"
 typedef struct{
  char** storage;
  char* dir_path;
@@ -3580,7 +3577,7 @@ typedef struct{
 unsigned long long get_free_disk_space();
 
 
-int archive_files(const char* filepath);
+int archive_file(const char* filepath);
 int archive_file_with_thread(const char* filepath);
 
 Files_Storage* create_files_storage(int storage_space);
@@ -3599,13 +3596,17 @@ static
 # 11 "src/storage.c"
                              ;
 
+
+
+
+
 unsigned long long get_free_disk_space() {
     struct statvfs stat;
-    if (statvfs("/", &stat) != 0) {
+    if (statvfs("/home", &stat) != 0) {
         fprintf(
-# 16 "src/storage.c" 3 4
+# 20 "src/storage.c" 3 4
                stderr
-# 16 "src/storage.c"
+# 20 "src/storage.c"
                      , "ERROR: Could not read statistics\n");
         return 0;
     }
@@ -3615,18 +3616,18 @@ unsigned long long get_free_disk_space() {
 Files_Storage* create_files_storage(int storage_space) {
     Files_Storage* fs = malloc(sizeof(Files_Storage));
     if (!fs) return 
-# 24 "src/storage.c" 3 4
+# 28 "src/storage.c" 3 4
                    ((void *)0)
-# 24 "src/storage.c"
+# 28 "src/storage.c"
                        ;
 
     fs->storage = malloc(sizeof(char*) * storage_space);
     if (!fs->storage) {
         free(fs);
         return 
-# 29 "src/storage.c" 3 4
+# 33 "src/storage.c" 3 4
               ((void *)0)
-# 29 "src/storage.c"
+# 33 "src/storage.c"
                   ;
     }
 
@@ -3634,19 +3635,19 @@ Files_Storage* create_files_storage(int storage_space) {
     fs->size = 0;
     fs->space = storage_space;
     fs->update = 
-# 35 "src/storage.c" 3 4
+# 39 "src/storage.c" 3 4
                 1
-# 35 "src/storage.c"
+# 39 "src/storage.c"
                     ;
     fs->dir_path = 
-# 36 "src/storage.c" 3 4
+# 40 "src/storage.c" 3 4
                   ((void *)0)
-# 36 "src/storage.c"
+# 40 "src/storage.c"
                       ;
     fs->file_format = 
-# 37 "src/storage.c" 3 4
+# 41 "src/storage.c" 3 4
                      ((void *)0)
-# 37 "src/storage.c"
+# 41 "src/storage.c"
                          ;
 
     return fs;
@@ -3655,7 +3656,7 @@ Files_Storage* create_files_storage(int storage_space) {
 int archive_file(const char* filepath) {
     if (!filepath) return 0;
 
-    const char* dirname = "./data/sound_events";
+    const char* dirname = "./data""/sound_events";
 
 
     DIR* dir = opendir(dirname);
@@ -3709,9 +3710,9 @@ void* archive_worker(void* arg) {
     char* filepath = (char*)arg;
     archive_file(filepath);
     return 
-# 98 "src/storage.c" 3 4
+# 102 "src/storage.c" 3 4
           ((void *)0)
-# 98 "src/storage.c"
+# 102 "src/storage.c"
               ;
 }
 
@@ -3722,9 +3723,9 @@ int archive_file_with_thread(const char* filepath) {
     if (!path_copy) return 0;
 
     if (pthread_create(&thread, 
-# 107 "src/storage.c" 3 4
+# 111 "src/storage.c" 3 4
                                ((void *)0)
-# 107 "src/storage.c"
+# 111 "src/storage.c"
                                    , archive_worker, path_copy) != 0) {
         free(path_copy);
         return 0;
@@ -3784,14 +3785,14 @@ int load_files_from_directory(Files_Storage* fs, const char* dir_path, char* fil
     if (!file_format) file_format = "";
 
     if (fs->dir_path != 
-# 165 "src/storage.c" 3 4
+# 169 "src/storage.c" 3 4
                        ((void *)0)
-# 165 "src/storage.c"
+# 169 "src/storage.c"
                            ) free(fs->dir_path);
     if (fs->file_format != 
-# 166 "src/storage.c" 3 4
+# 170 "src/storage.c" 3 4
                           ((void *)0)
-# 166 "src/storage.c"
+# 170 "src/storage.c"
                               ) free(fs->file_format);
 
     fs->dir_path = strdup(dir_path);
@@ -3805,14 +3806,14 @@ int load_files_from_directory(Files_Storage* fs, const char* dir_path, char* fil
     size_t format_len = strlen(file_format);
 
     reading_dir = 
-# 178 "src/storage.c" 3 4
+# 182 "src/storage.c" 3 4
                  1
-# 178 "src/storage.c"
+# 182 "src/storage.c"
                      ;
     while ((entry = readdir(dir)) != 
-# 179 "src/storage.c" 3 4
+# 183 "src/storage.c" 3 4
                                     ((void *)0)
-# 179 "src/storage.c"
+# 183 "src/storage.c"
                                         ) {
         if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
             continue;
@@ -3833,9 +3834,9 @@ int load_files_from_directory(Files_Storage* fs, const char* dir_path, char* fil
     }
     qsort(fs->storage,fs->size,sizeof(fs->storage[0]),compare_strings);
     reading_dir = 
-# 198 "src/storage.c" 3 4
+# 202 "src/storage.c" 3 4
                  0
-# 198 "src/storage.c"
+# 202 "src/storage.c"
                       ;
 
     closedir(dir);

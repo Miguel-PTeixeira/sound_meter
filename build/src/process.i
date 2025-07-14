@@ -1,5 +1,5 @@
 # 0 "src/process.c"
-# 1 "/home/aluno/Desktop/sound_meter-master_v03//"
+# 1 "/home/aluno/Desktop/sound_meter-master_v03_1//"
 # 0 "<built-in>"
 # 0 "<command-line>"
 # 1 "/usr/include/stdc-predef.h" 1 3 4
@@ -3410,6 +3410,15 @@ static inline float decibel_to_linear(float decibel)
  return 0.00002f * pow(10, decibel / 20.0f);
 }
 
+
+typedef struct{
+ unsigned pos;
+ float array[];
+} Percentil;
+
+Percentil *percentil_create();
+void percentil_destroy(Percentil *perc);
+
 typedef struct {
  unsigned segment_number;
  float *LAeq;
@@ -3417,6 +3426,10 @@ typedef struct {
  float *LAFmax;
  float *LAFmin;
  float *LAE;
+ float *LAS;
+ float background_LAS;
+ Percentil *perc;
+ int *event;
  double le_accumulator;
  unsigned le_counter;
  int direction;
@@ -3427,10 +3440,10 @@ void levels_destroy(Levels *);
 
 void process_block_square(float *input, float *output, unsigned length);
 void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config);
-void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config *config);
+void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct sbuffer *ring_aslow, struct config *config);
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config);
 float get_percentil(float* array, int size, int perc);
-int event_check(Levels* levels, float background_level);
+int event_check(Levels* levels);
 
 void lae_average_create();
 void lae_average_destroy();
@@ -3465,7 +3478,15 @@ int ring_float_empty(Ring_float *ring);
 int ring_float_counter(Ring_float *ring);
 int ring_float_full(Ring_float *ring);
 # 26 "src/process.c" 2
-# 34 "src/process.c"
+
+
+
+
+
+
+static int beginning = 1;
+
+
 void lae_average_create()
 {
 
@@ -3477,7 +3498,7 @@ void lae_average_create()
 void lae_average_destroy()
 {
 }
-# 54 "src/process.c"
+# 55 "src/process.c"
 float lae_average(Levels *levels, float le)
 {
  levels->le_accumulator += le;
@@ -3486,44 +3507,96 @@ float lae_average(Levels *levels, float le)
 }
 
 
+Percentil* percentil_create() {
+ int percentil_segment_number = config_struct->background_duration / (config_struct->segment_duration / 1000);
+
+ Percentil *perc = malloc(sizeof(Percentil) + percentil_segment_number * sizeof(float));
+ if (perc == 
+# 67 "src/process.c" 3 4
+            ((void *)0)
+# 67 "src/process.c"
+                ) {
+
+  return 
+# 69 "src/process.c" 3 4
+        ((void *)0)
+# 69 "src/process.c"
+            ;
+ }
+ perc->pos = 0;
+ return perc;
+}
+
+void percentil_destroy(Percentil *perc){
+ if(perc != 
+# 76 "src/process.c" 3 4
+           ((void *)0)
+# 76 "src/process.c"
+               )
+  free(perc);
+}
+
+
+
 
 Levels *levels_create()
 {
  Levels *levels = malloc(sizeof *levels);
  if (levels == 
-# 66 "src/process.c" 3 4
+# 86 "src/process.c" 3 4
               ((void *)0)
-# 66 "src/process.c"
+# 86 "src/process.c"
                   )
   return 
-# 67 "src/process.c" 3 4
+# 87 "src/process.c" 3 4
         ((void *)0)
-# 67 "src/process.c"
+# 87 "src/process.c"
             ;
 
- size_t segment_data_size = config_struct->levels_record_period * sizeof *levels->LAeq;
- float *buffer = malloc(5 * segment_data_size);
- if (buffer == 
-# 71 "src/process.c" 3 4
-              ((void *)0)
-# 71 "src/process.c"
-                  ) {
+ size_t Fsegment_data_size = config_struct->levels_record_period * sizeof *levels->LAeq;
+ float *fbuffer = malloc(7 * Fsegment_data_size);
+ if (fbuffer == 
+# 91 "src/process.c" 3 4
+               ((void *)0)
+# 91 "src/process.c"
+                   ) {
   free(levels);
   return 
-# 73 "src/process.c" 3 4
+# 93 "src/process.c" 3 4
         ((void *)0)
-# 73 "src/process.c"
+# 93 "src/process.c"
             ;
  }
- memset(buffer, 0, 5 * segment_data_size);
- levels->LAeq = buffer;
+ memset(fbuffer, 0, 7 * Fsegment_data_size);
+
+ size_t Isegment_data_size = config_struct->levels_record_period * sizeof *levels->event;
+ int *ibuffer = malloc(1 * Isegment_data_size);
+ if (ibuffer == 
+# 99 "src/process.c" 3 4
+               ((void *)0)
+# 99 "src/process.c"
+                   ) {
+  free(levels);
+  return 
+# 101 "src/process.c" 3 4
+        ((void *)0)
+# 101 "src/process.c"
+            ;
+ }
+ memset(ibuffer, 0, 1 * Isegment_data_size);
+
+ levels->LAeq = fbuffer;
  levels->LAeq[0] = 0;
- levels->LApeak = buffer += config_struct->levels_record_period;
- levels->LAFmax = buffer += config_struct->levels_record_period;
- levels->LAFmin = buffer += config_struct->levels_record_period;
- levels->LAE = buffer += config_struct->levels_record_period;
+ levels->LApeak = fbuffer += config_struct->levels_record_period;
+ levels->LAFmax = fbuffer += config_struct->levels_record_period;
+ levels->LAFmin = fbuffer += config_struct->levels_record_period;
+ levels->LAE = fbuffer += config_struct->levels_record_period;
+ levels->LAS = fbuffer += config_struct->levels_record_period;
+ levels->event = ibuffer;
+ levels->background_LAS = config_struct->calibration_reference;
  levels->le_accumulator = 0;
  levels->le_counter = 0;
+ levels->perc = percentil_create();
 
  levels->segment_number = 0;
  return levels;
@@ -3532,6 +3605,7 @@ Levels *levels_create()
 void levels_destroy(Levels *levels)
 {
  free(levels->LAeq);
+ percentil_destroy(levels->perc);
  free(levels);
 }
 
@@ -3577,87 +3651,188 @@ void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct conf
  }
 }
 
-void process_segment_levels(Levels *levels, struct sbuffer *ring, struct config *config)
+void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct sbuffer *ring_aslow, struct config *config)
 {
  float delta = 0.0;
- if(config != 
-# 140 "src/process.c" 3 4
-             ((void *)0)
-# 140 "src/process.c"
-                 ){
+ if (config != 
+# 174 "src/process.c" 3 4
+              ((void *)0)
+# 174 "src/process.c"
+                  ) {
   delta = config->calibration_delta;
  }
 
  
-# 144 "src/process.c" 3 4
+# 178 "src/process.c" 3 4
 ((void) sizeof ((
-# 144 "src/process.c"
-sbuffer_size(ring) >= config_struct->segment_size
-# 144 "src/process.c" 3 4
+# 178 "src/process.c"
+sbuffer_size(ring_afast) >= config_struct->segment_size
+# 178 "src/process.c" 3 4
 ) ? 1 : 0), __extension__ ({ if (
-# 144 "src/process.c"
-sbuffer_size(ring) >= config_struct->segment_size
-# 144 "src/process.c" 3 4
+# 178 "src/process.c"
+sbuffer_size(ring_afast) >= config_struct->segment_size
+# 178 "src/process.c" 3 4
 ) ; else __assert_fail (
-# 144 "src/process.c"
-"sbuffer_size(ring) >= config_struct->segment_size"
-# 144 "src/process.c" 3 4
-, "src/process.c", 144, __extension__ __PRETTY_FUNCTION__); }))
-# 144 "src/process.c"
-                                                         ;
- if(levels->segment_number >= config_struct->levels_record_period)
+# 178 "src/process.c"
+"sbuffer_size(ring_afast) >= config_struct->segment_size"
+# 178 "src/process.c" 3 4
+, "src/process.c", 178, __extension__ __PRETTY_FUNCTION__); }))
+# 178 "src/process.c"
+                                                               ;
+ if (levels->segment_number >= config_struct->levels_record_period)
   levels->segment_number = 0;
- float *samples = sbuffer_read_ptr(ring);
- unsigned size = min(sbuffer_read_size(ring), config_struct->segment_size);
 
- float sample_sum = samples[0];
- float sample_max = samples[0];
- float sample_min = samples[0];
+
+ float *samples_afast = sbuffer_read_ptr(ring_afast);
+ float *samples_aslow = samples_afast;
+
+ unsigned size = min(sbuffer_read_size(ring_afast), config_struct->segment_size);
+
+
+ float sample_sum_afast = samples_afast[0];
+ float sample_max_afast = samples_afast[0];
+ float sample_min_afast = samples_afast[0];
+
+
+ float sample_sum_aslow = sample_sum_afast;
+
+ if (ring_aslow != 
+# 196 "src/process.c" 3 4
+                  ((void *)0)
+# 196 "src/process.c"
+                      ) {
+  
+# 197 "src/process.c" 3 4
+ ((void) sizeof ((
+# 197 "src/process.c"
+ sbuffer_size(ring_aslow) == sbuffer_size(ring_afast)
+# 197 "src/process.c" 3 4
+ ) ? 1 : 0), __extension__ ({ if (
+# 197 "src/process.c"
+ sbuffer_size(ring_aslow) == sbuffer_size(ring_afast)
+# 197 "src/process.c" 3 4
+ ) ; else __assert_fail (
+# 197 "src/process.c"
+ "sbuffer_size(ring_aslow) == sbuffer_size(ring_afast)"
+# 197 "src/process.c" 3 4
+ , "src/process.c", 197, __extension__ __PRETTY_FUNCTION__); }))
+# 197 "src/process.c"
+                                                             ;
+  samples_aslow = sbuffer_read_ptr(ring_aslow);
+  sample_sum_aslow = samples_aslow[0];
+ }
+
  for (unsigned i = 1; i < size; i++) {
+  float sample_afast = samples_afast[i];
+  sample_sum_afast += sample_afast;
+  if (sample_max_afast < sample_afast)
+   sample_max_afast = sample_afast;
+  if (sample_min_afast > sample_afast)
+   sample_min_afast = sample_afast;
 
-  float sample = samples[i];
-  sample_sum += sample;
-  if (sample_max < sample)
-   sample_max = sample;
-  if (sample_min > sample)
-   sample_min = sample;
- }
- sbuffer_read_consumes(ring, size);
- if (size < config_struct->segment_size) {
-  samples = sbuffer_read_ptr(ring);
-  size = config_struct->segment_size - size;
-  for (unsigned i = 0; i < size; i++) {
-
-   float sample = samples[i];
-   sample_sum += sample;
-   if (sample_max < sample)
-    sample_max = sample;
-   if (sample_min > sample)
-    sample_min = sample;
+  if (ring_aslow != 
+# 210 "src/process.c" 3 4
+                   ((void *)0)
+# 210 "src/process.c"
+                       ) {
+   float sample_aslow = samples_aslow[i];
+   sample_sum_aslow += sample_aslow;
   }
-  sbuffer_read_consumes(ring, size);
  }
 
- float lae = sqrt(sample_sum / (config_struct->segment_size));
- if(sample_sum < 0)
-  lae = -sqrt(abs(sample_sum / (config_struct->segment_size)));
- float lafmax = sqrt(sample_max);
- float lafmin = sqrt(sample_min);
- levels->LAE[levels->segment_number] = linear_to_decibel(lae) + delta;
- levels->LAFmax[levels->segment_number] = linear_to_decibel(lafmax) + delta;
- levels->LAFmin[levels->segment_number] = linear_to_decibel(lafmin) + delta;
+ sbuffer_read_consumes(ring_afast, size);
+ if (ring_aslow != 
+# 217 "src/process.c" 3 4
+                  ((void *)0)
+# 217 "src/process.c"
+                      )
+  sbuffer_read_consumes(ring_aslow, size);
 
- float laeq = lae_average(levels, lae);
- levels->LAeq[levels->segment_number] = linear_to_decibel(laeq) + delta;
+ if (size < config_struct->segment_size) {
+  unsigned remaining = config_struct->segment_size - size;
+  samples_afast = sbuffer_read_ptr(ring_afast);
+  if (ring_aslow != 
+# 223 "src/process.c" 3 4
+                   ((void *)0)
+# 223 "src/process.c"
+                       )
+   samples_aslow = sbuffer_read_ptr(ring_aslow);
+
+  for (unsigned i = 0; i < remaining; i++) {
+   float sample_afast = samples_afast[i];
+   sample_sum_afast += sample_afast;
+   if (sample_max_afast < sample_afast)
+    sample_max_afast = sample_afast;
+   if (sample_min_afast > sample_afast)
+    sample_min_afast = sample_afast;
+
+   if (ring_aslow != 
+# 234 "src/process.c" 3 4
+                    ((void *)0)
+# 234 "src/process.c"
+                        ) {
+    float sample_aslow = samples_aslow[i];
+    sample_sum_aslow += sample_aslow;
+   }
+  }
+  sbuffer_read_consumes(ring_afast, remaining);
+  if (ring_aslow != 
+# 240 "src/process.c" 3 4
+                   ((void *)0)
+# 240 "src/process.c"
+                       )
+   sbuffer_read_consumes(ring_aslow, remaining);
+ }
+
+
+  float lae = sqrt(sample_sum_afast / config_struct->segment_size);
+  if (sample_sum_afast < 0)
+   lae = -sqrt(fabs(sample_sum_afast / config_struct->segment_size));
+  float lafmax = sqrt(sample_max_afast);
+  float lafmin = sqrt(sample_min_afast);
+  levels->LAE[levels->segment_number] = linear_to_decibel(lae) + delta;
+  levels->LAFmax[levels->segment_number] = linear_to_decibel(lafmax) + delta;
+  levels->LAFmin[levels->segment_number] = linear_to_decibel(lafmin) + delta;
+
+  float laeq = lae_average(levels, lae);
+  levels->LAeq[levels->segment_number] = linear_to_decibel(laeq) + delta;
+
+
+  if (ring_aslow != 
+# 258 "src/process.c" 3 4
+                   ((void *)0)
+# 258 "src/process.c"
+                       ) {
+   float las = sqrt(sample_sum_aslow / config_struct->segment_size);
+   if (sample_sum_aslow < 0)
+    las = -sqrt(fabs(sample_sum_aslow / config_struct->segment_size));
+   levels->LAS[levels->segment_number] = linear_to_decibel(las) + delta;
+  }
+
+  if(ring_aslow != 
+# 265 "src/process.c" 3 4
+                  ((void *)0)
+# 265 "src/process.c"
+                      ){
+   int percentil_segment_number = config_struct->background_duration / (config_struct->segment_duration / 1000);
+
+
+   levels->perc->array[levels->perc->pos] = levels->LAS[levels->segment_number];
+   levels->perc->pos++;
+
+   if (beginning)
+    levels->background_LAS = get_percentil(levels->perc->array, levels->perc->pos, 10);
+   if (levels->perc->pos >= percentil_segment_number) {
+    levels->background_LAS = get_percentil(levels->perc->array, levels->perc->pos, 10);
+    levels->perc->pos = 0;
+    beginning = 0;
+   }
+
+   levels->event[levels->segment_number] = event_check(levels);
+  }
  levels->segment_number++;
 }
-
-
-
-
-
-
-
+# 292 "src/process.c"
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config)
 {
 }
@@ -3672,24 +3847,21 @@ float get_percentil(float* array, int size, int perc){
 
  qsort(array,size,sizeof(array[0]),cmp_func);
 
- int index = (perc * size) / 100;
-    if (index >= size) index = size - 1;
+ int index = ((perc * size))/ 100;
 
     return array[index];
 }
 
-int event_check(Levels* levels, float background_level){
-
- float noise_level = levels->LAFmax[levels->segment_number-1];
-
- printf("background_level = %f\tnoise_level = %f\n",background_level,noise_level);
+int event_check(Levels* levels){
+ printf("background_level = %f\tnoise_level = %f\n",levels->background_LAS,levels->LAS[levels->segment_number]);
  fflush(
-# 223 "src/process.c" 3 4
+# 313 "src/process.c" 3 4
        stdout
-# 223 "src/process.c"
+# 313 "src/process.c"
              );
 
- if(noise_level > background_level + 10)
+ if(levels->LAS[levels->segment_number] > levels->background_LAS + 10){
    return 1;
+ }
  return 0;
 }
