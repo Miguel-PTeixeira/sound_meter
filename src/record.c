@@ -67,7 +67,9 @@ int compare_by_name(const void *a, const void *b) {
  */ 
 int storage_window_init(){
 	int sample_byte_size = 2;	
-	float file_compression_ratio = (config_struct->sample_rate * sample_byte_size)/(float)record_struct->vi.bitrate_nominal;
+	float file_compression_ratio = (config_struct->sample_rate * sample_byte_size)/((float)record_struct->vi.bitrate_nominal/8);
+	unsigned data_line_size = (sizeof(Levels)-2 + THIRD_OCTAVE_BAND_MAX)*(sizeof("000.00")-1) + strlen(output_get_audio_filepath()); //Aproximated number of chars per line (inside data file)
+	
 	unsigned long long memory_needed = config_struct->sample_rate * config_struct->audio_file_duration * sample_byte_size;
 	
 	
@@ -97,20 +99,18 @@ int storage_window_init(){
 		}else max_data_files = 0;
 			   
 		
-		if(	((record.created_audio_files = create_files_storage(max_audio_files)) == NULL) ||
-			((record.created_data_files = create_files_storage(max_data_files)) == NULL))
+		if(	(config_struct->audio_record_ok && ((record.created_audio_files = create_files_storage(max_audio_files)) == NULL)) ||
+			(config_struct->data_record_ok && ((record.created_data_files = create_files_storage(max_data_files)) == NULL)))
 				return 0;
 		
-		if( !load_files_from_directory(record.created_audio_files,config_struct->output_path,".ogg") ||
-			!load_files_from_directory(record.created_data_files,config_struct->output_path,".csv"))
+		if( (config_struct->audio_record_ok && (!load_files_from_directory(record.created_audio_files,config_struct->output_path,".ogg"))) ||
+			(config_struct->data_record_ok && (!load_files_from_directory(record.created_data_files,config_struct->output_path,".csv"))))
 				return 0;
 				
-		unsigned data_line_size = (sizeof(Levels)-2 + THIRD_OCTAVE_BAND_MAX)*(sizeof("000.00")-1) + strlen(output_get_audio_filepath()); //Aproximated number of chars per line (inside data file)
-		
-		memory_needed = (config_struct->audio_loop_recording * config_struct->sample_rate * sample_byte_size) +
-						(config_struct->data_loop_recording * config_struct->levels_record_period * data_line_size);				
+
+		memory_needed = ((config_struct->audio_loop_recording * config_struct->sample_rate * sample_byte_size)/file_compression_ratio )*config_struct->audio_record_ok;
 	}
-		memory_needed = memory_needed * 1/file_compression_ratio;
+		memory_needed += (config_struct->data_loop_recording * config_struct->levels_record_period * data_line_size)*config_struct->data_record_ok;		
 		memory_needed = memory_needed * (100 + AUX_MEMORY_PERC) / 100; //give an increased capacity as safety measure
 	
 	printf("\tFree Disk Space = %lld bytes\n",get_free_disk_space());
@@ -145,10 +145,12 @@ int record_start(){
 	record.sample_count = 0;
     
         /* Output file */
-    create_output_file();
-    if (!record.output){
-		 fprintf(stderr, "ERROR : could not create an output_file (record.c : 173)");
-		 return 0;
+	if(config_struct->audio_record_ok){
+		create_output_file();
+		if (!record.output){
+			 fprintf(stderr, "ERROR : could not create an output_file (record.c : 173)");
+			 return 0;
+		}
 	}
 		/* Init Vorbis */
     vorbis_info_init(&record.vi);
@@ -167,24 +169,25 @@ int record_start(){
 		/*Init Ogg Stream*/
     srand(time(NULL));
     ogg_stream_init(&record.os, rand());
-
+	
+	if(config_struct->audio_record_ok){
 		/* Write header packets */
-    ogg_packet header_pkt, header_comm, header_code;
-    vorbis_analysis_headerout(&record.vd, &record.vc, &header_pkt, &header_comm, &header_code);
-    ogg_stream_packetin(&record.os, &header_pkt);
-    ogg_stream_packetin(&record.os, &header_comm);
-    ogg_stream_packetin(&record.os, &header_code);
+		ogg_packet header_pkt, header_comm, header_code;
+		vorbis_analysis_headerout(&record.vd, &record.vc, &header_pkt, &header_comm, &header_code);
+		ogg_stream_packetin(&record.os, &header_pkt);
+		ogg_stream_packetin(&record.os, &header_comm);
+		ogg_stream_packetin(&record.os, &header_code);
 
-    while (!record.eos) {
-        int result = ogg_stream_flush(&record.os, &record.og);
-        if (result == 0) break;
-        fwrite(record.og.header, 1, record.og.header_len, record.output);
-        fwrite(record.og.body, 1, record.og.body_len, record.output);
-    }
-    
+		while (!record.eos) {
+			int result = ogg_stream_flush(&record.os, &record.og);
+			if (result == 0) break;
+			fwrite(record.og.header, 1, record.og.header_len, record.output);
+			fwrite(record.og.body, 1, record.og.body_len, record.output);
+		}
+	}
     if(!start){
 		start = true;
-		if(!storage_window_init() || !config_struct->audio_record_ok)
+		if(!storage_window_init())
 			return 0;
 	}
 	record.time_start = time(NULL);

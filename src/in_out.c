@@ -223,6 +223,7 @@ static json_t *LAE_json;
 static json_t *LAFmin_json;
 static json_t *LAFmax_json;
 static json_t *LApeak_json;
+static json_t *LAfilters_json[30];
 
 void output_file_open(char *filepath)
 {	
@@ -317,6 +318,19 @@ void output_file_open(char *filepath)
 				return;
 			}
 		}
+		char *bands[30] = {"25", "31.5", "40", "50", "63", "80", "100", "125", "160",
+				"200", "250", "315", "400", "500", "630", "800", "1k", "1.25k", "1.6k",
+				"2k", "22.5k", "3.15k", "4k", "5k", "6.3k", "8k", "10k", "12.5k", "16k", "20k"};
+				
+		for(unsigned f = 0; f < THIRD_OCTAVE_BAND_MAX; f++){
+			LAfilters_json[f] = json_array();
+			if (LAfilters_json[f] != NULL) {
+				if (json_object_set_new(levels_json, bands[f], LAfilters_json[f]) != 0) {
+					fprintf(stderr, "Output: error adding JSON field \"LApeak\" ("__FILE__": %d)\n", __LINE__);
+					return;
+				}
+			}
+		}
 		data_output_index = 0;
 	}else if(strcmp(current_format, ".ogg") == 0){
 		record_struct->output = output_file;
@@ -341,56 +355,61 @@ void output_file_open(char *filepath)
 
 void output_record(Levels *levels, ThirdOctaveData *td, bool continuous)
 {
-	if (strcmp(config_struct->data_output_format, ".csv") == 0) {
-		for (unsigned i = 0; i < levels->segment_number; ++i) {
-			fprintf(data_output_fd,
-				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
-				"-, "
-				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
-				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
-				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
-				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
-				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
-				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
-				"%s, %d\n",
-				levels->LAeq[i], levels->LAFmin[i], levels->LAE[i], levels->LAFmax[i], levels->LApeak[i],
-				td[0].levels->LAE[i], td[1].levels->LAE[i], td[2].levels->LAE[i], td[3].levels->LAE[i], td[4].levels->LAE[i],
-				td[5].levels->LAE[i], td[6].levels->LAE[i], td[7].levels->LAE[i], td[8].levels->LAE[i], td[9].levels->LAE[i],
-				td[10].levels->LAE[i], td[11].levels->LAE[i], td[12].levels->LAE[i], td[13].levels->LAE[i], td[14].levels->LAE[i],
-				td[15].levels->LAE[i], td[16].levels->LAE[i], td[17].levels->LAE[i], td[18].levels->LAE[i], td[19].levels->LAE[i],
-				td[20].levels->LAE[i], td[21].levels->LAE[i], td[22].levels->LAE[i], td[23].levels->LAE[i], td[24].levels->LAE[i],
-				td[25].levels->LAE[i], td[26].levels->LAE[i], td[27].levels->LAE[i], td[28].levels->LAE[i], td[29].levels->LAE[i],
-				audio_output_filepath, levels->event[i]
-			);
-///NOT WORKING, CURRENTLY
-			//if(levels->event[i]){
-				//archive_file(audio_output_filepath);
-			//}
+	if (config_struct->data_record_ok){
+		if (strcmp(config_struct->data_output_format, ".csv") == 0) {
+			for (unsigned i = 0; i < levels->segment_number; ++i) {
+				fprintf(data_output_fd,
+					"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+					"-, "
+					"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+					"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+					"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+					"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+					"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+					"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
+					"%s, %d\n",
+					levels->LAeq[i], levels->LAFmin[i], levels->LAE[i], levels->LAFmax[i], levels->LApeak[i],
+					td[0].levels->LAE[i], td[1].levels->LAE[i], td[2].levels->LAE[i], td[3].levels->LAE[i], td[4].levels->LAE[i],
+					td[5].levels->LAE[i], td[6].levels->LAE[i], td[7].levels->LAE[i], td[8].levels->LAE[i], td[9].levels->LAE[i],
+					td[10].levels->LAE[i], td[11].levels->LAE[i], td[12].levels->LAE[i], td[13].levels->LAE[i], td[14].levels->LAE[i],
+					td[15].levels->LAE[i], td[16].levels->LAE[i], td[17].levels->LAE[i], td[18].levels->LAE[i], td[19].levels->LAE[i],
+					td[20].levels->LAE[i], td[21].levels->LAE[i], td[22].levels->LAE[i], td[23].levels->LAE[i], td[24].levels->LAE[i],
+					td[25].levels->LAE[i], td[26].levels->LAE[i], td[27].levels->LAE[i], td[28].levels->LAE[i], td[29].levels->LAE[i],
+					audio_output_filepath, levels->event[i]
+				);
+	///NOT WORKING, CURRENTLY
+				//if(levels->event[i]){
+					//archive_file(audio_output_filepath);
+				//}
+			}
+			sample_count += config_struct->sample_rate/config_struct->levels_record_period;
 		}
-		sample_count += config_struct->sample_rate/config_struct->levels_record_period;
-	}
-	else if (strcmp(config_struct->data_output_format, ".json") == 0) {
-		for (unsigned i = 0; i < levels->segment_number; ++i) {
-			JSON_ARRAY_SET(LAeq_json, levels->LAeq[i]);
-			JSON_ARRAY_SET(LAE_json, levels->LAE[i]);
-			JSON_ARRAY_SET(LAFmin_json, levels->LAFmin[i]);
-			JSON_ARRAY_SET(LAFmax_json, levels->LAFmax[i]);
-			JSON_ARRAY_SET(LApeak_json, levels->LApeak[i]);
+		else if (strcmp(config_struct->data_output_format, ".json") == 0) {
+			for (unsigned i = 0; i < levels->segment_number; ++i) {
+				JSON_ARRAY_SET(LAeq_json, levels->LAeq[i]);
+				JSON_ARRAY_SET(LAE_json, levels->LAE[i]);
+				JSON_ARRAY_SET(LAFmin_json, levels->LAFmin[i]);
+				JSON_ARRAY_SET(LAFmax_json, levels->LAFmax[i]);
+				JSON_ARRAY_SET(LApeak_json, levels->LApeak[i]);
+				for(unsigned f = 0; f < THIRD_OCTAVE_BAND_MAX; f++){
+					JSON_ARRAY_SET(LAfilters_json[f], td[f].levels->LAE[i]);
+				}
+			}
+			data_output_index += levels->segment_number;
 		}
-		data_output_index += levels->segment_number;
 	}
-	output_time += config_struct->levels_record_period; //	tempo de registo
-	if(config_struct->data_record_ok){
-		fflush(data_output_fd);
-		fsync(fileno(data_output_fd));
-	}
-	if (continuous && sample_count >= (config_struct->sample_rate * config_struct->data_file_duration)) { // altura de mudança de ficheiro
-		output_file_close();
-		output_new_filename(output_time, data_output_filepath);
-		output_file_open(data_output_filepath);
-		output_time = 0;
-		sample_count = 0;
-	}
+		output_time += config_struct->levels_record_period; //	tempo de registo
+		if(config_struct->data_record_ok){
+			fflush(data_output_fd);
+			fsync(fileno(data_output_fd));
+		}
+		if (continuous && sample_count >= (config_struct->sample_rate * config_struct->data_file_duration)) { // altura de mudança de ficheiro
+			output_file_close();
+			output_new_filename(output_time, data_output_filepath);
+			output_file_open(data_output_filepath);
+			output_time = 0;
+			sample_count = 0;
+		}
 	//record_struct->time_elapsed += config_struct->levels_record_period;
 	record_struct->time_elapsed = time(NULL) - record_struct->time_start;
 	if (continuous && record_struct->sample_count >= config_struct->sample_rate * config_struct->audio_file_duration) {
