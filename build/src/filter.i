@@ -3510,6 +3510,7 @@ typedef struct {
 } ThirdOctaveFilter;
 
 typedef struct {
+ Timeweight *Tfilter;
  ThirdOctaveFilter *filter;
  Levels *levels;
  struct sbuffer *ring;
@@ -3867,7 +3868,7 @@ Timeweight *timeweight_create()
 {
  Timeweight *tw = malloc(sizeof *tw);
  tw->previous = 0;
- tw->alpha = 2.72072e-4;
+ tw->alpha = 0.0001666527785;
  return tw;
 }
 

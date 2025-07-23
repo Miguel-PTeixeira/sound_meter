@@ -237,7 +237,7 @@ void output_file_open(char *filepath)
 	if (strcmp(current_format, ".csv") == 0){
 		data_output_fd = output_file;
 		add_file(record_struct->created_data_files, filepath);
-		fprintf(data_output_fd, "Event, background_LAS, LAS, LAFeq, LAFmin, LAFE, LAFmax, LCpeak, Freq[Hz]:, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1k, 1.25k, 1.6k, 2k, 2.5k, 3.15k, 4k, 5k, 6.3k, 8k, 10k, 12.5k, 16k, 20k, audio_file\n");
+		fprintf(data_output_fd, "LAFeq, LAFmin, LAE, LAFmax, LCpeak, Freq[Hz]:, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1k, 1.25k, 1.6k, 2k, 2.5k, 3.15k, 4k, 5k, 6.3k, 8k, 10k, 12.5k, 16k, 20k, audio_file, Event\n");
 	}
 	
 	else if (strcmp(current_format, ".json") == 0) {
@@ -344,7 +344,6 @@ void output_record(Levels *levels, ThirdOctaveData *td, bool continuous)
 	if (strcmp(config_struct->data_output_format, ".csv") == 0) {
 		for (unsigned i = 0; i < levels->segment_number; ++i) {
 			fprintf(data_output_fd,
-				"%d, %2.1f, %2.1f, "
 				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
 				"-, "
 				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
@@ -353,8 +352,7 @@ void output_record(Levels *levels, ThirdOctaveData *td, bool continuous)
 				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
 				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
 				"%2.1f, %2.1f, %2.1f, %2.1f, %2.1f, "
-				"%s\n",
-				levels->event[i], levels->background_LAS, levels->LAS[i],
+				"%s, %d\n",
 				levels->LAeq[i], levels->LAFmin[i], levels->LAE[i], levels->LAFmax[i], levels->LApeak[i],
 				td[0].levels->LAE[i], td[1].levels->LAE[i], td[2].levels->LAE[i], td[3].levels->LAE[i], td[4].levels->LAE[i],
 				td[5].levels->LAE[i], td[6].levels->LAE[i], td[7].levels->LAE[i], td[8].levels->LAE[i], td[9].levels->LAE[i],
@@ -362,7 +360,7 @@ void output_record(Levels *levels, ThirdOctaveData *td, bool continuous)
 				td[15].levels->LAE[i], td[16].levels->LAE[i], td[17].levels->LAE[i], td[18].levels->LAE[i], td[19].levels->LAE[i],
 				td[20].levels->LAE[i], td[21].levels->LAE[i], td[22].levels->LAE[i], td[23].levels->LAE[i], td[24].levels->LAE[i],
 				td[25].levels->LAE[i], td[26].levels->LAE[i], td[27].levels->LAE[i], td[28].levels->LAE[i], td[29].levels->LAE[i],
-				audio_output_filepath
+				audio_output_filepath, levels->event[i]
 			);
 			if(levels->event[i]){
 				archive_file(audio_output_filepath);
@@ -569,20 +567,24 @@ void audit_destroy(Audit *audit)
  * As amostras originais são representadas a 16 bits.
  * As amostras nos blocos são representadas em float e normalizadas no intervalo -1.0 .. +1.0
  */
-void samples_int16_to_float(int16_t *samples_int16, float *samples_float, unsigned length)
-{
-	for (unsigned c = 0; c < config_struct->channels; c++) {
-		float *samples_float_channel = samples_float + c * length;
-		int16_t *samples_int16_channel = samples_int16 + c;
-		for (unsigned i = 0; i < length; i++) {
-			//	Converte para float e normaliza no intervalo +1.0 ... -1.0
-			*samples_float_channel = ((float)*samples_int16_channel) / ((int)INT16_MAX + 1);
-			assert(*samples_float_channel >= -1.0 && *samples_float_channel <= +1.0);
-			samples_float_channel += 1;
-			samples_int16_channel += config_struct->channels;
-		}
-	}
+void samples_int16_to_float(int16_t *samples_int16, float *samples_float, unsigned length) {
+    assert(samples_int16 != NULL);
+    assert(samples_float != NULL);
+    assert(config_struct != NULL);
+    assert(config_struct->channels > 0);
+
+    for (unsigned c = 0; c < config_struct->channels; c++) {
+        float *samples_float_channel = samples_float + c * length;
+        int16_t *samples_int16_channel = samples_int16 + c;
+        for (unsigned i = 0; i < length; i++) {
+            *samples_float_channel = ((float)*samples_int16_channel) / ((int)INT16_MAX + 1);
+            assert(*samples_float_channel >= -1.0f && *samples_float_channel <= +1.0f);
+            samples_float_channel += 1;
+            samples_int16_channel += config_struct->channels;
+        }
+    }
 }
+
 
 void samples_float_to_int16(float *samples_float, int16_t *samples_int16, unsigned length)
 {

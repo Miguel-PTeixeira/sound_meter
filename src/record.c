@@ -7,11 +7,10 @@
 
 #define MAX_FILENAME 100
 #define MAX_EXTENSION 20
-#define CODEC_QUALITY -0.1
+#define CODEC_QUALITY 0.9
 
 
 record_state record = {
-	.eoc = 0,
 	.eos = 0,
 	.endfile_size = 0,
 	.sample_count = 0,
@@ -67,13 +66,11 @@ int compare_by_name(const void *a, const void *b) {
  * @return estrutura de gravação "record_state"
  */ 
 int storage_window_init(){
-	int sample_byte_size = 16;	
-	unsigned int file_compression_ratio = (config_struct->sample_rate * sample_byte_size)/record_struct->vi.bitrate_nominal;
-	unsigned long long memory_needed;
+	int sample_byte_size = 2;	
+	float file_compression_ratio = (config_struct->sample_rate * sample_byte_size)/(float)record_struct->vi.bitrate_nominal;
+	unsigned long long memory_needed = config_struct->sample_rate * config_struct->audio_file_duration * sample_byte_size;
 	
 	
-	
-	memory_needed = config_struct->sample_rate * config_struct->audio_file_duration;
 	if(config_struct->input_file == NULL){
 		unsigned int max_audio_files = (config_struct->audio_loop_recording + (config_struct->audio_file_duration-1)) / config_struct->audio_file_duration;
 		
@@ -108,9 +105,9 @@ int storage_window_init(){
 			!load_files_from_directory(record.created_data_files,config_struct->output_path,".csv"))
 				return 0;
 				
-		unsigned data_line_size = (((sizeof(Levels))) + THIRD_OCTAVE_BAND_MAX)*5 + strlen(output_get_audio_filepath()); //Aproximated number of chars per line (inside data file)
+		unsigned data_line_size = (sizeof(Levels)-2 + THIRD_OCTAVE_BAND_MAX)*(sizeof("000.00")-1) + strlen(output_get_audio_filepath()); //Aproximated number of chars per line (inside data file)
 		
-		memory_needed = (config_struct->audio_loop_recording * config_struct->sample_rate) +
+		memory_needed = (config_struct->audio_loop_recording * config_struct->sample_rate * sample_byte_size) +
 						(config_struct->data_loop_recording * config_struct->levels_record_period * data_line_size);				
 	}
 		memory_needed = memory_needed * 1/file_compression_ratio;
@@ -233,7 +230,7 @@ int record_append_samples(float *frames_buffer,size_t frames_read){
 
 	//int i = 0;
 	
-	if(frames_read==0 || record.eoc == 1){
+	if(frames_read==0){
 
 		vorbis_analysis_wrote(&record.vd,0);
 

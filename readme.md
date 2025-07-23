@@ -20,7 +20,7 @@ O programa pode processar em tempo real som captado por microfone ou processar s
 | Ficheiro de saída  | | -o \<filename\> | |
 | Diretoria para ficheiros de saída | data/ | | output_path |
 | Ficheiros de saída | sound_meter_ | | output_filename |
-| Formato de saída | .csv | -f .csv \| .json | output_format |
+| Formato de saída | CSV | -f CSV \| JSON | output_format |
 | Ritmo de amostragem | 44100 | -r \<value\> | sample_rate  |
 | Número de canais | 1 | -a \<nchannels\> | channels |
 | Duração do processamento | | -t \<seconds\> | |

@@ -13,7 +13,7 @@
 
 #define OUTPUT_FORMAT "AAAA-MM-DD_HH:MM:SS"
 #define TIME_FORMAT "%Y-%m-%d_%H:%M:%S"
-#define AUX_MEMORY_PERC 0
+#define AUX_MEMORY_PERC 5
 #define FILE_COMPRESSION_RATIO 30
 
 typedef struct{
@@ -32,8 +32,7 @@ typedef struct{
   vorbis_block		vb; 
   
   int 				eos;
-  int				eoc;
-  float **			buffer;
+
   long				endfile_size;
   long      		sample_count;
   

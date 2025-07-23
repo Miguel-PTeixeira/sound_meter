@@ -61,7 +61,7 @@ float lae_average(Levels *levels, float le)
 
 
 Percentil* percentil_create() {
-	int percentil_segment_number = config_struct->background_duration / (config_struct->segment_duration / 1000);
+	int percentil_segment_number = config_struct->background_duration / ((config_struct->segment_duration + 999) / 1000);
 
 	Percentil *perc = malloc(sizeof(Percentil) + percentil_segment_number * sizeof(float));
 	if (perc == NULL) {
@@ -80,44 +80,58 @@ void percentil_destroy(Percentil *perc){
 
 //==============================================================================
 
-Levels *levels_create()
-{
-	Levels *levels = malloc(sizeof *levels);
-	if (levels == NULL)
-		return NULL;
+Levels *levels_create() {
+    Levels *levels = malloc(sizeof *levels);
+    if (levels == NULL)
+        return NULL;
 
-	size_t Fsegment_data_size = config_struct->levels_record_period * sizeof *levels->LAeq;
-	float *fbuffer = malloc(7 * Fsegment_data_size);
-	if (fbuffer == NULL) {
-		free(levels);
-		return NULL;
-	}
-	memset(fbuffer, 0, 7 * Fsegment_data_size);
-	
-	size_t Isegment_data_size = config_struct->levels_record_period * sizeof *levels->event;
-	int *ibuffer = malloc(1 * Isegment_data_size);
-	if (ibuffer == NULL) {
-		free(levels);
-		return NULL;
-	}
-	memset(ibuffer, 0, 1 * Isegment_data_size);
-	
-	levels->LAeq = fbuffer;
-	levels->LAeq[0] = 0;
-	levels->LApeak = fbuffer += config_struct->levels_record_period;
-	levels->LAFmax = fbuffer += config_struct->levels_record_period;
-	levels->LAFmin = fbuffer += config_struct->levels_record_period;
-	levels->LAE = fbuffer += config_struct->levels_record_period;
-	levels->LAS =  fbuffer += config_struct->levels_record_period;
-	levels->event = ibuffer;
-	levels->background_LAS = config_struct->calibration_reference;
-	levels->le_accumulator = 0;
-	levels->le_counter = 0;
-	levels->perc = percentil_create();
+    size_t Fsegment_data_size = config_struct->levels_record_period * sizeof *levels->LAeq;
+    float *fbuffer = malloc(7 * Fsegment_data_size);
+    if (fbuffer == NULL) {
+        free(levels);
+        return NULL;
+    }
+    memset(fbuffer, 0, 7 * Fsegment_data_size);
 
-	levels->segment_number = 0;
-	return levels;
+    size_t Isegment_data_size = config_struct->levels_record_period * sizeof *levels->event;
+    int *ibuffer = malloc(1 * Isegment_data_size);
+    if (ibuffer == NULL) {
+        free(fbuffer);
+        free(levels);
+        return NULL;
+    }
+    memset(ibuffer, 0, 1 * Isegment_data_size);
+
+    float *temp = fbuffer;
+    levels->LAeq = temp;
+    temp += config_struct->levels_record_period;
+    levels->LApeak = temp;
+    temp += config_struct->levels_record_period;
+    levels->LAFmax = temp;
+    temp += config_struct->levels_record_period;
+    levels->LAFmin = temp;
+    temp += config_struct->levels_record_period;
+    levels->LAE = temp;
+    temp += config_struct->levels_record_period;
+    levels->LAS = temp;
+
+    levels->event = ibuffer;
+    levels->background_LAS = config_struct->calibration_reference;
+    levels->le_accumulator = 0;
+    levels->le_counter = 0;
+    levels->perc = percentil_create();
+
+    if (levels->perc == NULL) {
+        free(ibuffer);
+        free(fbuffer);
+        free(levels);
+        return NULL;
+    }
+
+    levels->segment_number = 0;
+    return levels;
 }
+
 
 void levels_destroy(Levels *levels)
 {
@@ -145,7 +159,7 @@ void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct conf
 		float *samples = sbuffer_read_ptr(ring);
 		unsigned size = min(sbuffer_read_size(ring), config_struct->segment_size);
 //		assert(samples[0] >= -1.0 && samples[0] <= +1.0);
-		float peak = fabs(samples[0]);
+		float peak = samples[0];
 		for (unsigned i = 1; i < size; i++) {
 //			assert(samples[i] >= -1.0 && samples[i] <= +1.0);
 			float sample = fabs(samples[i]);
@@ -263,7 +277,7 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct s
 		}
 	// --------- PERCENTIL --------
 		if(ring_aslow != NULL){
-			int percentil_segment_number = config_struct->background_duration / (config_struct->segment_duration / 1000);
+			int percentil_segment_number = config_struct->background_duration / ((config_struct->segment_duration + 999) / 1000);
 
 			// Store LAS in percentil buffer
 			levels->perc->array[levels->perc->pos] = levels->LAS[levels->segment_number];
@@ -309,8 +323,8 @@ float get_percentil(float* array, int size, int perc){
 }
 
 int event_check(Levels* levels){
-	printf("background_level = %f\tnoise_level = %f\n",levels->background_LAS,levels->LAS[levels->segment_number]);
-	fflush(stdout);
+	//printf("background_level = %f\tnoise_level = %f\n",levels->background_LAS,levels->LAS[levels->segment_number]);
+	//fflush(stdout);
 	
 	if(levels->LAS[levels->segment_number] > levels->background_LAS + EVENT_TRESHOLD){
 			return 1;

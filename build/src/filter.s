@@ -2327,7 +2327,7 @@ third_octave_levels:
 	.long	1077149696
 	.align 4
 .LC4:
-	.long	965649635
+	.long	959364996
 	.align 4
 .LC5:
 	.long	940484910
@@ -2547,58 +2547,60 @@ third_octave_levels:
 	.byte	0x3
 	.long	0x153
 	.uleb128 0xb
+	.long	0xda
+	.uleb128 0xb
 	.long	0x17b
 	.uleb128 0xe
 	.long	0x9b
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0x11
 	.byte	0
 	.uleb128 0xc
-	.long	0x18c
+	.long	0x191
 	.uleb128 0x1
 	.long	.LASF24
 	.byte	0x5
 	.byte	0x15
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	A_WEIGHTED_taps
 	.uleb128 0xe
 	.long	0x9b
-	.long	0x1c7
+	.long	0x1cc
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0xb
 	.byte	0
 	.uleb128 0xc
-	.long	0x1b7
+	.long	0x1bc
 	.uleb128 0x1
 	.long	.LASF25
 	.byte	0x5
 	.byte	0x1c
 	.byte	0x14
-	.long	0x1c7
+	.long	0x1cc
 	.uleb128 0x9
 	.byte	0x3
 	.quad	C_WEIGHTED_taps
 	.uleb128 0xe
 	.long	0x9b
-	.long	0x1f2
+	.long	0x1f7
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0x3
 	.byte	0
 	.uleb128 0xc
-	.long	0x1e2
+	.long	0x1e7
 	.uleb128 0x1
 	.long	.LASF26
 	.byte	0x5
 	.byte	0x2a
 	.byte	0x14
-	.long	0x1f2
+	.long	0x1f7
 	.uleb128 0x9
 	.byte	0x3
 	.quad	TWSL_FAST_taps
@@ -2607,7 +2609,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x2b
 	.byte	0x14
-	.long	0x1f2
+	.long	0x1f7
 	.uleb128 0x9
 	.byte	0x3
 	.quad	TWSL_SLOW_taps
@@ -2616,7 +2618,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x32
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_1
@@ -2625,7 +2627,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x39
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_2
@@ -2634,7 +2636,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x40
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_3
@@ -2643,7 +2645,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x47
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_4
@@ -2652,7 +2654,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x4e
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_5
@@ -2661,7 +2663,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x55
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_6
@@ -2670,7 +2672,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x5c
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_7
@@ -2679,7 +2681,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x63
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_8
@@ -2688,7 +2690,7 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x6a
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_9
@@ -2697,25 +2699,25 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x71
 	.byte	0x14
-	.long	0x19c
+	.long	0x1a1
 	.uleb128 0x9
 	.byte	0x3
 	.quad	OCTAVE_BAND_10
 	.uleb128 0xe
 	.long	0x9b
-	.long	0x30f
+	.long	0x314
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0x17
 	.byte	0
 	.uleb128 0xc
-	.long	0x2ff
+	.long	0x304
 	.uleb128 0x1
 	.long	.LASF38
 	.byte	0x5
 	.byte	0x7d
 	.byte	0x14
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_1
@@ -2724,209 +2726,209 @@ third_octave_levels:
 	.byte	0x5
 	.byte	0x85
 	.byte	0x14
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_2
 	.uleb128 0x3
 	.long	.LASF40
 	.byte	0x8d
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_3
 	.uleb128 0x3
 	.long	.LASF41
 	.byte	0x95
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_4
 	.uleb128 0x3
 	.long	.LASF42
 	.byte	0x9d
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_5
 	.uleb128 0x3
 	.long	.LASF43
 	.byte	0xa5
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_6
 	.uleb128 0x3
 	.long	.LASF44
 	.byte	0xad
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_7
 	.uleb128 0x3
 	.long	.LASF45
 	.byte	0xb5
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_8
 	.uleb128 0x3
 	.long	.LASF46
 	.byte	0xbd
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_9
 	.uleb128 0x3
 	.long	.LASF47
 	.byte	0xc5
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_10
 	.uleb128 0x3
 	.long	.LASF48
 	.byte	0xcd
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_11
 	.uleb128 0x3
 	.long	.LASF49
 	.byte	0xd5
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_12
 	.uleb128 0x3
 	.long	.LASF50
 	.byte	0xdd
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_13
 	.uleb128 0x3
 	.long	.LASF51
 	.byte	0xe5
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_14
 	.uleb128 0x3
 	.long	.LASF52
 	.byte	0xed
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_15
 	.uleb128 0x3
 	.long	.LASF53
 	.byte	0xf5
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_16
 	.uleb128 0x3
 	.long	.LASF54
 	.byte	0xfd
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_17
 	.uleb128 0x6
 	.long	.LASF55
 	.value	0x105
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_18
 	.uleb128 0x6
 	.long	.LASF56
 	.value	0x10d
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_19
 	.uleb128 0x6
 	.long	.LASF57
 	.value	0x115
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_20
 	.uleb128 0x6
 	.long	.LASF58
 	.value	0x11d
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_21
 	.uleb128 0x6
 	.long	.LASF59
 	.value	0x125
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_22
 	.uleb128 0x6
 	.long	.LASF60
 	.value	0x12d
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_23
 	.uleb128 0x6
 	.long	.LASF61
 	.value	0x135
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_24
 	.uleb128 0x6
 	.long	.LASF62
 	.value	0x13d
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_25
 	.uleb128 0x6
 	.long	.LASF63
 	.value	0x145
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_26
 	.uleb128 0x6
 	.long	.LASF64
 	.value	0x14d
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_27
 	.uleb128 0x6
 	.long	.LASF65
 	.value	0x155
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_28
 	.uleb128 0x6
 	.long	.LASF66
 	.value	0x15d
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_29
 	.uleb128 0x6
 	.long	.LASF67
 	.value	0x165
-	.long	0x30f
+	.long	0x314
 	.uleb128 0x9
 	.byte	0x3
 	.quad	THIRD_OCTAVE_BAND_30
 	.uleb128 0xe
 	.long	0x10e
-	.long	0x58d
+	.long	0x592
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0x1d
@@ -2936,13 +2938,13 @@ third_octave_levels:
 	.byte	0x2
 	.byte	0x9e
 	.byte	0x15
-	.long	0x57d
+	.long	0x582
 	.uleb128 0x9
 	.byte	0x3
 	.quad	bands
 	.uleb128 0xe
 	.long	0x94
-	.long	0x5b3
+	.long	0x5b8
 	.uleb128 0xf
 	.long	0x3a
 	.byte	0x1d
@@ -2952,7 +2954,7 @@ third_octave_levels:
 	.byte	0x2
 	.byte	0xc0
 	.byte	0xe
-	.long	0x5a3
+	.long	0x5a8
 	.uleb128 0x9
 	.byte	0x3
 	.quad	TO_levels
@@ -2962,7 +2964,7 @@ third_octave_levels:
 	.byte	0x6b
 	.byte	0x10
 	.long	0xa0
-	.long	0x5df
+	.long	0x5e4
 	.uleb128 0x9
 	.long	0xa0
 	.byte	0
@@ -2970,7 +2972,7 @@ third_octave_levels:
 	.long	.LASF71
 	.value	0x2a3
 	.long	0x7e
-	.long	0x5f9
+	.long	0x5fe
 	.uleb128 0x9
 	.long	0x2e
 	.uleb128 0x9
@@ -2982,7 +2984,7 @@ third_octave_levels:
 	.byte	0x2f
 	.byte	0xe
 	.long	0x7e
-	.long	0x619
+	.long	0x61e
 	.uleb128 0x9
 	.long	0x7e
 	.uleb128 0x9
@@ -2995,7 +2997,7 @@ third_octave_levels:
 	.byte	0x7
 	.value	0x2af
 	.byte	0xd
-	.long	0x62c
+	.long	0x631
 	.uleb128 0x9
 	.long	0x7e
 	.byte	0
@@ -3003,7 +3005,7 @@ third_octave_levels:
 	.long	.LASF73
 	.value	0x2a0
 	.long	0x7e
-	.long	0x641
+	.long	0x646
 	.uleb128 0x9
 	.long	0x2e
 	.byte	0
@@ -3014,7 +3016,7 @@ third_octave_levels:
 	.quad	.LFE25-.LFB25
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x700
+	.long	0x705
 	.uleb128 0x2
 	.string	"x"
 	.byte	0xe5
@@ -3068,7 +3070,7 @@ third_octave_levels:
 	.byte	0x2
 	.byte	0xea
 	.byte	0x16
-	.long	0x187
+	.long	0x18c
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -3103,12 +3105,12 @@ third_octave_levels:
 	.quad	.LFE24-.LFB24
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x7b1
+	.long	0x7b6
 	.uleb128 0x2
 	.string	"of"
 	.byte	0xd8
 	.byte	0x30
-	.long	0x187
+	.long	0x18c
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
@@ -3183,13 +3185,13 @@ third_octave_levels:
 	.quad	.LFE23-.LFB23
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x7dd
+	.long	0x7e2
 	.uleb128 0x8
 	.long	.LASF76
 	.byte	0x2
 	.byte	0xd1
 	.byte	0x2e
-	.long	0x187
+	.long	0x18c
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -3198,12 +3200,12 @@ third_octave_levels:
 	.long	.LASF85
 	.byte	0xc7
 	.byte	0x14
-	.long	0x187
+	.long	0x18c
 	.quad	.LFB22
 	.quad	.LFE22-.LFB22
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x82c
+	.long	0x831
 	.uleb128 0x8
 	.long	.LASF83
 	.byte	0x2
@@ -3227,7 +3229,7 @@ third_octave_levels:
 	.byte	0x2
 	.byte	0xca
 	.byte	0x18
-	.long	0x187
+	.long	0x18c
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -3242,7 +3244,7 @@ third_octave_levels:
 	.quad	.LFE21-.LFB21
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x85e
+	.long	0x863
 	.uleb128 0x8
 	.long	.LASF83
 	.byte	0x2
@@ -3260,12 +3262,12 @@ third_octave_levels:
 	.quad	.LFE20-.LFB20
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x90f
+	.long	0x914
 	.uleb128 0x2
 	.string	"cf"
 	.byte	0x91
 	.byte	0x24
-	.long	0x90f
+	.long	0x914
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
@@ -3342,12 +3344,12 @@ third_octave_levels:
 	.quad	.LFE19-.LFB19
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x93e
+	.long	0x943
 	.uleb128 0x2
 	.string	"cf"
 	.byte	0x8b
 	.byte	0x22
-	.long	0x90f
+	.long	0x914
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -3356,12 +3358,12 @@ third_octave_levels:
 	.long	.LASF89
 	.byte	0x82
 	.byte	0xa
-	.long	0x90f
+	.long	0x914
 	.quad	.LFB18
 	.quad	.LFE18-.LFB18
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0x979
+	.long	0x97e
 	.uleb128 0x2
 	.string	"N"
 	.byte	0x82
@@ -3374,7 +3376,7 @@ third_octave_levels:
 	.string	"cf"
 	.byte	0x84
 	.byte	0xb
-	.long	0x90f
+	.long	0x914
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -3386,12 +3388,12 @@ third_octave_levels:
 	.quad	.LFE17-.LFB17
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xa2a
+	.long	0xa2f
 	.uleb128 0x2
 	.string	"af"
 	.byte	0x76
 	.byte	0x24
-	.long	0xa2a
+	.long	0xa2f
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
@@ -3471,7 +3473,7 @@ third_octave_levels:
 	.quad	.LFE16-.LFB16
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xaaf
+	.long	0xab4
 	.uleb128 0x2
 	.string	"x"
 	.byte	0x6e
@@ -3536,7 +3538,7 @@ third_octave_levels:
 	.quad	.LFE15-.LFB15
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xb02
+	.long	0xb07
 	.uleb128 0x2
 	.string	"x"
 	.byte	0x66
@@ -3577,12 +3579,12 @@ third_octave_levels:
 	.quad	.LFE14-.LFB14
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xb2c
+	.long	0xb31
 	.uleb128 0x2
 	.string	"af"
 	.byte	0x4f
 	.byte	0x22
-	.long	0xa2a
+	.long	0xa2f
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -3591,12 +3593,12 @@ third_octave_levels:
 	.long	.LASF94
 	.byte	0x46
 	.byte	0xa
-	.long	0xa2a
+	.long	0xa2f
 	.quad	.LFB13
 	.quad	.LFE13-.LFB13
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xb67
+	.long	0xb6c
 	.uleb128 0x2
 	.string	"N"
 	.byte	0x46
@@ -3609,7 +3611,7 @@ third_octave_levels:
 	.string	"af"
 	.byte	0x48
 	.byte	0xb
-	.long	0xa2a
+	.long	0xa2f
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -3623,7 +3625,7 @@ third_octave_levels:
 	.quad	.LFE12-.LFB12
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xba1
+	.long	0xba6
 	.uleb128 0x2
 	.string	"u"
 	.byte	0x40
@@ -3651,12 +3653,12 @@ third_octave_levels:
 	.quad	.LFE11-.LFB11
 	.uleb128 0x1
 	.byte	0x9c
-	.long	0xc0f
+	.long	0xc14
 	.uleb128 0x2
 	.string	"tw"
 	.byte	0x37
 	.byte	0x27
-	.long	0xc0f
+	.long	0x187
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -40
@@ -3697,8 +3699,6 @@ third_octave_levels:
 	.sleb128 -20
 	.byte	0
 	.byte	0
-	.uleb128 0xb
-	.long	0xda
 	.uleb128 0xa
 	.long	.LASF96
 	.byte	0x32
@@ -3711,7 +3711,7 @@ third_octave_levels:
 	.string	"tw"
 	.byte	0x32
 	.byte	0x25
-	.long	0xc0f
+	.long	0x187
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -3719,7 +3719,7 @@ third_octave_levels:
 	.uleb128 0x16
 	.long	.LASF97
 	.byte	0x29
-	.long	0xc0f
+	.long	0x187
 	.quad	.LFB9
 	.quad	.LFE9-.LFB9
 	.uleb128 0x1
@@ -3729,7 +3729,7 @@ third_octave_levels:
 	.string	"tw"
 	.byte	0x2b
 	.byte	0xe
-	.long	0xc0f
+	.long	0x187
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24
@@ -3737,7 +3737,7 @@ third_octave_levels:
 	.uleb128 0x16
 	.long	.LASF98
 	.byte	0x21
-	.long	0xc0f
+	.long	0x187
 	.quad	.LFB8
 	.quad	.LFE8-.LFB8
 	.uleb128 0x1
@@ -3747,7 +3747,7 @@ third_octave_levels:
 	.string	"tw"
 	.byte	0x23
 	.byte	0xe
-	.long	0xc0f
+	.long	0x187
 	.uleb128 0x2
 	.byte	0x91
 	.sleb128 -24

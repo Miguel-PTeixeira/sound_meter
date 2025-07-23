@@ -15954,6 +15954,7 @@ typedef struct {
 } ThirdOctaveFilter;
 
 typedef struct {
+ Timeweight *Tfilter;
  ThirdOctaveFilter *filter;
  Levels *levels;
  struct sbuffer *ring;
@@ -21632,8 +21633,7 @@ typedef struct{
   vorbis_block vb;
 
   int eos;
-  int eoc;
-  float ** buffer;
+
   long endfile_size;
   long sample_count;
 
@@ -21693,7 +21693,7 @@ static void help(char *prog_name)
 
 static void about()
 {
- printf("Sound meter v" "1.0" " (" "Jul 14 2025" ")\n"
+ printf("Sound meter v" "1.0" " (" "Jul 22 2025" ")\n"
   "Based on MoSeMusic project by Guilherme Albano and David Meneses\n"
   "Ezequiel Conde (ezeq@cc.isel.ipl.pt)\n");
 }
@@ -22073,6 +22073,8 @@ int main (int argc, char *argv[])
  Cfilter *cfilter = cweighting_create(2);
 
  float *block_raw = malloc(config_struct->channels * config_struct->block_size * sizeof *block_raw);
+ float *block_a = malloc(config_struct->channels * config_struct->block_size * sizeof *block_a);
+ float *block_squared = malloc(config_struct->channels * config_struct->block_size * sizeof *block_squared);
 
 
  unsigned segment_buffer_size = (((config_struct->segment_size + config_struct->block_size - 1)
@@ -22083,6 +22085,7 @@ int main (int argc, char *argv[])
 
 
  for (int i = 0; i < sizeof(third_octave_data) / sizeof(third_octave_data[0]); i++){
+  third_octave_data[i].Tfilter = timeweight_create();
   third_octave_data[i].filter = third_octave_create(i);
   third_octave_data[i].levels = levels_create();
   third_octave_data[i].ring = sbuffer_create(segment_buffer_size);
@@ -22116,21 +22119,21 @@ int main (int argc, char *argv[])
 
    float *block_ring_calibration = sbuffer_write_ptr(ring_calibration);
    
-# 330 "src/main.c" 3 4
+# 333 "src/main.c" 3 4
   ((void) sizeof ((
-# 330 "src/main.c"
+# 333 "src/main.c"
   lenght_read <= sbuffer_write_size(ring_calibration)
-# 330 "src/main.c" 3 4
+# 333 "src/main.c" 3 4
   ) ? 1 : 0), __extension__ ({ if (
-# 330 "src/main.c"
+# 333 "src/main.c"
   lenght_read <= sbuffer_write_size(ring_calibration)
-# 330 "src/main.c" 3 4
+# 333 "src/main.c" 3 4
   ) ; else __assert_fail (
-# 330 "src/main.c"
+# 333 "src/main.c"
   "lenght_read <= sbuffer_write_size(ring_calibration)"
-# 330 "src/main.c" 3 4
-  , "src/main.c", 330, __extension__ __PRETTY_FUNCTION__); }))
-# 330 "src/main.c"
+# 333 "src/main.c" 3 4
+  , "src/main.c", 333, __extension__ __PRETTY_FUNCTION__); }))
+# 333 "src/main.c"
                                                              ;
 
    aweighting_filtering(afilter, block_raw, block_ring_calibration, lenght_read);
@@ -22140,9 +22143,9 @@ int main (int argc, char *argv[])
 
    if (sbuffer_size(ring_calibration) >= config_struct->segment_size) {
     process_segment_levels(levels_return, ring_calibration, 
-# 338 "src/main.c" 3 4
+# 341 "src/main.c" 3 4
                                                            ((void *)0)
-# 338 "src/main.c"
+# 341 "src/main.c"
                                                                , 0);
     if (milisecs < 2 * 1000) {
      if (verbose_flag)
@@ -22181,13 +22184,13 @@ int main (int argc, char *argv[])
   mqtt_begin();
 
  
-# 375 "src/main.c" 3 4
+# 378 "src/main.c" 3 4
 _Bool 
-# 375 "src/main.c"
+# 378 "src/main.c"
      continuous = option_input_filename == 
-# 375 "src/main.c" 3 4
+# 378 "src/main.c" 3 4
                                            ((void *)0)
-# 375 "src/main.c"
+# 378 "src/main.c"
                                                ;
 
  output_open(continuous);
@@ -22196,31 +22199,31 @@ _Bool
   printf("\nStarting sound level measuring...\n");
 
  Audit *wa = 
-# 382 "src/main.c" 3 4
-            ((void *)0)
-# 382 "src/main.c"
-                ;
- Audit *wb = 
-# 383 "src/main.c" 3 4
-            ((void *)0)
-# 383 "src/main.c"
-                ;
- Audit *wc = 
-# 384 "src/main.c" 3 4
-            ((void *)0)
-# 384 "src/main.c"
-                ;
- Audit *wd = 
 # 385 "src/main.c" 3 4
             ((void *)0)
 # 385 "src/main.c"
                 ;
+ Audit *wb = 
+# 386 "src/main.c" 3 4
+            ((void *)0)
+# 386 "src/main.c"
+                ;
+ Audit *wc = 
+# 387 "src/main.c" 3 4
+            ((void *)0)
+# 387 "src/main.c"
+                ;
+ Audit *wd = 
+# 388 "src/main.c" 3 4
+            ((void *)0)
+# 388 "src/main.c"
+                ;
 
- if (!continuous) {
-  wa = audit_create("a");
-  wb = audit_create("b");
-  wc = audit_create("c");
-  wd = audit_create("d");
+ if (!continuous && verbose_flag) {
+  wa = audit_create("raw");
+  wb = audit_create("a_weighted");
+  wc = audit_create("a_squared");
+  wd = audit_create("a_fast");
  }
 
  if (continuous){
@@ -22229,13 +22232,13 @@ _Bool
 
  lae_average_create();
 
- if (verbose_flag)
-  printf("LAeq, LAFmin, LAE, LAFmax, LApeak\n");
-
  unsigned time_elapsed = 0;
  run_duration *= 1000;
 
  record_start();
+
+ if (verbose_flag)
+  printf("LAeq, LAFmin, LAE, LAFmax, LApeak\n");
 
  while (running && (run_duration == 0 || time_elapsed < run_duration)) {
   size_t lenght_read = input_device_read(block_raw, config_struct->block_size);
@@ -22245,138 +22248,117 @@ _Bool
   for(int i=0; i<30; i++){
    float *block_filter = sbuffer_write_ptr(third_octave_data[i].ring);
    
-# 415 "src/main.c" 3 4
+# 418 "src/main.c" 3 4
   ((void) sizeof ((
-# 415 "src/main.c"
+# 418 "src/main.c"
   lenght_read <= sbuffer_write_size(third_octave_data[i].ring)
-# 415 "src/main.c" 3 4
+# 418 "src/main.c" 3 4
   ) ? 1 : 0), __extension__ ({ if (
-# 415 "src/main.c"
+# 418 "src/main.c"
   lenght_read <= sbuffer_write_size(third_octave_data[i].ring)
-# 415 "src/main.c" 3 4
+# 418 "src/main.c" 3 4
   ) ; else __assert_fail (
-# 415 "src/main.c"
+# 418 "src/main.c"
   "lenght_read <= sbuffer_write_size(third_octave_data[i].ring)"
-# 415 "src/main.c" 3 4
-  , "src/main.c", 415, __extension__ __PRETTY_FUNCTION__); }))
-# 415 "src/main.c"
+# 418 "src/main.c" 3 4
+  , "src/main.c", 418, __extension__ __PRETTY_FUNCTION__); }))
+# 418 "src/main.c"
                                                                       ;
    third_octave_filtering(third_octave_data[i].filter, block_raw, block_filter, lenght_read);
    process_block_square(block_filter, block_filter, lenght_read);
-   timeweight_filtering(twfastfilter, block_filter, block_filter, lenght_read);
+   timeweight_filtering(third_octave_data[i].Tfilter, block_filter, block_filter, lenght_read);
    sbuffer_write_produces(third_octave_data[i].ring, lenght_read);
   }
 
-  float *block_ring_a = sbuffer_write_ptr(ring_a);
   float *block_ring_c = sbuffer_write_ptr(ring_c);
   float *block_ring_afast = sbuffer_write_ptr(ring_afast);
   float *block_ring_aslow = sbuffer_write_ptr(ring_aslow);
   
-# 426 "src/main.c" 3 4
+# 428 "src/main.c" 3 4
  ((void) sizeof ((
-# 426 "src/main.c"
- lenght_read <= sbuffer_write_size(ring_a)
-# 426 "src/main.c" 3 4
- ) ? 1 : 0), __extension__ ({ if (
-# 426 "src/main.c"
- lenght_read <= sbuffer_write_size(ring_a)
-# 426 "src/main.c" 3 4
- ) ; else __assert_fail (
-# 426 "src/main.c"
- "lenght_read <= sbuffer_write_size(ring_a)"
-# 426 "src/main.c" 3 4
- , "src/main.c", 426, __extension__ __PRETTY_FUNCTION__); }))
-# 426 "src/main.c"
-                                                  ;
-  
-# 427 "src/main.c" 3 4
- ((void) sizeof ((
-# 427 "src/main.c"
+# 428 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_c)
-# 427 "src/main.c" 3 4
+# 428 "src/main.c" 3 4
  ) ? 1 : 0), __extension__ ({ if (
-# 427 "src/main.c"
+# 428 "src/main.c"
  lenght_read <= sbuffer_write_size(ring_c)
-# 427 "src/main.c" 3 4
+# 428 "src/main.c" 3 4
  ) ; else __assert_fail (
-# 427 "src/main.c"
+# 428 "src/main.c"
  "lenght_read <= sbuffer_write_size(ring_c)"
-# 427 "src/main.c" 3 4
- , "src/main.c", 427, __extension__ __PRETTY_FUNCTION__); }))
-# 427 "src/main.c"
-                                                  ;
-  
-# 428 "src/main.c" 3 4
- ((void) sizeof ((
-# 428 "src/main.c"
- lenght_read <= sbuffer_write_size(ring_afast)
-# 428 "src/main.c" 3 4
- ) ? 1 : 0), __extension__ ({ if (
-# 428 "src/main.c"
- lenght_read <= sbuffer_write_size(ring_afast)
-# 428 "src/main.c" 3 4
- ) ; else __assert_fail (
-# 428 "src/main.c"
- "lenght_read <= sbuffer_write_size(ring_afast)"
 # 428 "src/main.c" 3 4
  , "src/main.c", 428, __extension__ __PRETTY_FUNCTION__); }))
 # 428 "src/main.c"
-                                                      ;
+                                                  ;
   
 # 429 "src/main.c" 3 4
  ((void) sizeof ((
 # 429 "src/main.c"
- lenght_read <= sbuffer_write_size(ring_aslow)
+ lenght_read <= sbuffer_write_size(ring_afast)
 # 429 "src/main.c" 3 4
  ) ? 1 : 0), __extension__ ({ if (
 # 429 "src/main.c"
- lenght_read <= sbuffer_write_size(ring_aslow)
+ lenght_read <= sbuffer_write_size(ring_afast)
 # 429 "src/main.c" 3 4
  ) ; else __assert_fail (
 # 429 "src/main.c"
- "lenght_read <= sbuffer_write_size(ring_aslow)"
+ "lenght_read <= sbuffer_write_size(ring_afast)"
 # 429 "src/main.c" 3 4
  , "src/main.c", 429, __extension__ __PRETTY_FUNCTION__); }))
 # 429 "src/main.c"
                                                       ;
+  
+# 430 "src/main.c" 3 4
+ ((void) sizeof ((
+# 430 "src/main.c"
+ lenght_read <= sbuffer_write_size(ring_aslow)
+# 430 "src/main.c" 3 4
+ ) ? 1 : 0), __extension__ ({ if (
+# 430 "src/main.c"
+ lenght_read <= sbuffer_write_size(ring_aslow)
+# 430 "src/main.c" 3 4
+ ) ; else __assert_fail (
+# 430 "src/main.c"
+ "lenght_read <= sbuffer_write_size(ring_aslow)"
+# 430 "src/main.c" 3 4
+ , "src/main.c", 430, __extension__ __PRETTY_FUNCTION__); }))
+# 430 "src/main.c"
+                                                      ;
 
-  aweighting_filtering(afilter, block_raw, block_ring_a, lenght_read);
+  aweighting_filtering(afilter, block_raw, block_a, lenght_read);
   cweighting_filtering(cfilter, block_raw, block_ring_c, lenght_read);
-  sbuffer_write_produces(ring_a, lenght_read);
   sbuffer_write_produces(ring_c, lenght_read);
-  sbuffer_read_consumes(ring_a, lenght_read);
-  sbuffer_read_consumes(ring_c, lenght_read);
 
-  process_block_square(block_ring_a, block_ring_afast, lenght_read);
-  process_block_square(block_ring_a, block_ring_aslow, lenght_read);
+  process_block_square(block_a, block_squared, lenght_read);
 
-  timeweight_filtering(twfastfilter, block_ring_afast, block_ring_afast, lenght_read);
-  timeweight_filtering(twslowfilter, block_ring_aslow, block_ring_aslow, lenght_read);
+  timeweight_filtering(twfastfilter, block_squared, block_ring_afast, lenght_read);
+  timeweight_filtering(twslowfilter, block_squared, block_ring_aslow, lenght_read);
   sbuffer_write_produces(ring_afast, lenght_read);
   sbuffer_write_produces(ring_aslow, lenght_read);
 
-  if (!continuous) {
+  if (!continuous && verbose_flag) {
    audit_append_samples(wa, block_raw, lenght_read);
-   audit_append_samples(wb, block_ring_a, lenght_read);
-   audit_append_samples(wc, block_ring_a, lenght_read);
+   audit_append_samples(wb, block_a, lenght_read);
+   audit_append_samples(wc, block_squared, lenght_read);
    audit_append_samples(wd, block_ring_afast, lenght_read);
   }
   if (sbuffer_size(ring_afast) >= config_struct->segment_size) {
    for(int i=0; i<30; i++){
     process_segment_levels(third_octave_data[i].levels, third_octave_data[i].ring, 
-# 454 "src/main.c" 3 4
+# 451 "src/main.c" 3 4
                                                                                   ((void *)0)
-# 454 "src/main.c"
+# 451 "src/main.c"
                                                                                       , config_struct);
    }
+   process_segment_levelpeak(levels_return, ring_c, config_struct);
    process_segment_levels(levels_return, ring_afast, ring_aslow, config_struct);
 
    int segment_index = levels_return->segment_number - 1;
 
    server_send((uint64_t)time(
-# 460 "src/main.c" 3 4
+# 458 "src/main.c" 3 4
                              ((void *)0)
-# 460 "src/main.c"
+# 458 "src/main.c"
                                  ), levels_return->LAeq[segment_index],
      levels_return->LAFmin[segment_index],
      levels_return->LAE[segment_index],
@@ -22403,9 +22385,9 @@ _Bool
   }
  }
  running = 
-# 485 "src/main.c" 3 4
+# 483 "src/main.c" 3 4
           0
-# 485 "src/main.c"
+# 483 "src/main.c"
                ;
  if (verbose_flag)
   printf("\nTotal time: %d seconds\n", time_elapsed / 1000);
@@ -22417,14 +22399,11 @@ _Bool
  config_save("./" "sound_meter_config.json");
 
 
- if (!continuous) {
-
-
-
-
-
-
-
+ if (!continuous && verbose_flag) {
+  audit_destroy(wa);
+  audit_destroy(wb);
+  audit_destroy(wc);
+  audit_destroy(wd);
  }
  server_end();
  if (config_struct->mqtt_enable)
@@ -22445,6 +22424,8 @@ _Bool
  cweighting_destroy(cfilter);
  lae_average_destroy();
  config_destroy(config_struct);
+ free(block_squared);
+ free(block_a);
  free(block_raw);
  sbuffer_destroy(ring_c);
  sbuffer_destroy(ring_a);

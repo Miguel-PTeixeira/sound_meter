@@ -34,7 +34,7 @@ Timeweight *timeweight_create()
 {
 	Timeweight *tw = malloc(sizeof *tw);
 	tw->previous = 0;
-	tw->alpha = alphaF;
+	tw->alpha = alfa;
 	return tw;
 }
 

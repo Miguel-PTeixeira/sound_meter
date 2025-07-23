@@ -4240,8 +4240,7 @@ typedef struct{
   vorbis_block vb;
 
   int eos;
-  int eoc;
-  float ** buffer;
+
   long endfile_size;
   long sample_count;
 
@@ -21364,6 +21363,7 @@ typedef struct {
 } ThirdOctaveFilter;
 
 typedef struct {
+ Timeweight *Tfilter;
  ThirdOctaveFilter *filter;
  Levels *levels;
  struct sbuffer *ring;
@@ -21442,7 +21442,6 @@ void samples_float_to_int16(float *samples_float, int16_t *samples_int16, unsign
 
 
 record_state record = {
- .eoc = 0,
  .eos = 0,
  .endfile_size = 0,
  .sample_count = 0,
@@ -21450,29 +21449,29 @@ record_state record = {
 record_state * record_struct = &record;
 
 
-# 21 "src/record.c" 3 4
+# 20 "src/record.c" 3 4
 _Bool 
-# 21 "src/record.c"
+# 20 "src/record.c"
     removing = 
-# 21 "src/record.c" 3 4
+# 20 "src/record.c" 3 4
                0
-# 21 "src/record.c"
+# 20 "src/record.c"
                     ;
 
-# 22 "src/record.c" 3 4
+# 21 "src/record.c" 3 4
 _Bool 
-# 22 "src/record.c"
+# 21 "src/record.c"
     start = 
-# 22 "src/record.c" 3 4
+# 21 "src/record.c" 3 4
             0
-# 22 "src/record.c"
+# 21 "src/record.c"
                  ;
-# 33 "src/record.c"
+# 32 "src/record.c"
 void create_output_file() {
  if(config_struct->input_file == 
-# 34 "src/record.c" 3 4
+# 33 "src/record.c" 3 4
                                 ((void *)0)
-# 34 "src/record.c"
+# 33 "src/record.c"
                                     ){
   output_new_filename(0, output_get_audio_filepath());
  }
@@ -21481,25 +21480,23 @@ void create_output_file() {
   output_file_open(filepath);
  add_file(record.created_audio_files, filepath);
 }
-# 53 "src/record.c"
+# 52 "src/record.c"
 int compare_by_name(const void *a, const void *b) {
     char *file_a = *(char **)a;
     char *file_b = *(char **)b;
     return strcmp(file_a,file_b);
 }
-# 69 "src/record.c"
+# 68 "src/record.c"
 int storage_window_init(){
- int sample_byte_size = 16;
- unsigned int file_compression_ratio = (config_struct->sample_rate * sample_byte_size)/record_struct->vi.bitrate_nominal;
- unsigned long long memory_needed;
+ int sample_byte_size = 2;
+ float file_compression_ratio = (config_struct->sample_rate * sample_byte_size)/(float)record_struct->vi.bitrate_nominal;
+ unsigned long long memory_needed = config_struct->sample_rate * config_struct->audio_file_duration * sample_byte_size;
 
 
-
- memory_needed = config_struct->sample_rate * config_struct->audio_file_duration;
  if(config_struct->input_file == 
-# 77 "src/record.c" 3 4
+# 74 "src/record.c" 3 4
                                 ((void *)0)
-# 77 "src/record.c"
+# 74 "src/record.c"
                                     ){
   unsigned int max_audio_files = (config_struct->audio_loop_recording + (config_struct->audio_file_duration-1)) / config_struct->audio_file_duration;
 
@@ -21527,14 +21524,14 @@ int storage_window_init(){
 
 
   if( ((record.created_audio_files = create_files_storage(max_audio_files)) == 
-# 103 "src/record.c" 3 4
+# 100 "src/record.c" 3 4
                                                                               ((void *)0)
-# 103 "src/record.c"
+# 100 "src/record.c"
                                                                                   ) ||
    ((record.created_data_files = create_files_storage(max_data_files)) == 
-# 104 "src/record.c" 3 4
+# 101 "src/record.c" 3 4
                                                                          ((void *)0)
-# 104 "src/record.c"
+# 101 "src/record.c"
                                                                              ))
     return 0;
 
@@ -21542,29 +21539,29 @@ int storage_window_init(){
    !load_files_from_directory(record.created_data_files,config_struct->output_path,".csv"))
     return 0;
 
-  unsigned data_line_size = (((sizeof(Levels))) + 30)*5 + strlen(output_get_audio_filepath());
+  unsigned data_line_size = (sizeof(Levels)-2 + 30)*(sizeof("000.00")-1) + strlen(output_get_audio_filepath());
 
-  memory_needed = (config_struct->audio_loop_recording * config_struct->sample_rate) +
+  memory_needed = (config_struct->audio_loop_recording * config_struct->sample_rate * sample_byte_size) +
       (config_struct->data_loop_recording * config_struct->levels_record_period * data_line_size);
  }
   memory_needed = memory_needed * 1/file_compression_ratio;
-  memory_needed = memory_needed * (100 + 0) / 100;
+  memory_needed = memory_needed * (100 + 5) / 100;
 
  printf("\tFree Disk Space = %lld bytes\n",get_free_disk_space());
  printf("\tMemory Needed =   %lld bytes\n",memory_needed);
 
  if(get_free_disk_space() < memory_needed){
   fprintf(
-# 123 "src/record.c" 3 4
+# 120 "src/record.c" 3 4
          stderr
-# 123 "src/record.c"
+# 120 "src/record.c"
                ,"ERROR : not enough space in disk for %lld bytes\n",memory_needed);
   return 0;
  }
 
  return 1;
 }
-# 140 "src/record.c"
+# 137 "src/record.c"
 int record_start(){
 
     record.eos = 0;
@@ -21579,19 +21576,19 @@ int record_start(){
     create_output_file();
     if (!record.output){
    fprintf(
-# 153 "src/record.c" 3 4
+# 150 "src/record.c" 3 4
           stderr
-# 153 "src/record.c"
+# 150 "src/record.c"
                 , "ERROR : could not create an output_file (record.c : 173)");
    return 0;
  }
 
     vorbis_info_init(&record.vi);
-    if (vorbis_encode_init_vbr(&record.vi, config_struct->channels, config_struct->sample_rate, -0.1)) {
+    if (vorbis_encode_init_vbr(&record.vi, config_struct->channels, config_struct->sample_rate, 0.9)) {
         fprintf(
-# 159 "src/record.c" 3 4
+# 156 "src/record.c" 3 4
                stderr
-# 159 "src/record.c"
+# 156 "src/record.c"
                      , "Error initializing the encoder\n\n");
         fclose(record.output);
         return 0;
@@ -21605,9 +21602,9 @@ int record_start(){
 
 
     srand(time(
-# 171 "src/record.c" 3 4
+# 168 "src/record.c" 3 4
               ((void *)0)
-# 171 "src/record.c"
+# 168 "src/record.c"
                   ));
     ogg_stream_init(&record.os, rand());
 
@@ -21627,22 +21624,22 @@ int record_start(){
 
     if(!start){
   start = 
-# 189 "src/record.c" 3 4
+# 186 "src/record.c" 3 4
          1
-# 189 "src/record.c"
+# 186 "src/record.c"
              ;
   if(!storage_window_init() || !config_struct->audio_record_ok)
    return 0;
  }
  record.time_start = time(
-# 193 "src/record.c" 3 4
+# 190 "src/record.c" 3 4
                          ((void *)0)
-# 193 "src/record.c"
+# 190 "src/record.c"
                              );
  record.time_elapsed = 0;
     return 1;
 }
-# 208 "src/record.c"
+# 205 "src/record.c"
 void record_stop(){
  ogg_stream_clear(&record.os);
  vorbis_block_clear(&record.vb);
@@ -21650,42 +21647,42 @@ void record_stop(){
  vorbis_comment_clear(&record.vc);
  vorbis_info_clear(&record.vi);
  if (record.output != 
-# 214 "src/record.c" 3 4
+# 211 "src/record.c" 3 4
                      ((void *)0)
-# 214 "src/record.c"
+# 211 "src/record.c"
                          ) {
   fclose(record.output);
   record.output = 
-# 216 "src/record.c" 3 4
+# 213 "src/record.c" 3 4
                  ((void *)0)
-# 216 "src/record.c"
+# 213 "src/record.c"
                      ;
  }
 }
-# 230 "src/record.c"
+# 227 "src/record.c"
 int record_append_samples(float *frames_buffer,size_t frames_read){
  if(!config_struct->audio_record_ok) return 1;
  
-# 232 "src/record.c" 3 4
+# 229 "src/record.c" 3 4
 ((void) sizeof ((
-# 232 "src/record.c"
+# 229 "src/record.c"
 frames_read <= config_struct->block_size
-# 232 "src/record.c" 3 4
+# 229 "src/record.c" 3 4
 ) ? 1 : 0), __extension__ ({ if (
-# 232 "src/record.c"
+# 229 "src/record.c"
 frames_read <= config_struct->block_size
-# 232 "src/record.c" 3 4
+# 229 "src/record.c" 3 4
 ) ; else __assert_fail (
-# 232 "src/record.c"
+# 229 "src/record.c"
 "frames_read <= config_struct->block_size"
-# 232 "src/record.c" 3 4
-, "src/record.c", 232, __extension__ __PRETTY_FUNCTION__); }))
-# 232 "src/record.c"
+# 229 "src/record.c" 3 4
+, "src/record.c", 229, __extension__ __PRETTY_FUNCTION__); }))
+# 229 "src/record.c"
                                                 ;
 
 
 
- if(frames_read==0 || record.eoc == 1){
+ if(frames_read==0){
 
   vorbis_analysis_wrote(&record.vd,0);
 
@@ -21709,9 +21706,9 @@ frames_read <= config_struct->block_size
  while(vorbis_analysis_blockout(&record.vd,&record.vb)==1){
 
   vorbis_analysis(&record.vb,
-# 259 "src/record.c" 3 4
+# 256 "src/record.c" 3 4
                             ((void *)0)
-# 259 "src/record.c"
+# 256 "src/record.c"
                                 );
   vorbis_bitrate_addblock(&record.vb);
 

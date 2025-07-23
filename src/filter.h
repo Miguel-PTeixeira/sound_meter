@@ -82,6 +82,7 @@ typedef struct {
 } ThirdOctaveFilter;
 
 typedef struct {
+	Timeweight			*Tfilter;
 	ThirdOctaveFilter	*filter;
 	Levels				*levels;
 	struct sbuffer		*ring;
