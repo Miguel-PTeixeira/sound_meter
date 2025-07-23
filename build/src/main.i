@@ -21693,7 +21693,7 @@ static void help(char *prog_name)
 
 static void about()
 {
- printf("Sound meter v" "1.0" " (" "Jul 22 2025" ")\n"
+ printf("Sound meter v" "1.0" " (" "Jul 23 2025" ")\n"
   "Based on MoSeMusic project by Guilherme Albano and David Meneses\n"
   "Ezequiel Conde (ezeq@cc.isel.ipl.pt)\n");
 }

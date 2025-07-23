@@ -71,7 +71,7 @@ help:
 	.section	.rodata
 	.align 8
 .LC1:
-	.string	"Sound meter v1.0 (Jul 22 2025)\nBased on MoSeMusic project by Guilherme Albano and David Meneses\nEzequiel Conde (ezeq@cc.isel.ipl.pt)"
+	.string	"Sound meter v1.0 (Jul 23 2025)\nBased on MoSeMusic project by Guilherme Albano and David Meneses\nEzequiel Conde (ezeq@cc.isel.ipl.pt)"
 	.text
 	.type	about, @function
 about:

@@ -362,9 +362,10 @@ void output_record(Levels *levels, ThirdOctaveData *td, bool continuous)
 				td[25].levels->LAE[i], td[26].levels->LAE[i], td[27].levels->LAE[i], td[28].levels->LAE[i], td[29].levels->LAE[i],
 				audio_output_filepath, levels->event[i]
 			);
-			if(levels->event[i]){
-				archive_file(audio_output_filepath);
-			}
+///NOT WORKING, CURRENTLY
+			//if(levels->event[i]){
+				//archive_file(audio_output_filepath);
+			//}
 		}
 		sample_count += config_struct->sample_rate/config_struct->levels_record_period;
 	}
