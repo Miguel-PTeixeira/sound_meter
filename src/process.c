@@ -85,22 +85,18 @@ Levels *levels_create() {
     if (levels == NULL)
         return NULL;
 
-    size_t Fsegment_data_size = config_struct->levels_record_period * sizeof *levels->LAeq;
-    float *fbuffer = malloc(7 * Fsegment_data_size);
+	float *fbuffer = calloc(7 * config_struct->levels_record_period, sizeof(levels->LAeq));
     if (fbuffer == NULL) {
         free(levels);
         return NULL;
     }
-    memset(fbuffer, 0, 7 * Fsegment_data_size);
 
-    size_t Isegment_data_size = config_struct->levels_record_period * sizeof *levels->event;
-    int *ibuffer = malloc(1 * Isegment_data_size);
+    int *ibuffer = calloc(1 * config_struct->levels_record_period, sizeof(levels->event));
     if (ibuffer == NULL) {
         free(fbuffer);
         free(levels);
         return NULL;
     }
-    memset(ibuffer, 0, 1 * Isegment_data_size);
 
     float *temp = fbuffer;
     levels->LAeq = temp;
@@ -135,10 +131,13 @@ Levels *levels_create() {
 
 void levels_destroy(Levels *levels)
 {
+	if (!levels) return;
 	free(levels->LAeq);
 	percentil_destroy(levels->perc);
+	free(levels->event);
 	free(levels);
 }
+
 
 void process_block_square(float *input, float *output, unsigned size)
 {
@@ -256,9 +255,7 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct s
 	}
 	// -------- DATA ----------
 		// ---------- AFAST ----------
-		float lae = sqrt(sample_sum_afast / config_struct->segment_size);
-		if (sample_sum_afast < 0)
-			lae = -sqrt(fabs(sample_sum_afast / config_struct->segment_size));
+		float lae = sqrt(fabs(sample_sum_afast / config_struct->segment_size));
 		float lafmax = sqrt(sample_max_afast);
 		float lafmin = sqrt(sample_min_afast);
 		levels->LAE[levels->segment_number]    = linear_to_decibel(lae) + delta;
@@ -270,9 +267,7 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct s
 
 		// ---------- ASLOW ----------
 		if (ring_aslow != NULL) {
-			float las = sqrt(sample_sum_aslow / config_struct->segment_size);
-			if (sample_sum_aslow < 0)
-				las = -sqrt(fabs(sample_sum_aslow / config_struct->segment_size));
+			float las = sqrt(fabs(sample_sum_aslow / config_struct->segment_size));
 			levels->LAS[levels->segment_number] = linear_to_decibel(las) + delta;
 		}
 	// --------- PERCENTIL --------
@@ -284,9 +279,9 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct s
 			levels->perc->pos++;
 			// Compute background_LAS
 			if (beginning)
-				levels->background_LAS = get_percentil(levels->perc->array, levels->perc->pos, 10);
+				levels->background_LAS = get_percentile_quickselect(levels->perc->array, levels->perc->pos, 10);
 			if (levels->perc->pos >= percentil_segment_number) {
-				levels->background_LAS = get_percentil(levels->perc->array, levels->perc->pos, 10);
+				levels->background_LAS = get_percentile_quickselect(levels->perc->array, levels->perc->pos, 10);
 				levels->perc->pos = 0;
 				beginning = 0;
 			} 
@@ -307,13 +302,62 @@ void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct co
 {
 }
 
+static void swap(float *a, float *b) {
+    float tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+static int partition(float arr[], int left, int right, int pivot_index) {
+    float pivot_value = arr[pivot_index];
+    swap(&arr[pivot_index], &arr[right]); // Move pivot to end
+    int store_index = left;
+
+    for (int i = left; i < right; i++) {
+        if (arr[i] < pivot_value) {
+            swap(&arr[store_index], &arr[i]);
+            store_index++;
+        }
+    }
+    swap(&arr[store_index], &arr[right]); // Move pivot to its final place
+    return store_index;
+}
+
+static float quickselect(float arr[], int left, int right, int k) {
+    if (left == right)  // Only one element
+        return arr[left];
+
+    int pivot_index = left + rand() % (right - left + 1);
+    pivot_index = partition(arr, left, right, pivot_index);
+
+    if (k == pivot_index)
+        return arr[k];
+    else if (k < pivot_index)
+        return quickselect(arr, left, pivot_index - 1, k);
+    else
+        return quickselect(arr, pivot_index + 1, right, k);
+}
+
+float get_percentile_quickselect(float* array, int size, int perc) {
+    int index = (perc * size) / 100;
+    // Make a copy so we don't mutate original data
+    float *copy = malloc(size * sizeof(float));
+    if (!copy) return -1;  // fallback or error
+    for (int i = 0; i < size; i++) copy[i] = array[i];
+
+    float result = quickselect(copy, 0, size - 1, index);
+    free(copy);
+    return result;
+}
+
+
 static int cmp_func(const void* a, const void* b) {
     float fa = *(float*)a;
     float fb = *(float*)b;
     return (fa > fb) - (fa < fb);
 }
 
-float get_percentil(float* array, int size, int perc){
+float get_percentile(float* array, int size, int perc){
 	
 	qsort(array,size,sizeof(array[0]),cmp_func);
 	

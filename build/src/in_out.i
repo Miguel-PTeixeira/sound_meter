@@ -10391,7 +10391,8 @@ void process_block_square(float *input, float *output, unsigned length);
 void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config);
 void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct sbuffer *ring_aslow, struct config *config);
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config);
-float get_percentil(float* array, int size, int perc);
+float get_percentile_quickselect(float* array, int size, int perc);
+float get_percentile(float* array, int size, int perc);
 int event_check(Levels* levels);
 
 void lae_average_create();
@@ -21762,25 +21763,37 @@ _Bool
           stderr
 # 46 "src/in_out.c"
                 , "snd_pcm_set_params: %s\n", snd_strerror(result));
+   snd_pcm_close(device.alsa_handle);
+   device.alsa_handle = 
+# 48 "src/in_out.c" 3 4
+                       ((void *)0)
+# 48 "src/in_out.c"
+                           ;
    return 
-# 47 "src/in_out.c" 3 4
+# 49 "src/in_out.c" 3 4
          0
-# 47 "src/in_out.c"
+# 49 "src/in_out.c"
               ;
   }
-# 59 "src/in_out.c"
+# 63 "src/in_out.c"
   result = snd_pcm_prepare(device.alsa_handle);
   if (result < 0) {
    fprintf(
-# 61 "src/in_out.c" 3 4
+# 65 "src/in_out.c" 3 4
           stderr
-# 61 "src/in_out.c"
+# 65 "src/in_out.c"
                 , "cannot prepare audio interface for use (%s)\n",
      snd_strerror(result));
+   snd_pcm_close(device.alsa_handle);
+   device.alsa_handle = 
+# 68 "src/in_out.c" 3 4
+                       ((void *)0)
+# 68 "src/in_out.c"
+                           ;
    return 
-# 63 "src/in_out.c" 3 4
+# 69 "src/in_out.c" 3 4
          0
-# 63 "src/in_out.c"
+# 69 "src/in_out.c"
               ;
   }
   snd_pcm_start(device.alsa_handle);
@@ -21789,19 +21802,19 @@ _Bool
   device.device = DEVICE_WAVE;
   device.wave = wave_load(config->input_file);
   if (device.wave == 
-# 70 "src/in_out.c" 3 4
+# 76 "src/in_out.c" 3 4
                     ((void *)0)
-# 70 "src/in_out.c"
+# 76 "src/in_out.c"
                         ) {
    fprintf(
-# 71 "src/in_out.c" 3 4
+# 77 "src/in_out.c" 3 4
           stderr
-# 71 "src/in_out.c"
+# 77 "src/in_out.c"
                 , "Can't load wave file %s\n", config->input_file);
    return 
-# 72 "src/in_out.c" 3 4
+# 78 "src/in_out.c" 3 4
          0
-# 72 "src/in_out.c"
+# 78 "src/in_out.c"
               ;
   }
   config->channels = wave_get_number_of_channels(device.wave);
@@ -21812,24 +21825,24 @@ _Bool
  }
 
  return 
-# 81 "src/in_out.c" 3 4
+# 87 "src/in_out.c" 3 4
        1
-# 81 "src/in_out.c"
+# 87 "src/in_out.c"
            ;
 }
-# 95 "src/in_out.c"
+# 101 "src/in_out.c"
 size_t input_device_read(float *buffer, size_t nframes)
 {
  int16_t *samples_int16 = malloc(nframes * config_struct->channels * sizeof *samples_int16);
  if (samples_int16 == 
-# 98 "src/in_out.c" 3 4
+# 104 "src/in_out.c" 3 4
                      ((void *)0)
-# 98 "src/in_out.c"
+# 104 "src/in_out.c"
                          ) {
   fprintf(
-# 99 "src/in_out.c" 3 4
+# 105 "src/in_out.c" 3 4
          stderr
-# 99 "src/in_out.c"
+# 105 "src/in_out.c"
                , "Out of memory\n");
   return 0;
  }
@@ -21838,29 +21851,33 @@ size_t input_device_read(float *buffer, size_t nframes)
   read_frames = snd_pcm_readi(device.alsa_handle, samples_int16, nframes);
   if (read_frames < 0) {
    fprintf(
-# 106 "src/in_out.c" 3 4
+# 112 "src/in_out.c" 3 4
           stderr
-# 106 "src/in_out.c"
+# 112 "src/in_out.c"
                 , "read from audio interface failed (%s)\n",
      snd_strerror(read_frames));
+   free(samples_int16);
    return 0;
   }
  }
  else if (device.device == DEVICE_WAVE) {
   read_frames = wave_read_samples(device.wave, (char *)samples_int16, nframes);
-  if (read_frames == 0)
+  if (read_frames == 0){
+   free(samples_int16);
    return 0;
+  }
  }
  else {
   
-# 117 "src/in_out.c" 3 4
+# 126 "src/in_out.c" 3 4
  ((void) sizeof ((0) ? 1 : 0), __extension__ ({ if (0) ; else __assert_fail (
-# 117 "src/in_out.c"
+# 126 "src/in_out.c"
  "false"
-# 117 "src/in_out.c" 3 4
- , "src/in_out.c", 117, __extension__ __PRETTY_FUNCTION__); }))
-# 117 "src/in_out.c"
+# 126 "src/in_out.c" 3 4
+ , "src/in_out.c", 126, __extension__ __PRETTY_FUNCTION__); }))
+# 126 "src/in_out.c"
               ;
+  free(samples_int16);
   return 0;
  }
  samples_int16_to_float(samples_int16, buffer, read_frames);
@@ -21880,9 +21897,9 @@ void input_device_close()
   int result_code = snd_pcm_close(device.alsa_handle);
   if (result_code < 0)
    fprintf(
-# 136 "src/in_out.c" 3 4
+# 146 "src/in_out.c" 3 4
           stderr
-# 136 "src/in_out.c"
+# 146 "src/in_out.c"
                 , "Error closing sound card\n");
  }
  else if (device.device == DEVICE_WAVE) {
@@ -21894,27 +21911,27 @@ void input_device_close()
 
 
 static char *current_format = 
-# 146 "src/in_out.c" 3 4
+# 156 "src/in_out.c" 3 4
                              ((void *)0)
-# 146 "src/in_out.c"
+# 156 "src/in_out.c"
                                  ;
 
 static char *data_output_filepath = 
-# 148 "src/in_out.c" 3 4
+# 158 "src/in_out.c" 3 4
                                    ((void *)0)
-# 148 "src/in_out.c"
+# 158 "src/in_out.c"
                                        ;
 
 static FILE *data_output_fd = 
-# 150 "src/in_out.c" 3 4
+# 160 "src/in_out.c" 3 4
                              ((void *)0)
-# 150 "src/in_out.c"
+# 160 "src/in_out.c"
                                  ;
 
 static char *audio_output_filepath = 
-# 152 "src/in_out.c" 3 4
+# 162 "src/in_out.c" 3 4
                                     ((void *)0)
-# 152 "src/in_out.c"
+# 162 "src/in_out.c"
                                         ;
 
 static json_t *output_json;
@@ -21927,15 +21944,15 @@ static unsigned output_time;
 
 
 void output_open(
-# 163 "src/in_out.c" 3 4
+# 173 "src/in_out.c" 3 4
                 _Bool 
-# 163 "src/in_out.c"
+# 173 "src/in_out.c"
                      continous)
 {
  calendar = time(
-# 165 "src/in_out.c" 3 4
+# 175 "src/in_out.c" 3 4
                 ((void *)0)
-# 165 "src/in_out.c"
+# 175 "src/in_out.c"
                     );
  if (continous)
   output_new_filename(0, data_output_filepath);
@@ -21953,26 +21970,26 @@ void output_file_close()
 {
  if (strcmp(config_struct->data_output_format, ".json") == 0) {
   json_dumpf(output_json, data_output_fd, 
-# 181 "src/in_out.c" 3 4
+# 191 "src/in_out.c" 3 4
                                          (((
-# 181 "src/in_out.c"
+# 191 "src/in_out.c"
                                          3
-# 181 "src/in_out.c" 3 4
+# 191 "src/in_out.c" 3 4
                                          )&0x1F) << 11)
-# 181 "src/in_out.c"
+# 191 "src/in_out.c"
                                                                );
   json_decref(output_json);
  }
  if (data_output_fd != 
-# 184 "src/in_out.c" 3 4
+# 194 "src/in_out.c" 3 4
                       ((void *)0)
-# 184 "src/in_out.c"
+# 194 "src/in_out.c"
                           )
   fclose(data_output_fd);
  data_output_fd = 
-# 186 "src/in_out.c" 3 4
+# 196 "src/in_out.c" 3 4
                  ((void *)0)
-# 186 "src/in_out.c"
+# 196 "src/in_out.c"
                      ;
 }
 
@@ -21985,19 +22002,19 @@ static char *output_init_filename(const char* format)
   + strlen(config_struct->data_output_format) + 1;
  char *filepath = malloc(filepath_size);
  if (filepath == 
-# 197 "src/in_out.c" 3 4
+# 207 "src/in_out.c" 3 4
                 ((void *)0)
-# 197 "src/in_out.c"
+# 207 "src/in_out.c"
                     ) {
   fprintf(
-# 198 "src/in_out.c" 3 4
+# 208 "src/in_out.c" 3 4
          stderr
-# 198 "src/in_out.c"
+# 208 "src/in_out.c"
                , "Out of memory\n");
   return 
-# 199 "src/in_out.c" 3 4
+# 209 "src/in_out.c" 3 4
         ((void *)0)
-# 199 "src/in_out.c"
+# 209 "src/in_out.c"
             ;
  }
  strcpy(filepath, config_struct->output_path);
@@ -22031,23 +22048,23 @@ void output_file_open(char *filepath)
 {
  FILE * output_file = fopen(filepath, "w");
  if (output_file == 
-# 231 "src/in_out.c" 3 4
+# 241 "src/in_out.c" 3 4
                    ((void *)0)
-# 231 "src/in_out.c"
+# 241 "src/in_out.c"
                        ) {
   fprintf(
-# 232 "src/in_out.c" 3 4
+# 242 "src/in_out.c" 3 4
          stderr
-# 232 "src/in_out.c"
+# 242 "src/in_out.c"
                , "fopen(%s, \"w\") error: %s\n", filepath, strerror(
-# 232 "src/in_out.c" 3 4
+# 242 "src/in_out.c" 3 4
                                                                     (*__errno_location ())
-# 232 "src/in_out.c"
+# 242 "src/in_out.c"
                                                                          ));
   exit(
-# 233 "src/in_out.c" 3 4
+# 243 "src/in_out.c" 3 4
       1
-# 233 "src/in_out.c"
+# 243 "src/in_out.c"
                   );
  }
 
@@ -22062,137 +22079,137 @@ void output_file_open(char *filepath)
  else if (strcmp(current_format, ".json") == 0) {
   data_output_fd = output_file;
   add_file(record_struct->created_data_files, filepath);
-# 260 "src/in_out.c"
+# 270 "src/in_out.c"
   output_json = json_object();
   if (output_json == 
-# 261 "src/in_out.c" 3 4
+# 271 "src/in_out.c" 3 4
                     ((void *)0)
-# 261 "src/in_out.c"
+# 271 "src/in_out.c"
                         ) {
    fprintf(
-# 262 "src/in_out.c" 3 4
+# 272 "src/in_out.c" 3 4
           stderr
-# 262 "src/in_out.c"
+# 272 "src/in_out.c"
                 , "Output: error creating JSON object \"output_json\".\n");
    return;
   }
   json_t *object_json = json_integer(calendar);
   if (object_json != 
-# 266 "src/in_out.c" 3 4
+# 276 "src/in_out.c" 3 4
                     ((void *)0)
-# 266 "src/in_out.c"
+# 276 "src/in_out.c"
                         ) {
    if (json_object_set_new(output_json, "ts", object_json) != 0) {
     fprintf(
-# 268 "src/in_out.c" 3 4
+# 278 "src/in_out.c" 3 4
            stderr
-# 268 "src/in_out.c"
-                 , "Output: error adding JSON field \"ts\" (""src/in_out.c"": %d)\n", 268);
+# 278 "src/in_out.c"
+                 , "Output: error adding JSON field \"ts\" (""src/in_out.c"": %d)\n", 278);
     return;
    }
   }
   object_json = json_integer(config_struct->segment_duration);
   if (object_json != 
-# 273 "src/in_out.c" 3 4
+# 283 "src/in_out.c" 3 4
                     ((void *)0)
-# 273 "src/in_out.c"
+# 283 "src/in_out.c"
                         ) {
    if (json_object_set_new(output_json, "segment", object_json) != 0) {
     fprintf(
-# 275 "src/in_out.c" 3 4
+# 285 "src/in_out.c" 3 4
            stderr
-# 275 "src/in_out.c"
-                 , "Output: error adding JSON field \"segment\" (""src/in_out.c"": %d)\n", 275);
+# 285 "src/in_out.c"
+                 , "Output: error adding JSON field \"segment\" (""src/in_out.c"": %d)\n", 285);
     return;
    }
   }
   json_t *levels_json = json_object();
   if (levels_json != 
-# 280 "src/in_out.c" 3 4
+# 290 "src/in_out.c" 3 4
                     ((void *)0)
-# 280 "src/in_out.c"
+# 290 "src/in_out.c"
                         ) {
    if (json_object_set_new(output_json, "levels", levels_json) != 0) {
     fprintf(
-# 282 "src/in_out.c" 3 4
+# 292 "src/in_out.c" 3 4
            stderr
-# 282 "src/in_out.c"
-                 , "Output: error adding JSON field \"levels\" (""src/in_out.c"": %d)\n", 282);
+# 292 "src/in_out.c"
+                 , "Output: error adding JSON field \"levels\" (""src/in_out.c"": %d)\n", 292);
     return;
    }
   }
   LAeq_json = json_array();
   if (LAeq_json != 
-# 287 "src/in_out.c" 3 4
+# 297 "src/in_out.c" 3 4
                   ((void *)0)
-# 287 "src/in_out.c"
+# 297 "src/in_out.c"
                       ) {
    if (json_object_set_new(levels_json, "LAeq", LAeq_json) != 0) {
     fprintf(
-# 289 "src/in_out.c" 3 4
+# 299 "src/in_out.c" 3 4
            stderr
-# 289 "src/in_out.c"
-                 , "Output: error adding JSON field \"LAeq\" (""src/in_out.c"": %d)\n", 289);
+# 299 "src/in_out.c"
+                 , "Output: error adding JSON field \"LAeq\" (""src/in_out.c"": %d)\n", 299);
     return;
    }
   }
   LAE_json = json_array();
   if (LAE_json != 
-# 294 "src/in_out.c" 3 4
+# 304 "src/in_out.c" 3 4
                  ((void *)0)
-# 294 "src/in_out.c"
+# 304 "src/in_out.c"
                      ) {
    if (json_object_set_new(levels_json, "LAE", LAE_json) != 0) {
     fprintf(
-# 296 "src/in_out.c" 3 4
+# 306 "src/in_out.c" 3 4
            stderr
-# 296 "src/in_out.c"
-                 , "Output: error adding JSON field \"LAE\" (""src/in_out.c"": %d)\n", 296);
+# 306 "src/in_out.c"
+                 , "Output: error adding JSON field \"LAE\" (""src/in_out.c"": %d)\n", 306);
     return;
    }
   }
   LAFmin_json = json_array();
   if (LAFmin_json != 
-# 301 "src/in_out.c" 3 4
+# 311 "src/in_out.c" 3 4
                     ((void *)0)
-# 301 "src/in_out.c"
+# 311 "src/in_out.c"
                         ) {
    if (json_object_set_new(levels_json, "LAFmin", LAFmin_json) != 0) {
     fprintf(
-# 303 "src/in_out.c" 3 4
+# 313 "src/in_out.c" 3 4
            stderr
-# 303 "src/in_out.c"
-                 , "Output: error adding JSON field \"LAFmin\" (""src/in_out.c"": %d)\n", 303);
+# 313 "src/in_out.c"
+                 , "Output: error adding JSON field \"LAFmin\" (""src/in_out.c"": %d)\n", 313);
     return;
    }
   }
   LAFmax_json = json_array();
   if (LAFmax_json != 
-# 308 "src/in_out.c" 3 4
+# 318 "src/in_out.c" 3 4
                     ((void *)0)
-# 308 "src/in_out.c"
+# 318 "src/in_out.c"
                         ) {
    if (json_object_set_new(levels_json, "LAFmax", LAFmax_json) != 0) {
     fprintf(
-# 310 "src/in_out.c" 3 4
+# 320 "src/in_out.c" 3 4
            stderr
-# 310 "src/in_out.c"
-                 , "Output: error adding JSON field \"LAFmax\" (""src/in_out.c"": %d)\n", 310);
+# 320 "src/in_out.c"
+                 , "Output: error adding JSON field \"LAFmax\" (""src/in_out.c"": %d)\n", 320);
     return;
    }
   }
   LApeak_json = json_array();
   if (LApeak_json != 
-# 315 "src/in_out.c" 3 4
+# 325 "src/in_out.c" 3 4
                     ((void *)0)
-# 315 "src/in_out.c"
+# 325 "src/in_out.c"
                         ) {
    if (json_object_set_new(levels_json, "LCpeak", LApeak_json) != 0) {
     fprintf(
-# 317 "src/in_out.c" 3 4
+# 327 "src/in_out.c" 3 4
            stderr
-# 317 "src/in_out.c"
-                 , "Output: error adding JSON field \"LApeak\" (""src/in_out.c"": %d)\n", 317);
+# 327 "src/in_out.c"
+                 , "Output: error adding JSON field \"LApeak\" (""src/in_out.c"": %d)\n", 327);
     return;
    }
   }
@@ -22203,16 +22220,16 @@ void output_file_open(char *filepath)
   for(unsigned f = 0; f < 30; f++){
    LAfilters_json[f] = json_array();
    if (LAfilters_json[f] != 
-# 327 "src/in_out.c" 3 4
+# 337 "src/in_out.c" 3 4
                            ((void *)0)
-# 327 "src/in_out.c"
+# 337 "src/in_out.c"
                                ) {
     if (json_object_set_new(levels_json, bands[f], LAfilters_json[f]) != 0) {
      fprintf(
-# 329 "src/in_out.c" 3 4
+# 339 "src/in_out.c" 3 4
             stderr
-# 329 "src/in_out.c"
-                  , "Output: error adding JSON field \"LApeak\" (""src/in_out.c"": %d)\n", 329);
+# 339 "src/in_out.c"
+                  , "Output: error adding JSON field \"LApeak\" (""src/in_out.c"": %d)\n", 339);
      return;
     }
    }
@@ -22223,17 +22240,17 @@ void output_file_open(char *filepath)
  }
  else {
   fprintf(
-# 339 "src/in_out.c" 3 4
+# 349 "src/in_out.c" 3 4
          stderr
-# 339 "src/in_out.c"
+# 349 "src/in_out.c"
                , "Output: no output format recognized\n");
  }
 }
-# 356 "src/in_out.c"
+# 366 "src/in_out.c"
 void output_record(Levels *levels, ThirdOctaveData *td, 
-# 356 "src/in_out.c" 3 4
+# 366 "src/in_out.c" 3 4
                                                        _Bool 
-# 356 "src/in_out.c"
+# 366 "src/in_out.c"
                                                             continuous)
 {
  if (config_struct->data_record_ok){
@@ -22268,84 +22285,84 @@ void output_record(Levels *levels, ThirdOctaveData *td,
   else if (strcmp(config_struct->data_output_format, ".json") == 0) {
    for (unsigned i = 0; i < levels->segment_number; ++i) {
     { json_t *real_json = json_real(levels->LAeq[i]); if (real_json == 
-# 389 "src/in_out.c" 3 4
+# 399 "src/in_out.c" 3 4
    ((void *)0)
-# 389 "src/in_out.c"
+# 399 "src/in_out.c"
    ) { fprintf(
-# 389 "src/in_out.c" 3 4
+# 399 "src/in_out.c" 3 4
    stderr
-# 389 "src/in_out.c"
-   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 389); return; } if (json_array_append_new(LAeq_json, real_json) != 0) { fprintf(
-# 389 "src/in_out.c" 3 4
+# 399 "src/in_out.c"
+   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 399); return; } if (json_array_append_new(LAeq_json, real_json) != 0) { fprintf(
+# 399 "src/in_out.c" 3 4
    stderr
-# 389 "src/in_out.c"
-   , "Output: error set " "LAeq_json" "[i] (""src/in_out.c"": %d)\n", 389); return; } };
+# 399 "src/in_out.c"
+   , "Output: error set " "LAeq_json" "[i] (""src/in_out.c"": %d)\n", 399); return; } };
     { json_t *real_json = json_real(levels->LAE[i]); if (real_json == 
-# 390 "src/in_out.c" 3 4
+# 400 "src/in_out.c" 3 4
    ((void *)0)
-# 390 "src/in_out.c"
+# 400 "src/in_out.c"
    ) { fprintf(
-# 390 "src/in_out.c" 3 4
+# 400 "src/in_out.c" 3 4
    stderr
-# 390 "src/in_out.c"
-   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 390); return; } if (json_array_append_new(LAE_json, real_json) != 0) { fprintf(
-# 390 "src/in_out.c" 3 4
+# 400 "src/in_out.c"
+   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 400); return; } if (json_array_append_new(LAE_json, real_json) != 0) { fprintf(
+# 400 "src/in_out.c" 3 4
    stderr
-# 390 "src/in_out.c"
-   , "Output: error set " "LAE_json" "[i] (""src/in_out.c"": %d)\n", 390); return; } };
+# 400 "src/in_out.c"
+   , "Output: error set " "LAE_json" "[i] (""src/in_out.c"": %d)\n", 400); return; } };
     { json_t *real_json = json_real(levels->LAFmin[i]); if (real_json == 
-# 391 "src/in_out.c" 3 4
+# 401 "src/in_out.c" 3 4
    ((void *)0)
-# 391 "src/in_out.c"
+# 401 "src/in_out.c"
    ) { fprintf(
-# 391 "src/in_out.c" 3 4
+# 401 "src/in_out.c" 3 4
    stderr
-# 391 "src/in_out.c"
-   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 391); return; } if (json_array_append_new(LAFmin_json, real_json) != 0) { fprintf(
-# 391 "src/in_out.c" 3 4
+# 401 "src/in_out.c"
+   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 401); return; } if (json_array_append_new(LAFmin_json, real_json) != 0) { fprintf(
+# 401 "src/in_out.c" 3 4
    stderr
-# 391 "src/in_out.c"
-   , "Output: error set " "LAFmin_json" "[i] (""src/in_out.c"": %d)\n", 391); return; } };
+# 401 "src/in_out.c"
+   , "Output: error set " "LAFmin_json" "[i] (""src/in_out.c"": %d)\n", 401); return; } };
     { json_t *real_json = json_real(levels->LAFmax[i]); if (real_json == 
-# 392 "src/in_out.c" 3 4
+# 402 "src/in_out.c" 3 4
    ((void *)0)
-# 392 "src/in_out.c"
+# 402 "src/in_out.c"
    ) { fprintf(
-# 392 "src/in_out.c" 3 4
+# 402 "src/in_out.c" 3 4
    stderr
-# 392 "src/in_out.c"
-   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 392); return; } if (json_array_append_new(LAFmax_json, real_json) != 0) { fprintf(
-# 392 "src/in_out.c" 3 4
+# 402 "src/in_out.c"
+   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 402); return; } if (json_array_append_new(LAFmax_json, real_json) != 0) { fprintf(
+# 402 "src/in_out.c" 3 4
    stderr
-# 392 "src/in_out.c"
-   , "Output: error set " "LAFmax_json" "[i] (""src/in_out.c"": %d)\n", 392); return; } };
+# 402 "src/in_out.c"
+   , "Output: error set " "LAFmax_json" "[i] (""src/in_out.c"": %d)\n", 402); return; } };
     { json_t *real_json = json_real(levels->LApeak[i]); if (real_json == 
-# 393 "src/in_out.c" 3 4
+# 403 "src/in_out.c" 3 4
    ((void *)0)
-# 393 "src/in_out.c"
+# 403 "src/in_out.c"
    ) { fprintf(
-# 393 "src/in_out.c" 3 4
+# 403 "src/in_out.c" 3 4
    stderr
-# 393 "src/in_out.c"
-   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 393); return; } if (json_array_append_new(LApeak_json, real_json) != 0) { fprintf(
-# 393 "src/in_out.c" 3 4
+# 403 "src/in_out.c"
+   , "Output: error creating real_json (""src/in_out.c"": %d)\n", 403); return; } if (json_array_append_new(LApeak_json, real_json) != 0) { fprintf(
+# 403 "src/in_out.c" 3 4
    stderr
-# 393 "src/in_out.c"
-   , "Output: error set " "LApeak_json" "[i] (""src/in_out.c"": %d)\n", 393); return; } };
+# 403 "src/in_out.c"
+   , "Output: error set " "LApeak_json" "[i] (""src/in_out.c"": %d)\n", 403); return; } };
     for(unsigned f = 0; f < 30; f++){
      { json_t *real_json = json_real(td[f].levels->LAE[i]); if (real_json == 
-# 395 "src/in_out.c" 3 4
+# 405 "src/in_out.c" 3 4
     ((void *)0)
-# 395 "src/in_out.c"
+# 405 "src/in_out.c"
     ) { fprintf(
-# 395 "src/in_out.c" 3 4
+# 405 "src/in_out.c" 3 4
     stderr
-# 395 "src/in_out.c"
-    , "Output: error creating real_json (""src/in_out.c"": %d)\n", 395); return; } if (json_array_append_new(LAfilters_json[f], real_json) != 0) { fprintf(
-# 395 "src/in_out.c" 3 4
+# 405 "src/in_out.c"
+    , "Output: error creating real_json (""src/in_out.c"": %d)\n", 405); return; } if (json_array_append_new(LAfilters_json[f], real_json) != 0) { fprintf(
+# 405 "src/in_out.c" 3 4
     stderr
-# 395 "src/in_out.c"
-    , "Output: error set " "LAfilters_json[f]" "[i] (""src/in_out.c"": %d)\n", 395); return; } };
+# 405 "src/in_out.c"
+    , "Output: error set " "LAfilters_json[f]" "[i] (""src/in_out.c"": %d)\n", 405); return; } };
     }
    }
    data_output_index += levels->segment_number;
@@ -22365,9 +22382,9 @@ void output_record(Levels *levels, ThirdOctaveData *td,
   }
 
  record_struct->time_elapsed = time(
-# 414 "src/in_out.c" 3 4
+# 424 "src/in_out.c" 3 4
                                    ((void *)0)
-# 414 "src/in_out.c"
+# 424 "src/in_out.c"
                                        ) - record_struct->time_start;
  if (continuous && record_struct->sample_count >= config_struct->sample_rate * config_struct->audio_file_duration) {
   record_stop();
@@ -22375,9 +22392,9 @@ void output_record(Levels *levels, ThirdOctaveData *td,
   output_time = 0;
   if(!record_start()){
    fprintf(
-# 420 "src/in_out.c" 3 4
+# 430 "src/in_out.c" 3 4
           stderr
-# 420 "src/in_out.c"
+# 430 "src/in_out.c"
                 ,"ERROR : could not start recording (in_out.c : 79)");
    exit(1);
   }
@@ -22393,9 +22410,9 @@ static char *get_filename(const char *filename) {
 
     char *ptr = malloc(filename_len + 1);
     if (!ptr) return 
-# 434 "src/in_out.c" 3 4
+# 444 "src/in_out.c" 3 4
                     ((void *)0)
-# 434 "src/in_out.c"
+# 444 "src/in_out.c"
                         ;
 
     strncpy(ptr, start, filename_len);
@@ -22408,13 +22425,13 @@ static const char *get_extention(const char *filename)
 {
  const char *ptr = strrchr(filename, '.');
  return ptr != 
-# 445 "src/in_out.c" 3 4
+# 455 "src/in_out.c" 3 4
               ((void *)0) 
-# 445 "src/in_out.c"
+# 455 "src/in_out.c"
                    ? ptr + 1 : 
-# 445 "src/in_out.c" 3 4
+# 455 "src/in_out.c" 3 4
                                ((void *)0)
-# 445 "src/in_out.c"
+# 455 "src/in_out.c"
                                    ;
 }
 
@@ -22422,16 +22439,16 @@ static char *get_stem(const char *fullname)
 {
  const char *point = strrchr(fullname, '.');
  if (point == 
-# 451 "src/in_out.c" 3 4
+# 461 "src/in_out.c" 3 4
              ((void *)0)
-# 451 "src/in_out.c"
+# 461 "src/in_out.c"
                  )
   point = fullname + strlen(fullname);
  const char *slash = strrchr(fullname, '/');
  if (slash == 
-# 454 "src/in_out.c" 3 4
+# 464 "src/in_out.c" 3 4
              ((void *)0)
-# 454 "src/in_out.c"
+# 464 "src/in_out.c"
                  )
   slash = fullname;
  else
@@ -22440,14 +22457,14 @@ static char *get_stem(const char *fullname)
 
  char *stem = malloc(stem_size + 1);
  if (stem == 
-# 461 "src/in_out.c" 3 4
+# 471 "src/in_out.c" 3 4
             ((void *)0)
-# 461 "src/in_out.c"
+# 471 "src/in_out.c"
                 )
   return 
-# 462 "src/in_out.c" 3 4
+# 472 "src/in_out.c" 3 4
         ((void *)0)
-# 462 "src/in_out.c"
+# 472 "src/in_out.c"
             ;
  memcpy(stem, slash, stem_size);
  *(stem + stem_size) = '\0';
@@ -22457,19 +22474,19 @@ static char *get_stem(const char *fullname)
 static char *concat2(const char *path, const char *filename) {
  char *filepath = malloc(strlen(path) + strlen(filename) + 1);
  if (filepath == 
-# 470 "src/in_out.c" 3 4
+# 480 "src/in_out.c" 3 4
                 ((void *)0)
-# 470 "src/in_out.c"
+# 480 "src/in_out.c"
                     ) {
   fprintf(
-# 471 "src/in_out.c" 3 4
+# 481 "src/in_out.c" 3 4
          stderr
-# 471 "src/in_out.c"
+# 481 "src/in_out.c"
                , "Out of memory\n");
   return 
-# 472 "src/in_out.c" 3 4
+# 482 "src/in_out.c" 3 4
         ((void *)0)
-# 472 "src/in_out.c"
+# 482 "src/in_out.c"
             ;
  }
  strcpy(filepath, path);
@@ -22480,19 +22497,19 @@ static char *concat2(const char *path, const char *filename) {
 static char *concat3(const char *path, const char *filename, const char *extention) {
  char *filepath = malloc(strlen(path) + strlen(filename) + strlen(extention) + 1);
  if (filepath == 
-# 481 "src/in_out.c" 3 4
+# 491 "src/in_out.c" 3 4
                 ((void *)0)
-# 481 "src/in_out.c"
+# 491 "src/in_out.c"
                     ) {
   fprintf(
-# 482 "src/in_out.c" 3 4
+# 492 "src/in_out.c" 3 4
          stderr
-# 482 "src/in_out.c"
+# 492 "src/in_out.c"
                , "Out of memory\n");
   return 
-# 483 "src/in_out.c" 3 4
+# 493 "src/in_out.c" 3 4
         ((void *)0)
-# 483 "src/in_out.c"
+# 493 "src/in_out.c"
             ;
  }
  strcpy(filepath, path);
@@ -22504,9 +22521,9 @@ static char *concat3(const char *path, const char *filename, const char *extenti
 void output_set_filename(const char *option_output_filename, const char *option_input_filename)
 {
  if (option_output_filename != 
-# 493 "src/in_out.c" 3 4
+# 503 "src/in_out.c" 3 4
                               ((void *)0)
-# 493 "src/in_out.c"
+# 503 "src/in_out.c"
                                   ) {
   char first_letter = option_output_filename[0];
   if (first_letter != '/' && first_letter != '.')
@@ -22515,9 +22532,9 @@ void output_set_filename(const char *option_output_filename, const char *option_
    data_output_filepath = strdup(option_output_filename);
  }
  else if (option_input_filename != 
-# 500 "src/in_out.c" 3 4
+# 510 "src/in_out.c" 3 4
                                   ((void *)0)
-# 500 "src/in_out.c"
+# 510 "src/in_out.c"
                                       ) {
   char *filename = get_filename(option_input_filename);
 
@@ -22552,14 +22569,14 @@ Audit *audit_create(char *id)
 {
  Audit *audit = malloc(sizeof *audit);
  if (audit == 
-# 533 "src/in_out.c" 3 4
+# 543 "src/in_out.c" 3 4
              ((void *)0)
-# 533 "src/in_out.c"
+# 543 "src/in_out.c"
                  )
   return 
-# 534 "src/in_out.c" 3 4
+# 544 "src/in_out.c" 3 4
         ((void *)0)
-# 534 "src/in_out.c"
+# 544 "src/in_out.c"
             ;
  audit->id = id;
  audit->wave = wave_create(config_struct->bits_per_sample, 1);
@@ -22572,27 +22589,27 @@ static char *audit_make_filename(struct config *config, char *id)
  const char *extention = get_extention(config->input_file);
  char *stem = get_stem(config->input_file);
  if (stem == 
-# 545 "src/in_out.c" 3 4
+# 555 "src/in_out.c" 3 4
             ((void *)0)
-# 545 "src/in_out.c"
+# 555 "src/in_out.c"
                 )
   return 
-# 546 "src/in_out.c" 3 4
+# 556 "src/in_out.c" 3 4
         ((void *)0)
-# 546 "src/in_out.c"
+# 556 "src/in_out.c"
             ;
  size_t filepath_size = strlen(config->output_path) + strlen(stem) + 1 + strlen(id) + 1 + strlen(extention) + 1;
  char *filepath = malloc(filepath_size);
  if (filepath == 
-# 549 "src/in_out.c" 3 4
+# 559 "src/in_out.c" 3 4
                 ((void *)0)
-# 549 "src/in_out.c"
+# 559 "src/in_out.c"
                     ) {
   free(stem);
   return 
-# 551 "src/in_out.c" 3 4
+# 561 "src/in_out.c" 3 4
         ((void *)0)
-# 551 "src/in_out.c"
+# 561 "src/in_out.c"
             ;
  }
  strcpy(filepath, config->output_path);
@@ -22609,14 +22626,14 @@ int audit_append_samples(Audit *audit, float *data, unsigned data_size)
 {
  int16_t *buffer = malloc(data_size * sizeof *buffer);
  if (buffer == 
-# 566 "src/in_out.c" 3 4
+# 576 "src/in_out.c" 3 4
               ((void *)0)
-# 566 "src/in_out.c"
+# 576 "src/in_out.c"
                   )
   return 
-# 567 "src/in_out.c" 3 4
+# 577 "src/in_out.c" 3 4
         1
-# 567 "src/in_out.c"
+# 577 "src/in_out.c"
                     ;
  samples_float_to_int16(data, buffer, data_size);
  size_t wrote_frames = wave_append_samples(audit->wave, (char *)buffer, data_size);
@@ -22642,72 +22659,72 @@ void audit_destroy(Audit *audit)
 
 void samples_int16_to_float(int16_t *samples_int16, float *samples_float, unsigned length) {
     
-# 591 "src/in_out.c" 3 4
+# 601 "src/in_out.c" 3 4
    ((void) sizeof ((
-# 591 "src/in_out.c"
+# 601 "src/in_out.c"
    samples_int16 != 
-# 591 "src/in_out.c" 3 4
+# 601 "src/in_out.c" 3 4
    ((void *)0)) ? 1 : 0), __extension__ ({ if (
-# 591 "src/in_out.c"
+# 601 "src/in_out.c"
    samples_int16 != 
-# 591 "src/in_out.c" 3 4
+# 601 "src/in_out.c" 3 4
    ((void *)0)) ; else __assert_fail (
-# 591 "src/in_out.c"
+# 601 "src/in_out.c"
    "samples_int16 != NULL"
-# 591 "src/in_out.c" 3 4
-   , "src/in_out.c", 591, __extension__ __PRETTY_FUNCTION__); }))
-# 591 "src/in_out.c"
+# 601 "src/in_out.c" 3 4
+   , "src/in_out.c", 601, __extension__ __PRETTY_FUNCTION__); }))
+# 601 "src/in_out.c"
                                 ;
     
-# 592 "src/in_out.c" 3 4
+# 602 "src/in_out.c" 3 4
    ((void) sizeof ((
-# 592 "src/in_out.c"
+# 602 "src/in_out.c"
    samples_float != 
-# 592 "src/in_out.c" 3 4
+# 602 "src/in_out.c" 3 4
    ((void *)0)) ? 1 : 0), __extension__ ({ if (
-# 592 "src/in_out.c"
+# 602 "src/in_out.c"
    samples_float != 
-# 592 "src/in_out.c" 3 4
+# 602 "src/in_out.c" 3 4
    ((void *)0)) ; else __assert_fail (
-# 592 "src/in_out.c"
+# 602 "src/in_out.c"
    "samples_float != NULL"
-# 592 "src/in_out.c" 3 4
-   , "src/in_out.c", 592, __extension__ __PRETTY_FUNCTION__); }))
-# 592 "src/in_out.c"
+# 602 "src/in_out.c" 3 4
+   , "src/in_out.c", 602, __extension__ __PRETTY_FUNCTION__); }))
+# 602 "src/in_out.c"
                                 ;
     
-# 593 "src/in_out.c" 3 4
+# 603 "src/in_out.c" 3 4
    ((void) sizeof ((
-# 593 "src/in_out.c"
+# 603 "src/in_out.c"
    config_struct != 
-# 593 "src/in_out.c" 3 4
+# 603 "src/in_out.c" 3 4
    ((void *)0)) ? 1 : 0), __extension__ ({ if (
-# 593 "src/in_out.c"
+# 603 "src/in_out.c"
    config_struct != 
-# 593 "src/in_out.c" 3 4
+# 603 "src/in_out.c" 3 4
    ((void *)0)) ; else __assert_fail (
-# 593 "src/in_out.c"
+# 603 "src/in_out.c"
    "config_struct != NULL"
-# 593 "src/in_out.c" 3 4
-   , "src/in_out.c", 593, __extension__ __PRETTY_FUNCTION__); }))
-# 593 "src/in_out.c"
+# 603 "src/in_out.c" 3 4
+   , "src/in_out.c", 603, __extension__ __PRETTY_FUNCTION__); }))
+# 603 "src/in_out.c"
                                 ;
     
-# 594 "src/in_out.c" 3 4
+# 604 "src/in_out.c" 3 4
    ((void) sizeof ((
-# 594 "src/in_out.c"
+# 604 "src/in_out.c"
    config_struct->channels > 0
-# 594 "src/in_out.c" 3 4
+# 604 "src/in_out.c" 3 4
    ) ? 1 : 0), __extension__ ({ if (
-# 594 "src/in_out.c"
+# 604 "src/in_out.c"
    config_struct->channels > 0
-# 594 "src/in_out.c" 3 4
+# 604 "src/in_out.c" 3 4
    ) ; else __assert_fail (
-# 594 "src/in_out.c"
+# 604 "src/in_out.c"
    "config_struct->channels > 0"
-# 594 "src/in_out.c" 3 4
-   , "src/in_out.c", 594, __extension__ __PRETTY_FUNCTION__); }))
-# 594 "src/in_out.c"
+# 604 "src/in_out.c" 3 4
+   , "src/in_out.c", 604, __extension__ __PRETTY_FUNCTION__); }))
+# 604 "src/in_out.c"
                                       ;
 
     for (unsigned c = 0; c < config_struct->channels; c++) {
@@ -22715,26 +22732,26 @@ void samples_int16_to_float(int16_t *samples_int16, float *samples_float, unsign
         int16_t *samples_int16_channel = samples_int16 + c;
         for (unsigned i = 0; i < length; i++) {
             *samples_float_channel = ((float)*samples_int16_channel) / ((int)
-# 600 "src/in_out.c" 3 4
+# 610 "src/in_out.c" 3 4
                                                                             (32767) 
-# 600 "src/in_out.c"
+# 610 "src/in_out.c"
                                                                                       + 1);
             
-# 601 "src/in_out.c" 3 4
+# 611 "src/in_out.c" 3 4
            ((void) sizeof ((
-# 601 "src/in_out.c"
+# 611 "src/in_out.c"
            *samples_float_channel >= -1.0f && *samples_float_channel <= +1.0f
-# 601 "src/in_out.c" 3 4
+# 611 "src/in_out.c" 3 4
            ) ? 1 : 0), __extension__ ({ if (
-# 601 "src/in_out.c"
+# 611 "src/in_out.c"
            *samples_float_channel >= -1.0f && *samples_float_channel <= +1.0f
-# 601 "src/in_out.c" 3 4
+# 611 "src/in_out.c" 3 4
            ) ; else __assert_fail (
-# 601 "src/in_out.c"
+# 611 "src/in_out.c"
            "*samples_float_channel >= -1.0f && *samples_float_channel <= +1.0f"
-# 601 "src/in_out.c" 3 4
-           , "src/in_out.c", 601, __extension__ __PRETTY_FUNCTION__); }))
-# 601 "src/in_out.c"
+# 611 "src/in_out.c" 3 4
+           , "src/in_out.c", 611, __extension__ __PRETTY_FUNCTION__); }))
+# 611 "src/in_out.c"
                                                                                      ;
             samples_float_channel += 1;
             samples_int16_channel += config_struct->channels;
@@ -22749,9 +22766,9 @@ void samples_float_to_int16(float *samples_float, int16_t *samples_int16, unsign
 
   float a = samples_float[i];
   uint16_t b = a * ((int)
-# 614 "src/in_out.c" 3 4
+# 624 "src/in_out.c" 3 4
                         (32767) 
-# 614 "src/in_out.c"
+# 624 "src/in_out.c"
                                   + 1);
   samples_int16[i] = b;
  }

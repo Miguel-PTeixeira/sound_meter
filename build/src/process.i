@@ -3442,7 +3442,8 @@ void process_block_square(float *input, float *output, unsigned length);
 void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config);
 void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct sbuffer *ring_aslow, struct config *config);
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config);
-float get_percentil(float* array, int size, int perc);
+float get_percentile_quickselect(float* array, int size, int perc);
+float get_percentile(float* array, int size, int perc);
 int event_check(Levels* levels);
 
 void lae_average_create();
@@ -3552,38 +3553,34 @@ Levels *levels_create() {
 # 86 "src/process.c"
                   ;
 
-    size_t Fsegment_data_size = config_struct->levels_record_period * sizeof *levels->LAeq;
-    float *fbuffer = malloc(7 * Fsegment_data_size);
+ float *fbuffer = calloc(7 * config_struct->levels_record_period, sizeof(levels->LAeq));
     if (fbuffer == 
-# 90 "src/process.c" 3 4
+# 89 "src/process.c" 3 4
                   ((void *)0)
-# 90 "src/process.c"
+# 89 "src/process.c"
                       ) {
         free(levels);
         return 
-# 92 "src/process.c" 3 4
+# 91 "src/process.c" 3 4
               ((void *)0)
-# 92 "src/process.c"
+# 91 "src/process.c"
                   ;
     }
-    memset(fbuffer, 0, 7 * Fsegment_data_size);
 
-    size_t Isegment_data_size = config_struct->levels_record_period * sizeof *levels->event;
-    int *ibuffer = malloc(1 * Isegment_data_size);
+    int *ibuffer = calloc(1 * config_struct->levels_record_period, sizeof(levels->event));
     if (ibuffer == 
-# 98 "src/process.c" 3 4
+# 95 "src/process.c" 3 4
                   ((void *)0)
-# 98 "src/process.c"
+# 95 "src/process.c"
                       ) {
         free(fbuffer);
         free(levels);
         return 
-# 101 "src/process.c" 3 4
+# 98 "src/process.c" 3 4
               ((void *)0)
-# 101 "src/process.c"
+# 98 "src/process.c"
                   ;
     }
-    memset(ibuffer, 0, 1 * Isegment_data_size);
 
     float *temp = fbuffer;
     levels->LAeq = temp;
@@ -3605,17 +3602,17 @@ Levels *levels_create() {
     levels->perc = percentil_create();
 
     if (levels->perc == 
-# 124 "src/process.c" 3 4
+# 120 "src/process.c" 3 4
                        ((void *)0)
-# 124 "src/process.c"
+# 120 "src/process.c"
                            ) {
         free(ibuffer);
         free(fbuffer);
         free(levels);
         return 
-# 128 "src/process.c" 3 4
+# 124 "src/process.c" 3 4
               ((void *)0)
-# 128 "src/process.c"
+# 124 "src/process.c"
                   ;
     }
 
@@ -3626,10 +3623,13 @@ Levels *levels_create() {
 
 void levels_destroy(Levels *levels)
 {
+ if (!levels) return;
  free(levels->LAeq);
  percentil_destroy(levels->perc);
+ free(levels->event);
  free(levels);
 }
+
 
 void process_block_square(float *input, float *output, unsigned size)
 {
@@ -3677,29 +3677,29 @@ void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct s
 {
  float delta = 0.0;
  if (config != 
-# 188 "src/process.c" 3 4
+# 187 "src/process.c" 3 4
               ((void *)0)
-# 188 "src/process.c"
+# 187 "src/process.c"
                   ) {
   delta = config->calibration_delta;
  }
 
  
-# 192 "src/process.c" 3 4
+# 191 "src/process.c" 3 4
 ((void) sizeof ((
-# 192 "src/process.c"
+# 191 "src/process.c"
 sbuffer_size(ring_afast) >= config_struct->segment_size
-# 192 "src/process.c" 3 4
+# 191 "src/process.c" 3 4
 ) ? 1 : 0), __extension__ ({ if (
-# 192 "src/process.c"
+# 191 "src/process.c"
 sbuffer_size(ring_afast) >= config_struct->segment_size
-# 192 "src/process.c" 3 4
+# 191 "src/process.c" 3 4
 ) ; else __assert_fail (
-# 192 "src/process.c"
+# 191 "src/process.c"
 "sbuffer_size(ring_afast) >= config_struct->segment_size"
-# 192 "src/process.c" 3 4
-, "src/process.c", 192, __extension__ __PRETTY_FUNCTION__); }))
-# 192 "src/process.c"
+# 191 "src/process.c" 3 4
+, "src/process.c", 191, __extension__ __PRETTY_FUNCTION__); }))
+# 191 "src/process.c"
                                                                ;
  if (levels->segment_number >= config_struct->levels_record_period)
   levels->segment_number = 0;
@@ -3719,26 +3719,26 @@ sbuffer_size(ring_afast) >= config_struct->segment_size
  float sample_sum_aslow = sample_sum_afast;
 
  if (ring_aslow != 
-# 210 "src/process.c" 3 4
+# 209 "src/process.c" 3 4
                   ((void *)0)
-# 210 "src/process.c"
+# 209 "src/process.c"
                       ) {
   
-# 211 "src/process.c" 3 4
+# 210 "src/process.c" 3 4
  ((void) sizeof ((
-# 211 "src/process.c"
+# 210 "src/process.c"
  sbuffer_size(ring_aslow) == sbuffer_size(ring_afast)
-# 211 "src/process.c" 3 4
+# 210 "src/process.c" 3 4
  ) ? 1 : 0), __extension__ ({ if (
-# 211 "src/process.c"
+# 210 "src/process.c"
  sbuffer_size(ring_aslow) == sbuffer_size(ring_afast)
-# 211 "src/process.c" 3 4
+# 210 "src/process.c" 3 4
  ) ; else __assert_fail (
-# 211 "src/process.c"
+# 210 "src/process.c"
  "sbuffer_size(ring_aslow) == sbuffer_size(ring_afast)"
-# 211 "src/process.c" 3 4
- , "src/process.c", 211, __extension__ __PRETTY_FUNCTION__); }))
-# 211 "src/process.c"
+# 210 "src/process.c" 3 4
+ , "src/process.c", 210, __extension__ __PRETTY_FUNCTION__); }))
+# 210 "src/process.c"
                                                              ;
   samples_aslow = sbuffer_read_ptr(ring_aslow);
   sample_sum_aslow = samples_aslow[0];
@@ -3753,9 +3753,9 @@ sbuffer_size(ring_afast) >= config_struct->segment_size
    sample_min_afast = sample_afast;
 
   if (ring_aslow != 
-# 224 "src/process.c" 3 4
+# 223 "src/process.c" 3 4
                    ((void *)0)
-# 224 "src/process.c"
+# 223 "src/process.c"
                        ) {
    float sample_aslow = samples_aslow[i];
    sample_sum_aslow += sample_aslow;
@@ -3764,9 +3764,9 @@ sbuffer_size(ring_afast) >= config_struct->segment_size
 
  sbuffer_read_consumes(ring_afast, size);
  if (ring_aslow != 
-# 231 "src/process.c" 3 4
+# 230 "src/process.c" 3 4
                   ((void *)0)
-# 231 "src/process.c"
+# 230 "src/process.c"
                       )
   sbuffer_read_consumes(ring_aslow, size);
 
@@ -3774,9 +3774,9 @@ sbuffer_size(ring_afast) >= config_struct->segment_size
   unsigned remaining = config_struct->segment_size - size;
   samples_afast = sbuffer_read_ptr(ring_afast);
   if (ring_aslow != 
-# 237 "src/process.c" 3 4
+# 236 "src/process.c" 3 4
                    ((void *)0)
-# 237 "src/process.c"
+# 236 "src/process.c"
                        )
    samples_aslow = sbuffer_read_ptr(ring_aslow);
 
@@ -3789,9 +3789,9 @@ sbuffer_size(ring_afast) >= config_struct->segment_size
     sample_min_afast = sample_afast;
 
    if (ring_aslow != 
-# 248 "src/process.c" 3 4
+# 247 "src/process.c" 3 4
                     ((void *)0)
-# 248 "src/process.c"
+# 247 "src/process.c"
                         ) {
     float sample_aslow = samples_aslow[i];
     sample_sum_aslow += sample_aslow;
@@ -3799,17 +3799,15 @@ sbuffer_size(ring_afast) >= config_struct->segment_size
   }
   sbuffer_read_consumes(ring_afast, remaining);
   if (ring_aslow != 
-# 254 "src/process.c" 3 4
+# 253 "src/process.c" 3 4
                    ((void *)0)
-# 254 "src/process.c"
+# 253 "src/process.c"
                        )
    sbuffer_read_consumes(ring_aslow, remaining);
  }
 
 
-  float lae = sqrt(sample_sum_afast / config_struct->segment_size);
-  if (sample_sum_afast < 0)
-   lae = -sqrt(fabs(sample_sum_afast / config_struct->segment_size));
+  float lae = sqrt(fabs(sample_sum_afast / config_struct->segment_size));
   float lafmax = sqrt(sample_max_afast);
   float lafmin = sqrt(sample_min_afast);
   levels->LAE[levels->segment_number] = linear_to_decibel(lae) + delta;
@@ -3821,20 +3819,18 @@ sbuffer_size(ring_afast) >= config_struct->segment_size
 
 
   if (ring_aslow != 
-# 272 "src/process.c" 3 4
+# 269 "src/process.c" 3 4
                    ((void *)0)
-# 272 "src/process.c"
+# 269 "src/process.c"
                        ) {
-   float las = sqrt(sample_sum_aslow / config_struct->segment_size);
-   if (sample_sum_aslow < 0)
-    las = -sqrt(fabs(sample_sum_aslow / config_struct->segment_size));
+   float las = sqrt(fabs(sample_sum_aslow / config_struct->segment_size));
    levels->LAS[levels->segment_number] = linear_to_decibel(las) + delta;
   }
 
   if(ring_aslow != 
-# 279 "src/process.c" 3 4
+# 274 "src/process.c" 3 4
                   ((void *)0)
-# 279 "src/process.c"
+# 274 "src/process.c"
                       ){
    int percentil_segment_number = config_struct->background_duration / ((config_struct->segment_duration + 999) / 1000);
 
@@ -3843,9 +3839,9 @@ sbuffer_size(ring_afast) >= config_struct->segment_size
    levels->perc->pos++;
 
    if (beginning)
-    levels->background_LAS = get_percentil(levels->perc->array, levels->perc->pos, 10);
+    levels->background_LAS = get_percentile_quickselect(levels->perc->array, levels->perc->pos, 10);
    if (levels->perc->pos >= percentil_segment_number) {
-    levels->background_LAS = get_percentil(levels->perc->array, levels->perc->pos, 10);
+    levels->background_LAS = get_percentile_quickselect(levels->perc->array, levels->perc->pos, 10);
     levels->perc->pos = 0;
     beginning = 0;
    }
@@ -3854,10 +3850,59 @@ sbuffer_size(ring_afast) >= config_struct->segment_size
   }
  levels->segment_number++;
 }
-# 306 "src/process.c"
+# 301 "src/process.c"
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config)
 {
 }
+
+static void swap(float *a, float *b) {
+    float tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+static int partition(float arr[], int left, int right, int pivot_index) {
+    float pivot_value = arr[pivot_index];
+    swap(&arr[pivot_index], &arr[right]);
+    int store_index = left;
+
+    for (int i = left; i < right; i++) {
+        if (arr[i] < pivot_value) {
+            swap(&arr[store_index], &arr[i]);
+            store_index++;
+        }
+    }
+    swap(&arr[store_index], &arr[right]);
+    return store_index;
+}
+
+static float quickselect(float arr[], int left, int right, int k) {
+    if (left == right)
+        return arr[left];
+
+    int pivot_index = left + rand() % (right - left + 1);
+    pivot_index = partition(arr, left, right, pivot_index);
+
+    if (k == pivot_index)
+        return arr[k];
+    else if (k < pivot_index)
+        return quickselect(arr, left, pivot_index - 1, k);
+    else
+        return quickselect(arr, pivot_index + 1, right, k);
+}
+
+float get_percentile_quickselect(float* array, int size, int perc) {
+    int index = (perc * size) / 100;
+
+    float *copy = malloc(size * sizeof(float));
+    if (!copy) return -1;
+    for (int i = 0; i < size; i++) copy[i] = array[i];
+
+    float result = quickselect(copy, 0, size - 1, index);
+    free(copy);
+    return result;
+}
+
 
 static int cmp_func(const void* a, const void* b) {
     float fa = *(float*)a;
@@ -3865,7 +3910,7 @@ static int cmp_func(const void* a, const void* b) {
     return (fa > fb) - (fa < fb);
 }
 
-float get_percentil(float* array, int size, int perc){
+float get_percentile(float* array, int size, int perc){
 
  qsort(array,size,sizeof(array[0]),cmp_func);
 

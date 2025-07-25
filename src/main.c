@@ -413,7 +413,7 @@ int main (int argc, char *argv[])
 		if (lenght_read == 0)
 			break;
 ///FILTER BAND MANAGEMENT	
-		for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){//MOre than 2 results in corrupted data. (wrong memory access)
+		for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){
 			float *block_filter = sbuffer_write_ptr(third_octave_data[i].ring);
 			assert(lenght_read <= sbuffer_write_size(third_octave_data[i].ring));
 			third_octave_filtering(third_octave_data[i].filter, block_raw, block_filter, lenght_read);
@@ -447,7 +447,7 @@ int main (int argc, char *argv[])
 			audit_append_samples(wd, block_ring_afast, lenght_read);
 		}
 		if (sbuffer_size(ring_afast) >= config_struct->segment_size) {
-			for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){//MOre than 2 results in corrupted data. (wrong memory access)
+			for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){
 				process_segment_levels(third_octave_data[i].levels, third_octave_data[i].ring, NULL, config_struct);
 			}
 			process_segment_levelpeak(levels_return, ring_c, config_struct);
@@ -503,7 +503,8 @@ int main (int argc, char *argv[])
 	input_device_close();
 	output_close();
 	
-	for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){//MOre than 2 results in corrupted data. (wrong memory access)
+	for(int i=0; i<THIRD_OCTAVE_BAND_MAX; i++){
+		timeweight_destroy(third_octave_data[i].Tfilter);
 		levels_destroy(third_octave_data[i].levels);
 		third_octave_destroy(third_octave_data[i].filter);
 		sbuffer_destroy(third_octave_data[i].ring);

@@ -28,7 +28,9 @@ build/src/%.o: src/%.c
 	gcc $(CFLAGS) -c $< -o $@
 
 build_dir:
+	mkdir -p build
 	mkdir -p build/src
+	mkdir -p data
 
 clean:
 	rm -rf build/*

@@ -44,6 +44,8 @@ bool input_device_open(struct config *config)
 					500000); /* 0.5 sec */
 		if (result < 0) {
 			fprintf(stderr, "snd_pcm_set_params: %s\n", snd_strerror(result));
+			snd_pcm_close(device.alsa_handle);
+			device.alsa_handle = NULL;
 			return false;
 		}
 #if 0
@@ -52,6 +54,8 @@ bool input_device_open(struct config *config)
 					&buffer_size, &period_size);
 		if (result < 0) {
 			fprintf(stderr, "snd_pcm_get_params: %s\n", snd_strerror(result));
+			snd_pcm_close(device.alsa_handle);
+			device.alsa_handle = NULL;
 			return false;
 		}
 		printf("buffer_size = %lu, period_size = %lu\n", buffer_size, period_size);
@@ -60,6 +64,8 @@ bool input_device_open(struct config *config)
 		if (result < 0) {
 			fprintf(stderr, "cannot prepare audio interface for use (%s)\n",
 					snd_strerror(result));
+			snd_pcm_close(device.alsa_handle);
+			device.alsa_handle = NULL;
 			return false;
 		}
 		snd_pcm_start(device.alsa_handle);
@@ -105,16 +111,20 @@ size_t input_device_read(float *buffer, size_t nframes)
 		if (read_frames < 0) {
 			fprintf(stderr, "read from audio interface failed (%s)\n",
 					snd_strerror(read_frames));
+			free(samples_int16);
 			return 0;
 		}
 	}
 	else if (device.device == DEVICE_WAVE) {
 		read_frames = wave_read_samples(device.wave, (char *)samples_int16, nframes);
-		if (read_frames == 0)
+		if (read_frames == 0){
+			free(samples_int16);
 			return 0;
+		}
 	}
 	else {
 		assert(false);	//	Should never reach this point
+		free(samples_int16);
 		return 0;
 	}
 	samples_int16_to_float(samples_int16, buffer, read_frames);

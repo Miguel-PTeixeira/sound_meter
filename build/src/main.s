@@ -71,7 +71,7 @@ help:
 	.section	.rodata
 	.align 8
 .LC1:
-	.string	"Sound meter v1.0 (Jul 23 2025)\nBased on MoSeMusic project by Guilherme Albano and David Meneses\nEzequiel Conde (ezeq@cc.isel.ipl.pt)"
+	.string	"Sound meter v1.0 (Jul 25 2025)\nBased on MoSeMusic project by Guilherme Albano and David Meneses\nEzequiel Conde (ezeq@cc.isel.ipl.pt)"
 	.text
 	.type	about, @function
 about:
@@ -2074,11 +2074,21 @@ main:
 	salq	$5, %rax
 	leaq	-16(%rax), %rax
 	addq	%rbp, %rax
+	subq	$976, %rax
+	movq	(%rax), %rax
+	movq	%rax, %rdi
+	call	timeweight_destroy@PLT
+	.loc 1 508 3
+	movl	-1316(%rbp), %eax
+	cltq
+	salq	$5, %rax
+	leaq	-16(%rax), %rax
+	addq	%rbp, %rax
 	subq	$960, %rax
 	movq	(%rax), %rax
 	movq	%rax, %rdi
 	call	levels_destroy@PLT
-	.loc 1 508 3
+	.loc 1 509 3
 	movl	-1316(%rbp), %eax
 	cltq
 	salq	$5, %rax
@@ -2088,7 +2098,7 @@ main:
 	movq	(%rax), %rax
 	movq	%rax, %rdi
 	call	third_octave_destroy@PLT
-	.loc 1 509 3
+	.loc 1 510 3
 	movl	-1316(%rbp), %eax
 	cltq
 	salq	$5, %rax
@@ -2105,77 +2115,77 @@ main:
 	cmpl	$29, -1316(%rbp)
 	jle	.L88
 .LBE13:
-	.loc 1 512 2
+	.loc 1 513 2
 	movq	-1064(%rbp), %rax
 	movq	%rax, %rdi
 	call	levels_destroy@PLT
-	.loc 1 513 2
+	.loc 1 514 2
 	movq	-1152(%rbp), %rax
 	movq	%rax, %rdi
 	call	timeweight_destroy@PLT
-	.loc 1 514 2
+	.loc 1 515 2
 	movq	-1144(%rbp), %rax
 	movq	%rax, %rdi
 	call	timeweight_destroy@PLT
-	.loc 1 515 2
+	.loc 1 516 2
 	movq	-1136(%rbp), %rax
 	movq	%rax, %rdi
 	call	aweighting_destroy@PLT
-	.loc 1 516 2
+	.loc 1 517 2
 	movq	-1128(%rbp), %rax
 	movq	%rax, %rdi
 	call	cweighting_destroy@PLT
-	.loc 1 517 2
+	.loc 1 518 2
 	movl	$0, %eax
 	call	lae_average_destroy@PLT
-	.loc 1 518 2
+	.loc 1 519 2
 	movq	config_struct(%rip), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	config_destroy@PLT
-	.loc 1 519 2
+	.loc 1 520 2
 	movq	-1104(%rbp), %rax
 	movq	%rax, %rdi
 	call	free@PLT
-	.loc 1 520 2
+	.loc 1 521 2
 	movq	-1112(%rbp), %rax
 	movq	%rax, %rdi
 	call	free@PLT
-	.loc 1 521 2
+	.loc 1 522 2
 	movq	-1120(%rbp), %rax
 	movq	%rax, %rdi
 	call	free@PLT
-	.loc 1 522 2
+	.loc 1 523 2
 	movq	-1088(%rbp), %rax
 	movq	%rax, %rdi
 	call	sbuffer_destroy@PLT
-	.loc 1 523 2
+	.loc 1 524 2
 	movq	-1096(%rbp), %rax
 	movq	%rax, %rdi
 	call	sbuffer_destroy@PLT
-	.loc 1 524 2
+	.loc 1 525 2
 	movq	-1072(%rbp), %rax
 	movq	%rax, %rdi
 	call	sbuffer_destroy@PLT
-	.loc 1 525 2
+	.loc 1 526 2
 	movq	-1080(%rbp), %rax
 	movq	%rax, %rdi
 	call	sbuffer_destroy@PLT
-	.loc 1 526 36
-	movq	record_struct(%rip), %rax
-	.loc 1 526 2
-	movq	944(%rax), %rax
-	movq	%rax, %rdi
-	call	delete_files_storage@PLT
 	.loc 1 527 36
 	movq	record_struct(%rip), %rax
 	.loc 1 527 2
+	movq	944(%rax), %rax
+	movq	%rax, %rdi
+	call	delete_files_storage@PLT
+	.loc 1 528 36
+	movq	record_struct(%rip), %rax
+	.loc 1 528 2
 	movq	952(%rax), %rax
 	movq	%rax, %rdi
 	call	delete_files_storage@PLT
 	movl	$0, %eax
 .L24:
-	.loc 1 528 1
+	.loc 1 529 1
 	movq	-24(%rbp), %rdx
 	subq	%fs:40, %rdx
 	je	.L89
@@ -4633,7 +4643,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x10
 	.long	.LASF248
 	.byte	0x10
-	.byte	0x56
+	.byte	0x57
 	.long	0x10e3
 	.uleb128 0xa
 	.byte	0
@@ -4660,26 +4670,26 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x7
 	.long	.LASF252
 	.byte	0x11
-	.byte	0x2b
-	.long	0x1120
-	.uleb128 0x2
-	.long	0x803
-	.byte	0
-	.uleb128 0x7
-	.long	.LASF253
-	.byte	0x11
 	.byte	0x5e
-	.long	0x1131
+	.long	0x1120
 	.uleb128 0x2
 	.long	0x808
 	.byte	0
 	.uleb128 0x7
-	.long	.LASF254
+	.long	.LASF253
 	.byte	0x10
 	.byte	0x4c
-	.long	0x1142
+	.long	0x1131
 	.uleb128 0x2
 	.long	0x80d
+	.byte	0
+	.uleb128 0x7
+	.long	.LASF254
+	.byte	0x11
+	.byte	0x2b
+	.long	0x1142
+	.uleb128 0x2
+	.long	0x803
 	.byte	0
 	.uleb128 0x10
 	.long	.LASF255
@@ -4851,7 +4861,7 @@ __PRETTY_FUNCTION__.0:
 	.uleb128 0x10
 	.long	.LASF270
 	.byte	0x10
-	.byte	0x55
+	.byte	0x56
 	.long	0x12bc
 	.uleb128 0xa
 	.byte	0
@@ -6734,7 +6744,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"unsigned int"
 .LASF157:
 	.string	"Wave"
-.LASF253:
+.LASF252:
 	.string	"third_octave_destroy"
 .LASF192:
 	.string	"version"
@@ -6780,7 +6790,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"update"
 .LASF216:
 	.string	"mode"
-.LASF252:
+.LASF254:
 	.string	"timeweight_destroy"
 .LASF132:
 	.string	"levels"
@@ -6956,7 +6966,7 @@ __PRETTY_FUNCTION__.0:
 	.string	"char"
 .LASF277:
 	.string	"process_segment_levels"
-.LASF254:
+.LASF253:
 	.string	"levels_destroy"
 .LASF158:
 	.string	"audit"

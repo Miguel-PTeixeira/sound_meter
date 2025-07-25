@@ -15892,7 +15892,8 @@ void process_block_square(float *input, float *output, unsigned length);
 void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config);
 void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct sbuffer *ring_aslow, struct config *config);
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config);
-float get_percentil(float* array, int size, int perc);
+float get_percentile_quickselect(float* array, int size, int perc);
+float get_percentile(float* array, int size, int perc);
 int event_check(Levels* levels);
 
 void lae_average_create();
@@ -21693,7 +21694,7 @@ static void help(char *prog_name)
 
 static void about()
 {
- printf("Sound meter v" "1.0" " (" "Jul 23 2025" ")\n"
+ printf("Sound meter v" "1.0" " (" "Jul 25 2025" ")\n"
   "Based on MoSeMusic project by Guilherme Albano and David Meneses\n"
   "Ezequiel Conde (ezeq@cc.isel.ipl.pt)\n");
 }
@@ -22412,6 +22413,7 @@ _Bool
  output_close();
 
  for(int i=0; i<30; i++){
+  timeweight_destroy(third_octave_data[i].Tfilter);
   levels_destroy(third_octave_data[i].levels);
   third_octave_destroy(third_octave_data[i].filter);
   sbuffer_destroy(third_octave_data[i].ring);

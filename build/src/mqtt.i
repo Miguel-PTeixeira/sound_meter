@@ -4418,7 +4418,8 @@ void process_block_square(float *input, float *output, unsigned length);
 void process_segment_levelpeak(Levels *levels, struct sbuffer *ring, struct config *config);
 void process_segment_levels(Levels *levels, struct sbuffer *ring_afast, struct sbuffer *ring_aslow, struct config *config);
 void process_segment_direction(Levels *levels, struct sbuffer *ring[], struct config *config);
-float get_percentil(float* array, int size, int perc);
+float get_percentile_quickselect(float* array, int size, int perc);
+float get_percentile(float* array, int size, int perc);
 int event_check(Levels* levels);
 
 void lae_average_create();
